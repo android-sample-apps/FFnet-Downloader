@@ -12,3 +12,11 @@ data class StopPointJson(
     val id: String,
     val commonName: String
 )
+
+@JsonClass(generateAdapter = true)
+data class ArrivalJson(
+    val id: String,
+    val timeToStation: Int,
+    val naptanId: String,
+    val lineId: String
+)
