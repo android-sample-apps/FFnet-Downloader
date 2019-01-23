@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.citymapper.codingchallenge.R
 
 class StopPointsAdapter(
-    private var stopPoints: List<StopPoint>,
+    private var stopPoints: List<StopPointModel>,
     private val listener: StopPointListener
 ) : RecyclerView.Adapter<StopPointViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): StopPointViewHolder {
@@ -26,7 +26,7 @@ class StopPointsAdapter(
         holder.bind(stopPoints[position])
     }
 
-    fun updateData(stopPoints: List<StopPoint>) {
+    fun updateData(stopPoints: List<StopPointModel>) {
         this.stopPoints = stopPoints
         notifyDataSetChanged()
     }
@@ -36,14 +36,22 @@ class StopPointViewHolder(
     itemView: View,
     private val listener: StopPointListener
 ) : RecyclerView.ViewHolder(itemView) {
-    fun bind(stopPoint: StopPoint) {
+    fun bind(stopPoint: StopPointModel) {
         itemView.setOnClickListener {
             listener.onStopPointClicked(stopPoint)
         }
         itemView.findViewById<TextView>(R.id.stopPointTitleTextView).text = stopPoint.name
+
+        with(stopPoint.arrivalTimes) {
+            if (this.isNotEmpty()) {
+                itemView.findViewById<TextView>(R.id.firstArrivalTimeTextView).text = this[0].time
+                itemView.findViewById<TextView>(R.id.secondArrivalTimeTextView).text = this[1].time
+                itemView.findViewById<TextView>(R.id.thirdArrivalTimeTextView).text = this[2].time
+            }
+        }
     }
 }
 
 interface StopPointListener {
-    fun onStopPointClicked(stopPoint: StopPoint)
+    fun onStopPointClicked(stopPoint: StopPointModel)
 }

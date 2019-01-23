@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -13,13 +12,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
 import com.citymapper.codingchallenge.MainApplication
 import com.citymapper.codingchallenge.R
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
-import com.google.android.gms.location.LocationSettingsRequest
 import com.nicolasmouchel.executordecorator.MutableDecorator
 import kotlinx.android.synthetic.main.activity_maps.*
 import javax.inject.Inject
@@ -61,7 +55,8 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
             == PackageManager.PERMISSION_GRANTED
         ) {
             locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                controller.loadStopPoints(location)
+//                controller.loadStopPoints(location)
+                controller.loadArrivalTimes()
             }
         }
 
@@ -106,6 +101,7 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
     fun onLocationChanged(location: Location) {
         Toast.makeText(this, "Location Changed to " + location.latitude + ":" + location.longitude, Toast.LENGTH_LONG)
                 .show()
+        controller.loadStopPoints(location)
     }
 
     private fun checkPermissions(): Boolean {
@@ -133,14 +129,11 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
         super.onDestroy()
     }
 
-    override fun displayStopPoints(stopPoints: List<StopPoint>) {
+    override fun displayStopPoints(stopPoints: List<StopPointModel>) {
         adapter.updateData(stopPoints)
-        Handler().postDelayed({
-                                  controller.loadArrivalTimes()
-                              }, 1000)
     }
 
-    override fun onStopPointClicked(stopPoint: StopPoint) {
+    override fun onStopPointClicked(stopPoint: StopPointModel) {
         Toast.makeText(this, "Clicked on StopPoint #" + stopPoint.id, Toast.LENGTH_LONG).show()
     }
 }
