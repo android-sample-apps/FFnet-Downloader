@@ -1,8 +1,6 @@
 package com.citymapper.codingchallenge.stoppoints
 
 import android.location.Location
-import android.os.Handler
-import android.os.Looper
 
 interface StopPointsController {
     fun loadStopPoints(location: Location?)
@@ -30,9 +28,9 @@ class StopPointsControllerImpl(private val interactor: StopPointsInteractor) : S
 
     override fun loadArrivalTimes() {
         interactor.loadArrivalTimes()
-        Handler(Looper.getMainLooper()).postDelayed({
-            loadArrivalTimes()
-        }, 5000)
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            loadArrivalTimes()
+//        }, 5000)
     }
 
     private fun londonLocation(): Location = Location("LONDON").apply {

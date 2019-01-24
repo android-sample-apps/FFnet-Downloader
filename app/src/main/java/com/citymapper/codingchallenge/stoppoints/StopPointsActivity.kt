@@ -15,6 +15,7 @@ import com.citymapper.codingchallenge.R
 import com.google.android.gms.location.*
 import com.nicolasmouchel.executordecorator.MutableDecorator
 import kotlinx.android.synthetic.main.activity_maps.*
+import retrofit2.Retrofit
 import javax.inject.Inject
 
 
@@ -22,6 +23,7 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
 
     @Inject lateinit var controller: StopPointsController
     @Inject lateinit var view: MutableDecorator<StopPointsView>
+    @Inject lateinit var retrofit: Retrofit
 
     private lateinit var adapter: StopPointsAdapter
     private lateinit var locationClient: FusedLocationProviderClient
@@ -48,10 +50,19 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
         stopPointsRecyclerView.adapter = adapter
 
         locationClient = LocationServices.getFusedLocationProviderClient(this)
-        if (checkPermissions()) {
-            controller.loadArrivalTimes()
-            startLocationClient()
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                controller.loadStopPoints(location)
+            }
         }
+//        if (checkPermissions()) {
+//            controller.loadArrivalTimes()
+//            startLocationClient()
+//        }
     }
 
     override fun onRequestPermissionsResult(

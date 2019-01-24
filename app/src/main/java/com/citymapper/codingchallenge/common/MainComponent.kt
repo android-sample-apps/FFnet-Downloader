@@ -10,8 +10,7 @@ import javax.inject.Singleton
 @Component(
     modules = [
         MainModule::class,
-        NetworkModule::class,
-        DatabaseModule::class
+        NetworkModule::class
     ]
 )
 interface MainComponent {

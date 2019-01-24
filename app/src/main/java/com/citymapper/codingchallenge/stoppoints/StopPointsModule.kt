@@ -26,14 +26,8 @@ class StopPointsModule {
     @Provides
     fun provideInteractor(
         presenter: StopPointsPresenter,
-        repository: StopPointsRepository,
-        database: DbStopPointsRepository
-    ): StopPointsInteractor = StopPointsInteractorImpl(presenter, repository, database)
-
-    @Provides
-    fun provideDbStopPointsRepository(
-        database: StopPointDatabase
-    ): DbStopPointsRepository = DbStopPointsRepository(database.stopPointDao())
+        repository: StopPointsRepository
+    ): StopPointsInteractor = StopPointsInteractorImpl(presenter, repository)
 
     @Provides
     fun provideRepository(retrofit: Retrofit): StopPointsRepository = StopPointsRepositoryImpl(

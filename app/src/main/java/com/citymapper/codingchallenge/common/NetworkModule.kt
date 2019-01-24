@@ -2,6 +2,7 @@ package com.citymapper.codingchallenge.common
 
 import android.content.Context
 import com.citymapper.codingchallenge.BuildConfig
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -29,6 +30,7 @@ class NetworkModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(client.build())
             .addConverterFactory(moshiConverterFactory)
             .build()

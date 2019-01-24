@@ -5,35 +5,46 @@ interface StopPointsInteractor {
     fun loadArrivalTimes()
 }
 
-interface ArrivalTimesListener {
+interface RepositoryListener {
+    fun onStopPointsLoaded(stopPoints: List<StopPoint>)
     fun onArrivalTimesLoaded(stopPointId: String, arrivalTimes: List<Arrival>)
 }
 
 class StopPointsInteractorImpl(
     private val presenter: StopPointsPresenter,
-    private val repository: StopPointsRepository,
-    private val database: DbStopPointsRepository
-) : StopPointsInteractor, ArrivalTimesListener {
+    private val repository: StopPointsRepository
+) : StopPointsInteractor, RepositoryListener {
+
+    private var stopPoints: List<StopPoint> = emptyList()
 
     override fun loadStopPoints(altitude: Double, longitude: Double) {
-        database.deleteAll()
-        val stopPoints = repository.loadStopPoints(altitude, longitude)
-        database.addStopPoints(stopPoints)
+        stopPoints = emptyList()
+        stopPoints = repository.loadStopPoints(altitude, longitude, this)
         presenter.presentStopPoints(stopPoints)
     }
 
     override fun loadArrivalTimes() {
-        val stopPoints = database.getStopPoints()
         if (stopPoints.isNotEmpty()) {
             repository.loadArrivalTimes(stopPoints, this)
         }
     }
 
+    override fun onStopPointsLoaded(stopPoints: List<StopPoint>) {
+        presenter.presentStopPoints(stopPoints)
+    }
+
     override fun onArrivalTimesLoaded(stopPointId: String, arrivalTimes: List<Arrival>) {
-        val stopPoints = database.getStopPoints()
-        if (stopPoints.isNotEmpty()) {
-            val updatedStopPoints = database.updateArrivalTimes(stopPointId, arrivalTimes)
-            presenter.presentStopPoints(updatedStopPoints)
+        stopPoints = stopPoints.map {
+            if (it.id == stopPointId) {
+                StopPoint(
+                    id = it.id,
+                    name = it.name,
+                    arrivalTimes = arrivalTimes
+                )
+            } else {
+                it
+            }
         }
+        presenter.presentStopPoints(stopPoints)
     }
 }
