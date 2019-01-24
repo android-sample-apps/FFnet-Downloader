@@ -5,15 +5,14 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.citymapper.codingchallenge.MainApplication
 import com.citymapper.codingchallenge.R
 import com.google.android.gms.location.*
-import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 import com.nicolasmouchel.executordecorator.MutableDecorator
 import kotlinx.android.synthetic.main.activity_maps.*
 import javax.inject.Inject
@@ -41,87 +40,37 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
 
         MainApplication.getComponent(this).plus(StopPointsModule()).inject(this)
 
-
         view.mutate(this)
         adapter = StopPointsAdapter(emptyList(), this)
-        stopPointsRecyclerView.layoutManager = LinearLayoutManager(this)
+        stopPointsRecyclerView.layoutManager = LinearLayoutManager(
+            this
+        )
         stopPointsRecyclerView.adapter = adapter
 
         locationClient = LocationServices.getFusedLocationProviderClient(this)
-        checkPermissions()
-        if (ContextCompat.checkSelfPermission(this,
-                                              android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//                controller.loadStopPoints(location)
-                controller.loadArrivalTimes()
+        if (checkPermissions()) {
+            controller.loadArrivalTimes()
+            startLocationClient()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_FINE_LOCATION) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                startLocationClient()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Location is needed, but was not granted",
+                    Toast.LENGTH_LONG
+                ).show()
             }
+            return
         }
-
-        startLocationUpdates()
-    }
-
-    fun startLocationUpdates() {
-        // Create the location request to start receiving updates
-        locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = UPDATE_INTERVAL.toLong()
-        locationRequest.fastestInterval = FASTEST_INTERVAL.toLong()
-
-        // Create LocationSettingsRequest object using location request
-        val builder = LocationSettingsRequest.Builder()
-        builder.addLocationRequest(locationRequest)
-        val locationSettingsRequest = builder.build()
-
-        // Check whether location settings are satisfied
-        // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
-        val settingsClient = LocationServices.getSettingsClient(this)
-        settingsClient.checkLocationSettings(locationSettingsRequest)
-
-        // new Google API SDK v11 uses getFusedLocationProviderClient(this)
-        if (ContextCompat.checkSelfPermission(this,
-                                              android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            getFusedLocationProviderClient(this).requestLocationUpdates(
-                locationRequest,
-                object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult?) {
-                        // do work here
-                        onLocationChanged(locationResult!!.lastLocation)
-                    }
-                },
-                Looper.myLooper())
-        }
-    }
-
-    fun onLocationChanged(location: Location) {
-        Toast.makeText(this, "Location Changed to " + location.latitude + ":" + location.longitude, Toast.LENGTH_LONG)
-                .show()
-        controller.loadStopPoints(location)
-    }
-
-    private fun checkPermissions(): Boolean {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        } else {
-            requestPermissions()
-            return false
-        }
-    }
-
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            REQUEST_FINE_LOCATION
-        )
     }
 
     override fun onDestroy() {
@@ -135,5 +84,63 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
 
     override fun onStopPointClicked(stopPoint: StopPointModel) {
         Toast.makeText(this, "Clicked on StopPoint #" + stopPoint.id, Toast.LENGTH_LONG).show()
+    }
+
+    private fun startLocationClient() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED) {
+            locationRequest = LocationRequest()
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.interval = UPDATE_INTERVAL.toLong()
+            locationRequest.fastestInterval = FASTEST_INTERVAL.toLong()
+
+            val locationSettingsRequest = LocationSettingsRequest
+                .Builder()
+                .addLocationRequest(locationRequest)
+                .build()
+
+            LocationServices.getSettingsClient(this).checkLocationSettings(locationSettingsRequest)
+            locationClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult?) {
+                        onLocationChanged(locationResult!!.lastLocation)
+                    }
+                },
+                Looper.myLooper()
+            )
+        }
+    }
+
+    fun onLocationChanged(location: Location) {
+        Toast.makeText(
+            this,
+            "Location Changed to " + location.latitude + ":" + location.longitude,
+            Toast.LENGTH_LONG
+        ).show()
+        controller.loadStopPoints(location)
+    }
+
+    private fun checkPermissions(): Boolean {
+        return if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            true
+        } else {
+            requestPermissions()
+            false
+        }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_FINE_LOCATION
+        )
     }
 }

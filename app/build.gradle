@@ -15,13 +15,16 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -30,22 +33,27 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'com.android.support:support-v13:28.0.0'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation "androidx.legacy:legacy-support-v13:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.1.0-alpha01"
+    implementation "com.google.android.material:material:1.1.0-alpha02"
+    implementation "androidx.appcompat:appcompat:1.1.0-alpha01"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
+
+    // Room
+    implementation "androidx.room:room-runtime:2.1.0-alpha03"
+    kapt "androidx.room:room-compiler:2.1.0-alpha03"
+    kapt "android.arch.persistence.room:compiler:1.1.1"
 
     // Maps
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation "com.google.android.gms:play-services-location:16.0.0"
 
     // Dagger
     implementation "com.google.dagger:dagger:2.16"
     kapt "com.google.dagger:dagger-compiler:2.16"
 
     // Executor Decorator
-    implementation 'com.nicolasmouchel:executordecorator-annotations:2.1'
-    kapt 'com.nicolasmouchel:executordecorator-compiler:2.1'
+    implementation "com.nicolasmouchel:executordecorator-annotations:2.1"
+    kapt "com.nicolasmouchel:executordecorator-compiler:2.1"
 
     // Network
     implementation "com.squareup.retrofit2:retrofit:2.4.0"
@@ -54,8 +62,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"
 
     // Debugging
-    debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
-    releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+    debugImplementation "com.readystatesoftware.chuck:library:1.1.0"
+    releaseImplementation "com.readystatesoftware.chuck:library-no-op:1.1.0"
 
     // JSON Parsing
     implementation "com.squareup.moshi:moshi:1.6.0"
@@ -63,9 +71,9 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.6.0"
 
     // Test
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-core:2.21.0"
-    testImplementation 'org.assertj:assertj-core:3.10.0'
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:2.22.0"
+    testImplementation "org.assertj:assertj-core:3.10.0"
     testImplementation "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
     testImplementation "com.squareup.okhttp3:mockwebserver:3.10.0"
 }

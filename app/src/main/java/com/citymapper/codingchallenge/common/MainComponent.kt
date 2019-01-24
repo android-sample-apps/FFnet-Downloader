@@ -7,7 +7,13 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [(MainModule::class), (NetworkModule::class)])
+@Component(
+    modules = [
+        MainModule::class,
+        NetworkModule::class,
+        DatabaseModule::class
+    ]
+)
 interface MainComponent {
     fun moshiConverter(): MoshiConverterFactory // For integration tests
     fun plus(module: StopPointsModule): StopPointsComponent
