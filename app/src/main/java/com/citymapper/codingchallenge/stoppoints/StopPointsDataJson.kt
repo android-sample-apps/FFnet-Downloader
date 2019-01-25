@@ -10,7 +10,13 @@ data class StopPointsDataJson(
 @JsonClass(generateAdapter = true)
 data class StopPointJson(
     val id: String,
-    val commonName: String
+    val commonName: String,
+    val lines: List<LineJson>
+)
+
+@JsonClass(generateAdapter = true)
+data class LineJson(
+    val id: String
 )
 
 @JsonClass(generateAdapter = true)

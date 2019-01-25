@@ -16,6 +16,7 @@ class StopPointsPresenterImpl(
             StopPointModel(
                 id = stopPoint.id,
                 name = stopPoint.name.replace("Underground Station", "").trim(),
+                displayLine = stopPoint.lines[0].id,
                 arrivalTimes = stopPoint.arrivalTimes.map { arrival ->
                     ArrivalModel(
                         id = arrival.id,

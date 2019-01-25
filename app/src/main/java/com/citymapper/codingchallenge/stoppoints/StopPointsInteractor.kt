@@ -7,7 +7,7 @@ interface StopPointsInteractor {
 
 interface RepositoryListener {
     fun onStopPointsLoaded(stopPoints: List<StopPoint>)
-    fun onArrivalTimesLoaded(stopPointId: String, arrivalTimes: List<Arrival>)
+    fun onArrivalTimesLoaded(stopPoints: List<StopPoint>)
 }
 
 class StopPointsInteractorImpl(
@@ -19,8 +19,7 @@ class StopPointsInteractorImpl(
 
     override fun loadStopPoints(altitude: Double, longitude: Double) {
         stopPoints = emptyList()
-        stopPoints = repository.loadStopPoints(altitude, longitude, this)
-        presenter.presentStopPoints(stopPoints)
+        repository.loadStopPoints(altitude, longitude, this)
     }
 
     override fun loadArrivalTimes() {
@@ -30,21 +29,12 @@ class StopPointsInteractorImpl(
     }
 
     override fun onStopPointsLoaded(stopPoints: List<StopPoint>) {
+        repository.loadArrivalTimes(stopPoints, this)
         presenter.presentStopPoints(stopPoints)
     }
 
-    override fun onArrivalTimesLoaded(stopPointId: String, arrivalTimes: List<Arrival>) {
-        stopPoints = stopPoints.map {
-            if (it.id == stopPointId) {
-                StopPoint(
-                    id = it.id,
-                    name = it.name,
-                    arrivalTimes = arrivalTimes
-                )
-            } else {
-                it
-            }
-        }
+    override fun onArrivalTimesLoaded(stopPoints: List<StopPoint>) {
+        this.stopPoints = stopPoints
         presenter.presentStopPoints(stopPoints)
     }
 }

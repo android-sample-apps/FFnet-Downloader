@@ -1,20 +1,19 @@
 package com.citymapper.codingchallenge.stoppoints
 
-import android.annotation.SuppressLint
 import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import java.util.*
 
 interface StopPointsRepository {
-    fun loadStopPoints(latitude: Double,
-                       longitude: Double,
-                       listener: RepositoryListener)
+    fun loadStopPoints(
+        latitude: Double,
+        longitude: Double,
+        listener: RepositoryListener
+    )
 
     fun loadArrivalTimes(stopPoints: List<StopPoint>, listener: RepositoryListener)
 }
@@ -60,57 +59,32 @@ class StopPointsRepositoryImpl(
         )
     }
 
-    @SuppressLint("CheckResult")
     override fun loadArrivalTimes(stopPoints: List<StopPoint>, listener: RepositoryListener) {
-
-        val requests = ArrayList<Observable<*>>()
-
+        val requests = ArrayList<Observable<List<ArrivalJson>>>()
         stopPoints.map {
             requests.add(service.getArrivalsV2(it.id))
         }
-        Observable.zip(requests) {
-
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeWith(object : DisposableObserver<List<ArrivalJson>>() {
-                override fun onComplete() {
-                    TODO(
-                        "not implemented"
-                    ) //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onNext(t: List<ArrivalJson>) {
-                    TODO(
-                        "not implemented"
-                    ) //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun onError(e: Throwable) {
-                    TODO(
-                        "not implemented"
-                    ) //To change body of created functions use File | Settings | File Templates.
-                }
-
-            })
-
-
-
-
-        stopPoints.forEach { stopPoint ->
-            val call = service.getArrivals(stopPoint.id)
-            call.enqueue(object : Callback<List<ArrivalJson>> {
-                override fun onFailure(call: Call<List<ArrivalJson>>, t: Throwable) {
-                    println("NOPE")
-                }
-
-                override fun onResponse(call: Call<List<ArrivalJson>>,
-                                        response: Response<List<ArrivalJson>>) {
-                    response.body()?.let {
-                        listener.onArrivalTimesLoaded(stopPoint.id, transformArrivalTimes(it))
+        CompositeDisposable().add(
+            Observable.zip(requests) { args -> Arrays.asList(args) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    it[0].map { arrivalTimes ->
+                        if (arrivalTimes is List<*>) {
+                            val times: List<ArrivalJson> = arrivalTimes.filterIsInstance<ArrivalJson>()
+                            if (times.isNotEmpty()) {
+                                val stopPointId = stopPoints.indexOf(stopPoints.find {
+                                    it.id == times[0].naptanId
+                                })
+                                stopPoints[stopPointId].arrivalTimes = transformArrivalTimes(times)
+                            }
+                        }
                     }
-                }
-            })
-        }
+                    listener.onArrivalTimesLoaded(stopPoints)
+                }, {
+                    // Do stuff
+                })
+        )
     }
 
     private fun transformArrivalTimes(arrivalTimes: List<ArrivalJson>): List<Arrival> {
@@ -127,7 +101,12 @@ class StopPointsRepositoryImpl(
     private fun transformStopPoints(stopPoints: List<StopPointJson>): List<StopPoint> = stopPoints.map {
         StopPoint(
             id = it.id,
-            name = it.commonName
+            name = it.commonName,
+            lines = it.lines.map { line ->
+                Line(
+                    id = line.id
+                )
+            }
         )
     }
 }
