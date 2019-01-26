@@ -3,12 +3,8 @@ package com.citymapper.codingchallenge.stoppoints
 data class StopPoint(
     val id: String,
     val name: String,
-    val lines: List<Line>,
+    val lines: List<String>,
     var arrivalTimes: List<Arrival> = emptyList()
-)
-
-data class Line(
-    val id: String
 )
 
 data class Arrival(

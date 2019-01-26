@@ -1,5 +1,7 @@
 package com.citymapper.codingchallenge.stoppoints
 
+import android.os.Handler
+import android.os.Looper
 import com.citymapper.codingchallenge.common.FeatureScope
 import com.citymapper.codingchallenge.common.MainThreadExecutor
 import com.nicolasmouchel.executordecorator.ImmutableExecutorDecorator
@@ -20,14 +22,14 @@ class StopPointsModule {
         executor: Executor
     ): StopPointsController = StopPointsControllerDecorator(
         executor,
-        StopPointsControllerImpl(interactor)
+        StopPointsControllerImpl(interactor, Handler(Looper.getMainLooper()))
     )
 
     @Provides
     fun provideInteractor(
         presenter: StopPointsPresenter,
         repository: StopPointsRepository
-    ): StopPointsInteractor = StopPointsInteractorImpl(presenter, repository)
+    ): StopPointsInteractor = StopPointsInteractor(presenter, repository)
 
     @Provides
     fun provideRepository(retrofit: Retrofit): StopPointsRepository = StopPointsRepositoryImpl(

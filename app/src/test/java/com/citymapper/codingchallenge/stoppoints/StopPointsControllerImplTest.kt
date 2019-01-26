@@ -72,7 +72,7 @@ class StopPointsControllerImplTest {
     @Test
     fun `loadArrivalTimes should call interactor`() {
         // When
-        controller.loadArrivalTimes()
+        controller.startArrivalTimesLoading()
 
         // Then
         then(interactor).should(only()).loadArrivalTimes()

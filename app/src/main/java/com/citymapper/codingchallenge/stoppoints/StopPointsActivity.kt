@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.citymapper.codingchallenge.MainApplication
 import com.citymapper.codingchallenge.R
+import com.citymapper.codingchallenge.line.LineActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.nicolasmouchel.executordecorator.MutableDecorator
@@ -38,9 +39,7 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
 
         view.mutate(this)
         adapter = StopPointsAdapter(emptyList(), this)
-        stopPointsRecyclerView.layoutManager = LinearLayoutManager(
-            this
-        )
+        stopPointsRecyclerView.layoutManager = LinearLayoutManager(this)
         stopPointsRecyclerView.adapter = adapter
 
         locationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -73,12 +72,27 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
         super.onDestroy()
     }
 
+    override fun onResume() {
+        super.onResume()
+        controller.startArrivalTimesLoading()
+    }
+
+    override fun onPause() {
+        controller.cancelArrivalTimesLoading()
+        super.onPause()
+    }
+
     override fun displayStopPoints(stopPoints: List<StopPointModel>) {
         adapter.updateData(stopPoints)
     }
 
     override fun onStopPointClicked(stopPoint: StopPointModel) {
         Toast.makeText(this, "Clicked on StopPoint #" + stopPoint.id, Toast.LENGTH_LONG).show()
+        startActivity(LineActivity.newIntent(
+            context = this,
+            lineId = stopPoint.displayLine,
+            stationId = stopPoint.id
+        ))
     }
 
     private fun loadLocation() {
@@ -89,7 +103,6 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
         ) {
             locationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 controller.loadStopPoints(location)
-                controller.loadArrivalTimes()
             }
         }
     }
