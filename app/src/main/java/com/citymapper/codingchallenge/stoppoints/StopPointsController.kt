@@ -18,6 +18,7 @@ class StopPointsControllerImpl(
         private const val DEFAULT_LAT = 51.510
         private const val DEFAULT_LON = -0.09
         private const val MAX_METERS = 50000
+        private const val REFRESH_TIME = 30000L
     }
 
     private val runnable = Runnable {
@@ -37,7 +38,7 @@ class StopPointsControllerImpl(
 
     override fun startArrivalTimesLoading() {
         interactor.loadArrivalTimes()
-        handler.postDelayed(runnable, 5000)
+        handler.postDelayed(runnable, REFRESH_TIME)
     }
 
     override fun cancelArrivalTimesLoading() {

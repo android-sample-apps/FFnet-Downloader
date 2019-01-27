@@ -39,6 +39,8 @@ class StationViewHolder(
             text = station.name
             if (station.isSelectedStation) {
                 setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
+            } else {
+                typeface = Typeface.DEFAULT
             }
         }
     }
