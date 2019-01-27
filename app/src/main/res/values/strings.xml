@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">My Application</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_stations">Stations</string>
 
     <string name="line_activity_title">Line</string>
     <string name="line_station_name">%s (#%s)</string>

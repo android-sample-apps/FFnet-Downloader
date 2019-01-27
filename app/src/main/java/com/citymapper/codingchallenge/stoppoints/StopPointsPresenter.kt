@@ -1,5 +1,7 @@
 package com.citymapper.codingchallenge.stoppoints
 
+import com.citymapper.codingchallenge.StationNameTransformer
+
 interface StopPointsPresenter {
     fun presentStopPoints(stopPoints: List<StopPoint>)
 }
@@ -9,13 +11,14 @@ interface StopPointsView {
 }
 
 class StopPointsPresenterImpl(
-    private val display: StopPointsView
+    private val display: StopPointsView,
+    private val stationNameTransformer: StationNameTransformer
 ) : StopPointsPresenter {
     override fun presentStopPoints(stopPoints: List<StopPoint>) {
         display.displayStopPoints(stopPoints.map { stopPoint ->
             StopPointModel(
                 id = stopPoint.id,
-                name = stopPoint.name.replace("Underground Station", "").trim(),
+                name = stationNameTransformer.format(stopPoint.name),
                 displayLine = stopPoint.lines[0],
                 arrivalTimes = stopPoint.arrivalTimes.map { arrival ->
                     ArrivalModel(

@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Looper
 import com.citymapper.codingchallenge.common.FeatureScope
 import com.citymapper.codingchallenge.common.MainThreadExecutor
+import com.citymapper.codingchallenge.StationNameTransformer
 import com.nicolasmouchel.executordecorator.ImmutableExecutorDecorator
 import com.nicolasmouchel.executordecorator.MutableDecorator
 import com.nicolasmouchel.executordecorator.MutableExecutorDecorator
@@ -37,8 +38,12 @@ class StopPointsModule {
     )
 
     @Provides
-    fun providePresenter(view: StopPointsView): StopPointsPresenter = StopPointsPresenterImpl(
-        view
+    fun providePresenter(
+        view: StopPointsView,
+        stationNameTransformer: StationNameTransformer
+    ): StopPointsPresenter = StopPointsPresenterImpl(
+        view,
+        stationNameTransformer
     )
 
     @MutableExecutorDecorator

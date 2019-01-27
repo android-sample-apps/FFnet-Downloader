@@ -2,6 +2,7 @@ package com.citymapper.codingchallenge.line
 
 import android.content.res.Resources
 import com.citymapper.codingchallenge.R
+import com.citymapper.codingchallenge.StationNameTransformer
 
 interface LinePresenter {
     fun presentLine(line: Line, stationId: String)
@@ -13,7 +14,8 @@ interface LineView {
 
 class LinePresenterImpl(
     private val display: LineView,
-    private val resources: Resources
+    private val resources: Resources,
+    private val stationNameTransformer: StationNameTransformer
 ) : LinePresenter {
     override fun presentLine(line: Line, stationId: String) {
         display.showLine(LineModel(
@@ -23,7 +25,7 @@ class LinePresenterImpl(
                     id = station.id,
                     name = resources.getString(
                         R.string.line_station_name,
-                        station.name,
+                        stationNameTransformer.format(station.name),
                         station.id
                     ),
                     isSelectedStation = station.id == stationId

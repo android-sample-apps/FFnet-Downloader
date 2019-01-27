@@ -1,6 +1,7 @@
 package com.citymapper.codingchallenge.line
 
 import android.content.res.Resources
+import com.citymapper.codingchallenge.StationNameTransformer
 import com.citymapper.codingchallenge.common.FeatureScope
 import com.citymapper.codingchallenge.common.MainThreadExecutor
 import com.nicolasmouchel.executordecorator.ImmutableExecutorDecorator
@@ -36,9 +37,14 @@ class LineModule {
     )
 
     @Provides
-    fun providePresenter(view: LineView, resources: Resources): LinePresenter = LinePresenterImpl(
+    fun providePresenter(
+        view: LineView,
+        resources: Resources,
+        stationNameTransformer: StationNameTransformer
+    ): LinePresenter = LinePresenterImpl(
         view,
-        resources
+        resources,
+        stationNameTransformer
     )
 
     @MutableExecutorDecorator

@@ -15,7 +15,7 @@ import com.citymapper.codingchallenge.line.LineActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.nicolasmouchel.executordecorator.MutableDecorator
-import kotlinx.android.synthetic.main.activity_maps.*
+import kotlinx.android.synthetic.main.activity_stations.*
 import javax.inject.Inject
 
 class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListener {
@@ -33,7 +33,8 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+        setContentView(R.layout.activity_stations)
+        setSupportActionBar(toolbar)
 
         MainApplication.getComponent(this).plus(StopPointsModule()).inject(this)
 
@@ -88,11 +89,13 @@ class StopPointsActivity : AppCompatActivity(), StopPointsView, StopPointListene
 
     override fun onStopPointClicked(stopPoint: StopPointModel) {
         Toast.makeText(this, "Clicked on StopPoint #" + stopPoint.id, Toast.LENGTH_LONG).show()
-        startActivity(LineActivity.newIntent(
-            context = this,
-            lineId = stopPoint.displayLine,
-            stationId = stopPoint.id
-        ))
+        startActivity(
+            LineActivity.newIntent(
+                context = this,
+                lineId = stopPoint.displayLine,
+                stationId = stopPoint.id
+            )
+        )
     }
 
     private fun loadLocation() {
