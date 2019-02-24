@@ -8,7 +8,7 @@ android {
     defaultConfig {
         buildConfigField 'String', 'API_BASE_URL', '"https://www.fanfiction.net/"'
 
-        applicationId "com.citymapper.myapplication"
+        applicationId "fr.ffnet.downloader"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
@@ -38,6 +38,9 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
 
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+
     // Maps
     implementation "com.google.android.gms:play-services-location:16.0.0"
 
@@ -45,12 +48,9 @@ dependencies {
     implementation "com.google.dagger:dagger:2.16"
     kapt "com.google.dagger:dagger-compiler:2.16"
 
-    // Executor Decorator
-    implementation "com.nicolasmouchel:executordecorator-annotations:2.1"
-    kapt "com.nicolasmouchel:executordecorator-compiler:2.1"
-
     // Network
     implementation "com.squareup.retrofit2:retrofit:2.5.0"
+    implementation "com.squareup.retrofit2:converter-simplexml:2.5.0"
     implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
     implementation "com.squareup.okhttp3:okhttp:3.12.0"
     implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"
@@ -73,4 +73,7 @@ dependencies {
 
     // Jsoup
     implementation 'org.jsoup:jsoup:1.11.3'
+
+    // Dates
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.2'
 }

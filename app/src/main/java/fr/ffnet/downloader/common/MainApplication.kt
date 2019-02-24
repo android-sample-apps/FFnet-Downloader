@@ -2,6 +2,7 @@ package fr.ffnet.downloader.common
 
 import android.app.Application
 import android.content.Context
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 class MainApplication : Application() {
 
@@ -14,5 +15,6 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         mainComponent = DaggerMainComponent.builder().mainModule(MainModule(this)).build()
+        AndroidThreeTen.init(this)
     }
 }

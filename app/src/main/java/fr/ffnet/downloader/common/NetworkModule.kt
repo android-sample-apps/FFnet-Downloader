@@ -1,11 +1,11 @@
 package fr.ffnet.downloader.common
 
 import android.content.Context
-import com.ffnet.downloader.BuildConfig
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
+import fr.ffnet.downloader.BuildConfig
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

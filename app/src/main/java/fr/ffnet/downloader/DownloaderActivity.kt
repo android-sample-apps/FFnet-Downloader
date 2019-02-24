@@ -3,7 +3,6 @@ package fr.ffnet.downloader
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import com.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.common.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_downloader.*

@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class DownloaderViewModel(
@@ -14,9 +16,11 @@ class DownloaderViewModel(
     fun loadFanfictionInfos(url: String?) {
         if (!url.isNullOrEmpty()) {
             val urlTransformationResult = urlTransformer.getIdFromUrl(url)
-            when (urlTransformationResult) {
-                is UrlTransformSuccess -> interactor.loadFanfiction(urlTransformationResult.id)
-                is UrlTransformFailure -> TODO()
+            GlobalScope.launch {
+                when (urlTransformationResult) {
+                    is UrlTransformSuccess -> interactor.loadFanfictionInfo(urlTransformationResult.id)
+                    is UrlTransformFailure -> TODO()
+                }
             }
         }
     }
