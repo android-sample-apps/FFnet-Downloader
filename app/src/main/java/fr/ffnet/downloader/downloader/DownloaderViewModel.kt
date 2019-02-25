@@ -1,18 +1,15 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import fr.ffnet.downloader.DownloaderInteractor.FanfictionResult
+import fr.ffnet.downloader.downloader.DownloaderInteractor.FanfictionResult
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 
 
@@ -29,7 +26,7 @@ class DownloaderViewModel(
     fun loadFanfictionInfos(url: String?) {
         if (!url.isNullOrEmpty()) {
             val urlTransformationResult = urlTransformer.getIdFromUrl(url)
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 when (urlTransformationResult) {
                     is UrlTransformSuccess -> loadFanfictionInfo(urlTransformationResult.fanfictionId)
                     is UrlTransformFailure -> TODO()
@@ -51,13 +48,13 @@ class DownloaderViewModel(
             val fanfictionViewModel = FanfictionViewModel(
                 id = id,
                 title = title,
-                words = resources.getString(R.string.download_info_words, words),
+                words = words.toString(),
                 summary = summary,
                 updatedDate = SimpleDateFormat("yyyy-mm-dd").format(updatedDate),
                 publishedDate = SimpleDateFormat("yyyy-mm-dd").format(publishedDate),
                 chapterList = chapterList.map {
                     ChapterViewModel(
-                        id = it.id,
+                        id = it.id.toString(),
                         title = it.title
                     )
                 }

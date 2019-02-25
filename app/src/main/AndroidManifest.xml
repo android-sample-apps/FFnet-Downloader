@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="fr.ffnet.downloader.DownloaderActivity"
+            android:name="fr.ffnet.downloader.downloader.DownloaderActivity"
             android:label="@string/title_activity_ffnet">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

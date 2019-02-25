@@ -1,4 +1,4 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
 import java.util.*
 

@@ -5,6 +5,6 @@
     <string name="download_url_hint">Url</string>
     <string name="download_button_title">Download</string>
 
-    <string name="download_info_words">%d words</string>
-    <string name="download_info_title">Title</string>
+    <string name="download_info_title_label">Title</string>
+    <string name="download_info_words_label">Words</string>
 </resources>

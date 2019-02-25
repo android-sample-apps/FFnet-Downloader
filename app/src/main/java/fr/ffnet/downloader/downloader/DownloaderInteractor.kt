@@ -1,6 +1,6 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
-import fr.ffnet.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import javax.inject.Inject
 
 class DownloaderInteractor @Inject constructor(
@@ -14,7 +14,9 @@ class DownloaderInteractor @Inject constructor(
 
         return if (fanfictionResult is FanfictionRepositoryResultSuccess) {
             val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, fanfictionResult.html)
-            FanfictionResult.FanfictionResultSuccess(fanfictionInfo)
+            FanfictionResult.FanfictionResultSuccess(
+                fanfictionInfo
+            )
         } else {
             FanfictionResult.FanfictionResultFailure
         }

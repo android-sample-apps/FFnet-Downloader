@@ -1,4 +1,4 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
 import android.content.res.Resources
 import dagger.Module
@@ -15,7 +15,9 @@ class DownloaderModule {
         urlTransformer: UrlTransformer,
         resources: Resources
     ): DownloaderViewModel {
-        return DownloaderViewModel(interactor, urlTransformer, resources)
+        return DownloaderViewModel(
+            interactor, urlTransformer, resources
+        )
     }
 
     @Provides

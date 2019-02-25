@@ -1,5 +1,6 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
+import fr.ffnet.downloader.JsoupParser
 import org.jsoup.select.Elements
 import org.threeten.bp.DateTimeUtils
 import org.threeten.bp.Instant

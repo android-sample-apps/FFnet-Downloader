@@ -1,4 +1,4 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
 import okhttp3.ResponseBody
 import retrofit2.Call

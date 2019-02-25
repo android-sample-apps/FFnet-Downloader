@@ -1,7 +1,7 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
-import fr.ffnet.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
-import fr.ffnet.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
+import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import javax.inject.Inject
 
 class DownloaderRepository @Inject constructor(

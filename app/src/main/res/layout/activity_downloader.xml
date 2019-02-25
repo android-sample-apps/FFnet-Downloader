@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,8 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/download_info_title"
-        android:textSize="16sp"
+        android:text="@string/download_info_title_label"
+        android:textSize="18sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintTop_toBottomOf="@id/downloadButton" />
 
@@ -47,11 +48,51 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:textSize="18sp"
+        android:textSize="20sp"
         app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
-        app:layout_constraintLeft_toRightOf="@+id/titleLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
         tools:text="Harry Potter and the Methods of Rationality" />
+
+    <TextView
+        android:id="@+id/wordsLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/download_info_words_label"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/titleValueTextView" />
+
+    <TextView
+        android:id="@+id/wordsValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="20sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/wordsLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="661,619" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chapterListRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wordsValueTextView" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"

@@ -1,4 +1,4 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.downloader
 
 data class FanfictionViewModel(
     val id: String,
@@ -11,6 +11,6 @@ data class FanfictionViewModel(
 )
 
 data class ChapterViewModel(
-    val id: Int,
+    val id: String,
     val title: String
 )
