@@ -2,6 +2,7 @@ package fr.ffnet.downloader
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.common.ViewModelFactory
@@ -25,5 +26,9 @@ class DownloaderActivity : AppCompatActivity() {
         downloadButton.setOnClickListener {
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
+
+        viewModel.currentFanfiction.observe(this, Observer {
+            println(it.chapterList.size)
+        })
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,8 +12,8 @@
         android:layout_margin="16dp"
         android:hint="@string/download_url_hint"
         android:text="https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -28,7 +28,42 @@
         android:text="@string/download_button_title"
         android:textAllCaps="true"
         android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toBottomOf="@+id/downloadUrlEditText" />
+
+    <TextView
+        android:id="@+id/titleLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/download_info_title"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/downloadButton" />
+
+    <TextView
+        android:id="@+id/titleValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/titleLabelTextView"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="Harry Potter and the Methods of Rationality" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

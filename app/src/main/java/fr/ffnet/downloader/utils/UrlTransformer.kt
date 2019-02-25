@@ -18,7 +18,7 @@ class UrlTransformer @Inject constructor() {
     }
 
     sealed class UrlTransformationResult {
-        data class UrlTransformSuccess(val id: String) : UrlTransformationResult()
+        data class UrlTransformSuccess(val fanfictionId: String) : UrlTransformationResult()
         object UrlTransformFailure : UrlTransformationResult()
     }
 }

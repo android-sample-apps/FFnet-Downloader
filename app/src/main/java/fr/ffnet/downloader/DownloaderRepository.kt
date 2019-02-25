@@ -1,27 +1,27 @@
 package fr.ffnet.downloader
 
-import fr.ffnet.downloader.DownloaderRepository.FanfictionResult.FanfictionResultFailure
-import fr.ffnet.downloader.DownloaderRepository.FanfictionResult.FanfictionResultSuccess
+import fr.ffnet.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
+import fr.ffnet.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import javax.inject.Inject
 
 class DownloaderRepository @Inject constructor(
     private val service: DownloaderService
 ) {
 
-    fun loadFanfictionInfo(id: String): FanfictionResult {
+    fun loadFanfictionInfo(id: String): FanfictionRepositoryResult {
 
         val response = service.getPage(id).execute()
         return if (response.isSuccessful) {
             response.body()?.let {
-                FanfictionResultSuccess(it.string())
-            } ?: FanfictionResultFailure
+                FanfictionRepositoryResultSuccess(it.string())
+            } ?: FanfictionRepositoryResultFailure
         } else {
-            FanfictionResultFailure
+            FanfictionRepositoryResultFailure
         }
     }
 
-    sealed class FanfictionResult {
-        data class FanfictionResultSuccess(val html: String) : FanfictionResult()
-        object FanfictionResultFailure : FanfictionResult()
+    sealed class FanfictionRepositoryResult {
+        data class FanfictionRepositoryResultSuccess(val html: String) : FanfictionRepositoryResult()
+        object FanfictionRepositoryResultFailure : FanfictionRepositoryResult()
     }
 }
