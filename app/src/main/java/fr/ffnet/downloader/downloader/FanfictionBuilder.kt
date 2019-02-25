@@ -21,7 +21,7 @@ class FanfictionBuilder @Inject constructor(
         val summary = profileTop.select("div").last()?.text() ?: "N/A"
         val published = dates[if (dates.size > 1) 1 else 0]?.attr("data-xutime")?.toLong() ?: 0
         val updated = dates[0]?.attr("data-xutime")?.toLong() ?: 0
-        val chapterList = extractChapterList(document.select("#chap_select"))
+        val chapterList = extractChapterList(document.select("#chap_select"), title)
 
         return Fanfiction(
             id = id,
@@ -34,17 +34,27 @@ class FanfictionBuilder @Inject constructor(
         )
     }
 
-    private fun extractChapterList(select: Elements): List<Chapter> {
+    fun extractChapter(html: String): String {
+        val document = jsoupParser.parseHtml(html)
+        return document.select("#storytext").first().text()
+    }
+
+    private fun extractChapterList(select: Elements, title: String): List<Chapter> {
         return if (select.isNotEmpty()) {
             select.first().select("option").map {
-                val chapterId = it.attr("value").toInt()
+                val chapterId = it.attr("value")
                 Chapter(
                     id = chapterId,
                     title = it.text().replace("$chapterId. ", "")
                 )
             }
         } else {
-            emptyList()
+            listOf(
+                Chapter(
+                    id = "1",
+                    title = title
+                )
+            )
         }
     }
 

@@ -9,6 +9,6 @@ interface DownloaderService {
     @GET("s/{storyId}/{chapterId}")
     fun getPage(
         @Path("storyId") storyId: String,
-        @Path("chapterId") chapterId: Int? = 1
+        @Path("chapterId") chapterId: String? = "1"
     ): Call<ResponseBody>
 }

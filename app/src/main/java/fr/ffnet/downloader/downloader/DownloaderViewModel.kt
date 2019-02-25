@@ -54,7 +54,7 @@ class DownloaderViewModel(
                 publishedDate = SimpleDateFormat("yyyy-mm-dd").format(publishedDate),
                 chapterList = chapterList.map {
                     ChapterViewModel(
-                        id = it.id.toString(),
+                        id = it.id,
                         title = it.title
                     )
                 }

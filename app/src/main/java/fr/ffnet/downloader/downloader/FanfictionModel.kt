@@ -13,7 +13,7 @@ data class Fanfiction(
 )
 
 data class Chapter(
-    val id: Int,
+    val id: String,
     val title: String,
     val content: String = ""
 )
