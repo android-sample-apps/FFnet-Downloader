@@ -20,9 +20,9 @@ class DownloaderRepository(
             response.body()?.let {
 
                 val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, it.string())
-//                dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
+                dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
 
-                FanfictionRepositoryResultSuccess(it.string())
+                FanfictionRepositoryResultSuccess(fanfictionInfo)
             } ?: FanfictionRepositoryResultFailure
         } else {
             FanfictionRepositoryResultFailure
@@ -31,8 +31,7 @@ class DownloaderRepository(
 
     fun loadAllChapters(
         fanfictionId: String,
-        chapterList: List<Chapter>,
-        listener: ChapterLoadedListener
+        chapterList: List<Chapter>
     ) {
         chapterList.forEach { chapter ->
             println("Adding request for chapter ${chapter.id}")
@@ -47,10 +46,9 @@ class DownloaderRepository(
                 ) {
                     if (response.isSuccessful) {
                         println("OK")
-                        listener.onChapterLoaded(
-                            chapter,
-                            response.body()?.string() ?: ""
-                        )
+                        response.body()?.let {
+
+                        } ?: println("onResponse Nope")
                     } else {
                         println("onResponse Nope")
                     }
@@ -60,18 +58,14 @@ class DownloaderRepository(
     }
 
     sealed class FanfictionRepositoryResult {
-        data class FanfictionRepositoryResultSuccess(val html: String) : FanfictionRepositoryResult()
+        data class FanfictionRepositoryResultSuccess(val fanfictionInfo: Fanfiction) : FanfictionRepositoryResult()
         object FanfictionRepositoryResultFailure : FanfictionRepositoryResult()
-    }
-
-    interface ChapterLoadedListener {
-        fun onChapterLoaded(chapter: Chapter, html: String)
     }
 }
 
 private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
     return FanfictionEntity(
-        fanfictionId = id,
+        id = id,
         title = title,
         words = words,
         summary = summary

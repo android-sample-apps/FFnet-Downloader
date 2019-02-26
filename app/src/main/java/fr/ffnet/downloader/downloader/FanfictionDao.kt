@@ -11,6 +11,6 @@ interface FanfictionDao {
     fun insertFanfiction(fanfiction: FanfictionEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertChapterList(chapterList: ChapterEntity)
+    fun insertChapterList(chapterList: List<ChapterEntity>)
 
 }
