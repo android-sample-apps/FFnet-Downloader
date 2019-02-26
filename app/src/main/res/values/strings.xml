@@ -7,4 +7,6 @@
 
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
+    <string name="download_info_chapter_status_unsynced">Not synced</string>
+    <string name="download_info_chapter_status_synced">Synced</string>
 </resources>

@@ -12,13 +12,13 @@ class DownloaderModule {
 
     @Provides
     fun provideDownloaderViewModel(
-        interactor: DownloaderInteractor,
         urlTransformer: UrlTransformer,
         resources: Resources,
-        dao: FanfictionDao
+        dao: FanfictionDao,
+        repository: DownloaderRepository
     ): DownloaderViewModel {
         return DownloaderViewModel(
-            interactor, urlTransformer, resources
+            urlTransformer, resources, dao, repository
         )
     }
 
@@ -36,10 +36,6 @@ class DownloaderModule {
         dao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder
     ): DownloaderRepository {
-        return DownloaderRepository(
-            service,
-            fanfictionBuilder,
-            dao
-        )
+        return DownloaderRepository(service, fanfictionBuilder, dao)
     }
 }

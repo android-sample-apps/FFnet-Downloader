@@ -33,10 +33,14 @@ class DownloaderActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
         }
         initRecyclerView()
 
-        viewModel.currentFanfiction.observe(this, Observer {
+        viewModel.getCurrentFanfiction().observe(this, Observer {
             titleValueTextView.text = it.title
             wordsValueTextView.text = it.words
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = it.chapterList
+
+            viewModel.getChapterList().observe(this, Observer { chapterList ->
+                (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
+            })
         })
     }
 

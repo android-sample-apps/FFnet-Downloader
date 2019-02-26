@@ -21,6 +21,13 @@ class DownloaderRepository(
 
                 val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, it.string())
                 dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
+                dao.insertChapterList(fanfictionInfo.chapterList.map { chapter ->
+                    ChapterEntity(
+                        fanfictionId = fanfictionInfo.id,
+                        chapterId = chapter.id,
+                        title = chapter.title
+                    )
+                })
 
                 FanfictionRepositoryResultSuccess(fanfictionInfo)
             } ?: FanfictionRepositoryResultFailure
@@ -45,18 +52,15 @@ class DownloaderRepository(
                     response: Response<ResponseBody>
                 ) {
                     if (response.isSuccessful) {
-                        println("OK")
                         response.body()?.let {
                             val chapterContent = fanfictionBuilder.extractChapter(it.string())
                             Thread {
-                                dao.insertChapterList(listOf(
-                                    ChapterEntity(
-                                        fanfictionId = fanfictionId,
-                                        chapterId = chapter.id,
-                                        title = chapter.title,
-                                        content = chapterContent
-                                    )
-                                ))
+                                dao.updateChapter(
+                                    content = chapterContent,
+                                    isSynced = true,
+                                    chapterId = chapter.id,
+                                    fanfictionId = fanfictionId
+                                )
                             }.start()
                         } ?: println("onResponse Nope")
                     } else {

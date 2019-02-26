@@ -12,5 +12,6 @@ data class FanfictionViewModel(
 
 data class ChapterViewModel(
     val id: String,
-    val title: String
+    val title: String,
+    val status: String
 )

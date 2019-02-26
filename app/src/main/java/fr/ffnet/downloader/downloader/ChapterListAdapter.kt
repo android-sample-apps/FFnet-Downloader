@@ -37,10 +37,12 @@ class ChapterListAdapter(
 
         private val chapterNbTextView: TextView = view.chapterNbTextView
         private val chapterTitleTextView: TextView = view.chapterTitleTextView
+        private val chapterStatusTextView: TextView = view.chapterStatusTextView
 
         fun bind(chapterViewModel: ChapterViewModel, listener: ChapterClickListener) {
             chapterNbTextView.text = chapterViewModel.id
             chapterTitleTextView.text = chapterViewModel.title
+            chapterStatusTextView.text = chapterViewModel.status
             view.setOnClickListener {
                 listener.onChapterSelected(chapterViewModel)
             }

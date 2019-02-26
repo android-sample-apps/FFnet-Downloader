@@ -1,10 +1,12 @@
 package fr.ffnet.downloader.downloader
 
 import android.content.res.Resources
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import fr.ffnet.downloader.downloader.DownloaderInteractor.FanfictionResult
+import fr.ffnet.downloader.R
+import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
@@ -15,32 +17,62 @@ import java.text.SimpleDateFormat
 
 
 class DownloaderViewModel(
-    private val interactor: DownloaderInteractor,
     private val urlTransformer: UrlTransformer,
-    private val resources: Resources
+    private val resources: Resources,
+    private val dao: FanfictionDao,
+    private val repository: DownloaderRepository
 ) : ViewModel() {
 
-    val currentFanfiction: MutableLiveData<FanfictionViewModel> by lazy {
+    private val currentFanfiction: MutableLiveData<FanfictionViewModel> by lazy {
         MutableLiveData<FanfictionViewModel>()
     }
+    private lateinit var chapterList: LiveData<List<ChapterViewModel>>
 
     fun loadFanfictionInfos(url: String?) {
         if (!url.isNullOrEmpty()) {
             val urlTransformationResult = urlTransformer.getIdFromUrl(url)
             CoroutineScope(Dispatchers.IO).launch {
                 when (urlTransformationResult) {
-                    is UrlTransformSuccess -> loadFanfictionInfo(urlTransformationResult.fanfictionId)
+                    is UrlTransformSuccess -> loadFanfictionInfo(
+                        urlTransformationResult.fanfictionId
+                    )
                     is UrlTransformFailure -> TODO()
                 }
             }
         }
     }
 
+    fun getCurrentFanfiction(): LiveData<FanfictionViewModel> = currentFanfiction
+
+    fun getChapterList(): LiveData<List<ChapterViewModel>> = chapterList
+
     private fun loadFanfictionInfo(fanfictionId: String) {
-        val fanfictionInfoResult = interactor.loadFanfictionInfo(fanfictionId)
-        when (fanfictionInfoResult) {
-            is FanfictionResult.FanfictionResultSuccess -> presentFanfictionInfo(fanfictionInfoResult.fanfictionInfo)
-            is FanfictionResult.FanfictionResultFailure -> presentFanfictionInfoError()
+        val fanfictionResult = repository.loadFanfictionInfo(fanfictionId)
+        if (fanfictionResult is FanfictionRepositoryResultSuccess) {
+            with(fanfictionResult) {
+                if (fanfictionInfo.chapterList.size > 1) {
+                    chapterList = Transformations.map(
+                        dao.getChapters(fanfictionId)
+                    ) { chapterList ->
+                        chapterList.map {
+                            ChapterViewModel(
+                                id = it.chapterId,
+                                title = it.title,
+                                status = resources.getString(
+                                    when (it.isSynced) {
+                                        true -> R.string.download_info_chapter_status_synced
+                                        false -> R.string.download_info_chapter_status_unsynced
+                                    }
+                                )
+                            )
+                        }
+                    }
+                    repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList)
+                }
+                presentFanfictionInfo(fanfictionInfo)
+            }
+        } else {
+
         }
     }
 
@@ -56,7 +88,8 @@ class DownloaderViewModel(
                 chapterList = chapterList.map {
                     ChapterViewModel(
                         id = it.id,
-                        title = it.title
+                        title = it.title,
+                        status = resources.getString(R.string.download_info_chapter_status_unsynced)
                     )
                 }
             )
