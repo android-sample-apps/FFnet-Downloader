@@ -15,6 +15,7 @@ import javax.inject.Inject
 class DownloaderActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
     @Inject lateinit var factory: ViewModelFactory<DownloaderViewModel>
+    @Inject lateinit var dao: FanfictionDao
     private lateinit var viewModel: DownloaderViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

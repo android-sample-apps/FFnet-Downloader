@@ -21,7 +21,7 @@ data class FanfictionEntity(
     )]
 )
 data class ChapterEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
     val fanfictionId: String,
     val chapterId: String,
     val title: String,

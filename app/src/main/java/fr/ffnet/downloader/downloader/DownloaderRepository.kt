@@ -47,7 +47,17 @@ class DownloaderRepository(
                     if (response.isSuccessful) {
                         println("OK")
                         response.body()?.let {
-
+                            val chapterContent = fanfictionBuilder.extractChapter(it.string())
+                            Thread {
+                                dao.insertChapterList(listOf(
+                                    ChapterEntity(
+                                        fanfictionId = fanfictionId,
+                                        chapterId = chapter.id,
+                                        title = chapter.title,
+                                        content = chapterContent
+                                    )
+                                ))
+                            }.start()
                         } ?: println("onResponse Nope")
                     } else {
                         println("onResponse Nope")

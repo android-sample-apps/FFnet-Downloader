@@ -14,7 +14,8 @@ class DownloaderModule {
     fun provideDownloaderViewModel(
         interactor: DownloaderInteractor,
         urlTransformer: UrlTransformer,
-        resources: Resources
+        resources: Resources,
+        dao: FanfictionDao
     ): DownloaderViewModel {
         return DownloaderViewModel(
             interactor, urlTransformer, resources
@@ -27,15 +28,18 @@ class DownloaderModule {
     }
 
     @Provides
+    fun provideFanfictionDao(database: FanfictionDownloaderDatabase): FanfictionDao = database.fanfictionDao()
+
+    @Provides
     fun provideDownloaderRepository(
         service: DownloaderService,
-        database: FanfictionDownloaderDatabase,
+        dao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder
     ): DownloaderRepository {
         return DownloaderRepository(
             service,
             fanfictionBuilder,
-            database.fanfictionDao()
+            dao
         )
     }
 }

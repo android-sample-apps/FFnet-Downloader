@@ -3,7 +3,9 @@ package fr.ffnet.downloader.downloader
 import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import javax.inject.Inject
 
-class DownloaderInteractor @Inject constructor(private val repository: DownloaderRepository) {
+class DownloaderInteractor @Inject constructor(
+    private val repository: DownloaderRepository
+) {
 
     fun loadFanfictionInfo(id: String): FanfictionResult {
 
@@ -13,10 +15,8 @@ class DownloaderInteractor @Inject constructor(private val repository: Downloade
 
             with(fanfictionResult) {
                 if (fanfictionInfo.chapterList.size > 1) {
-                    // Todo observe dao chapters
                     repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList)
                 }
-
                 return FanfictionResult.FanfictionResultSuccess(fanfictionInfo)
             }
         } else {
