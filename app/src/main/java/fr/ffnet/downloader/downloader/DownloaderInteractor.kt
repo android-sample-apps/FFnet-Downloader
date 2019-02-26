@@ -4,13 +4,12 @@ import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryR
 import javax.inject.Inject
 
 class DownloaderInteractor @Inject constructor(
-    private val repository: DownloaderRepository,
-    private val fanfictionBuilder: FanfictionBuilder
+    private val repository: DownloaderRepository
 ) : DownloaderRepository.ChapterLoadedListener {
 
     override fun onChapterLoaded(chapter: Chapter, html: String) {
-        val chapterContent = fanfictionBuilder.extractChapter(html)
-        println("Chapter ${chapter.id} loaded. Length : ${chapterContent.length}")
+//        val chapterContent = fanfictionBuilder.extractChapter(html)
+//        println("Chapter ${chapter.id} loaded. Length : ${chapterContent.length}")
     }
 
     fun loadFanfictionInfo(id: String): FanfictionResult {
@@ -18,13 +17,13 @@ class DownloaderInteractor @Inject constructor(
         val fanfictionResult = repository.loadFanfictionInfo(id)
 
         if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-            val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, fanfictionResult.html)
+//            val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, fanfictionResult.html)
+//
+//            if (fanfictionInfo.chapterList.size > 1) {
+//                repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList, this)
+//            }
 
-            if (fanfictionInfo.chapterList.size > 1) {
-                repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList, this)
-            }
-
-            return FanfictionResult.FanfictionResultSuccess(fanfictionInfo)
+            return FanfictionResult.FanfictionResultFailure
         } else {
             return FanfictionResult.FanfictionResultFailure
         }

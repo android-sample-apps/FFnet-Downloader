@@ -6,10 +6,11 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import javax.inject.Inject
 
-class DownloaderRepository @Inject constructor(
-    private val service: DownloaderService
+class DownloaderRepository(
+    private val service: DownloaderService,
+    private val fanfictionBuilder: FanfictionBuilder,
+    private val dao: FanfictionDao
 ) {
 
     fun loadFanfictionInfo(id: String): FanfictionRepositoryResult {
@@ -17,6 +18,10 @@ class DownloaderRepository @Inject constructor(
         val response = service.getPage(id).execute()
         return if (response.isSuccessful) {
             response.body()?.let {
+
+                val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, it.string())
+//                dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
+
                 FanfictionRepositoryResultSuccess(it.string())
             } ?: FanfictionRepositoryResultFailure
         } else {
@@ -62,4 +67,13 @@ class DownloaderRepository @Inject constructor(
     interface ChapterLoadedListener {
         fun onChapterLoaded(chapter: Chapter, html: String)
     }
+}
+
+private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
+    return FanfictionEntity(
+        fanfictionId = id,
+        title = title,
+        words = words,
+        summary = summary
+    )
 }

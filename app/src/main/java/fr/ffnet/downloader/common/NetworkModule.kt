@@ -1,6 +1,7 @@
 package fr.ffnet.downloader.common
 
 import android.content.Context
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -22,6 +23,7 @@ class NetworkModule {
         dispatcher: Dispatcher
     ): OkHttpClient.Builder = OkHttpClient().newBuilder()
             .addInterceptor(ChuckInterceptor(context))
+            .addNetworkInterceptor(StethoInterceptor())
             .dispatcher(dispatcher)
 
     @Provides

@@ -4,9 +4,9 @@ import java.util.*
 
 data class Fanfiction(
     val id: String,
-    val title: String,
-    val words: Int,
-    val summary: String,
+    var title: String,
+    var words: Int,
+    var summary: String,
     val publishedDate: Date,
     val updatedDate: Date,
     val chapterList: List<Chapter> = emptyList()
@@ -15,5 +15,10 @@ data class Fanfiction(
 data class Chapter(
     val id: String,
     val title: String,
-    val content: String = ""
+    val content: String = "",
+    val status: ChapterStatus = ChapterStatus.NOT_SYNCED
 )
+
+enum class ChapterStatus {
+    NOT_SYNCED, SYNCED
+}

@@ -42,6 +42,10 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
 
+    // Room
+    implementation "androidx.room:room-runtime:2.1.0-alpha04"
+    kapt "androidx.room:room-compiler:2.1.0-alpha04"
+
     // Maps
     implementation "com.google.android.gms:play-services-location:16.0.0"
 
@@ -59,6 +63,8 @@ dependencies {
     // Debugging
     debugImplementation "com.readystatesoftware.chuck:library:1.1.0"
     releaseImplementation "com.readystatesoftware.chuck:library-no-op:1.1.0"
+    debugImplementation 'com.facebook.stetho:stetho:1.5.0'
+    debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
     // JSON Parsing
     implementation "com.squareup.moshi:moshi:1.6.0"

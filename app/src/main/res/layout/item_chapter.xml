@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/chapterNbTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/chapterStatusTextView"
         app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chapterTitleTextView"
         tools:text="1" />
 
     <TextView
@@ -20,12 +22,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="64dp"
-        android:textSize="20sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/chapterNbTextView"
+        android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="A Day of Very Low Probability" />
+
+    <TextView
+        android:id="@+id/chapterStatusTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@+id/chapterTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/chapterTitleTextView"
+        tools:text="Not synced" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"

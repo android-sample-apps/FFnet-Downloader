@@ -2,6 +2,7 @@ package fr.ffnet.downloader.common
 
 import android.app.Application
 import android.content.Context
+import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
 
 class MainApplication : Application() {
@@ -16,5 +17,6 @@ class MainApplication : Application() {
         super.onCreate()
         mainComponent = DaggerMainComponent.builder().mainModule(MainModule(this)).build()
         AndroidThreeTen.init(this)
+        Stetho.initializeWithDefaults(this)
     }
 }
