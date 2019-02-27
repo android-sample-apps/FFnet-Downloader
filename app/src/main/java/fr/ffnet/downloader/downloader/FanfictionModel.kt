@@ -16,9 +16,5 @@ data class Chapter(
     val id: String,
     val title: String,
     val content: String = "",
-    val status: ChapterStatus = ChapterStatus.NOT_SYNCED
+    val status: Boolean = false
 )
-
-enum class ChapterStatus {
-    NOT_SYNCED, SYNCED
-}

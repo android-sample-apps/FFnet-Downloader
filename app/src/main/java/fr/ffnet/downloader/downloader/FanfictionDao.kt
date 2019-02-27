@@ -12,13 +12,16 @@ interface FanfictionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFanfiction(fanfiction: FanfictionEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insertChapterList(chapterList: List<ChapterEntity>)
 
     @Query("UPDATE ChapterEntity SET content = :content, isSynced = :isSynced WHERE fanfictionId = :fanfictionId AND chapterId = :chapterId")
     fun updateChapter(content: String, isSynced: Boolean, fanfictionId: String, chapterId: String)
 
     @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
-    fun getChapters(fanfictionId: String): LiveData<List<ChapterEntity>>
+    fun getChaptersLivedata(fanfictionId: String): LiveData<List<ChapterEntity>>
+
+    @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
+    fun getChapters(fanfictionId: String): List<ChapterEntity>
 
 }

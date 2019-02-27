@@ -13,22 +13,25 @@ class DownloaderRepository(
     private val dao: FanfictionDao
 ) {
 
-    fun loadFanfictionInfo(id: String): FanfictionRepositoryResult {
+    fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
 
-        val response = service.getPage(id).execute()
+        val response = service.getPage(fanfictionId).execute()
         return if (response.isSuccessful) {
             response.body()?.let {
 
-                val fanfictionInfo = fanfictionBuilder.buildFanfiction(id, it.string())
+                val existingChapters = dao.getChapters(fanfictionId).map { it.chapterId }
+                val fanfictionInfo = fanfictionBuilder.buildFanfiction(fanfictionId, it.string(), existingChapters)
                 dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
-                dao.insertChapterList(fanfictionInfo.chapterList.map { chapter ->
-                    ChapterEntity(
-                        fanfictionId = fanfictionInfo.id,
-                        chapterId = chapter.id,
-                        title = chapter.title
-                    )
-                })
 
+                if (existingChapters.isNotEmpty()) {
+                    fanfictionInfo.chapterList.filter { it.id !in existingChapters }.map { chapter ->
+                        insertChapter(fanfictionId, chapter)
+                    }
+                } else {
+                    fanfictionInfo.chapterList.map { chapter ->
+                        insertChapter(fanfictionId, chapter)
+                    }
+                }
                 FanfictionRepositoryResultSuccess(fanfictionInfo)
             } ?: FanfictionRepositoryResultFailure
         } else {
@@ -69,6 +72,16 @@ class DownloaderRepository(
                 }
             })
         }
+    }
+
+    private fun insertChapter(fanfictionId: String, chapter: Chapter) {
+        dao.insertChapterList(listOf(
+            ChapterEntity(
+                fanfictionId = fanfictionId,
+                chapterId = chapter.id,
+                title = chapter.title
+            )
+        ))
     }
 
     sealed class FanfictionRepositoryResult {

@@ -23,10 +23,15 @@ class DownloaderViewModel(
     private val repository: DownloaderRepository
 ) : ViewModel() {
 
-    private val currentFanfiction: MutableLiveData<FanfictionViewModel> by lazy {
+    private lateinit var currentFanfiction: Fanfiction
+
+    private val fanfiction: MutableLiveData<FanfictionViewModel> by lazy {
         MutableLiveData<FanfictionViewModel>()
     }
     private lateinit var chapterList: LiveData<List<ChapterViewModel>>
+    private val chapterProgression: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
 
     fun loadFanfictionInfos(url: String?) {
         if (!url.isNullOrEmpty()) {
@@ -42,33 +47,63 @@ class DownloaderViewModel(
         }
     }
 
-    fun getCurrentFanfiction(): LiveData<FanfictionViewModel> = currentFanfiction
+    fun loadChapters() {
+        if (currentFanfiction.chapterList.size > 1) {
+            chapterList = Transformations.map(dao.getChaptersLivedata(currentFanfiction.id)) { chapterList ->
+                chapterProgression.value = resources.getString(
+                    R.string.download_info_chapters_value,
+                    chapterList.filter { it.isSynced }.size,
+                    currentFanfiction.chapterList.size
+                )
+                chapterList.map {
+                    ChapterViewModel(
+                        id = it.chapterId,
+                        title = it.title,
+                        status = resources.getString(
+                            when (it.isSynced) {
+                                true -> R.string.download_info_chapter_status_synced
+                                false -> R.string.download_info_chapter_status_unsynced
+                            }
+                        )
+                    )
+                }
+            }
+            repository.loadAllChapters(currentFanfiction.id, currentFanfiction.chapterList)
+        }
+    }
+
+    fun getCurrentFanfiction(): LiveData<FanfictionViewModel> = fanfiction
 
     fun getChapterList(): LiveData<List<ChapterViewModel>> = chapterList
+
+    fun getChapterSyncingProgression(): LiveData<String> = chapterProgression
 
     private fun loadFanfictionInfo(fanfictionId: String) {
         val fanfictionResult = repository.loadFanfictionInfo(fanfictionId)
         if (fanfictionResult is FanfictionRepositoryResultSuccess) {
             with(fanfictionResult) {
-                if (fanfictionInfo.chapterList.size > 1) {
-                    chapterList = Transformations.map(
-                        dao.getChapters(fanfictionId)
-                    ) { chapterList ->
-                        chapterList.map {
-                            ChapterViewModel(
-                                id = it.chapterId,
-                                title = it.title,
-                                status = resources.getString(
-                                    when (it.isSynced) {
-                                        true -> R.string.download_info_chapter_status_synced
-                                        false -> R.string.download_info_chapter_status_unsynced
-                                    }
-                                )
-                            )
-                        }
-                    }
-                    repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList)
-                }
+                //                if (fanfictionInfo.chapterList.size > 1) {
+                //                    chapterList = Transformations.map(dao.getChaptersLivedata(fanfictionId)) { chapterList ->
+                //                        chapterProgression.value = resources.getString(
+                //                            R.string.download_info_chapters_value,
+                //                            chapterList.filter { it.isSynced }.size,
+                //                            fanfictionInfo.chapterList.size
+                //                        )
+                //                        chapterList.map {
+                //                            ChapterViewModel(
+                //                                id = it.chapterId,
+                //                                title = it.title,
+                //                                status = resources.getString(
+                //                                    when (it.isSynced) {
+                //                                        true -> R.string.download_info_chapter_status_synced
+                //                                        false -> R.string.download_info_chapter_status_unsynced
+                //                                    }
+                //                                )
+                //                            )
+                //                        }
+                //                    }
+                //                    repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList)
+                //                }
                 presentFanfictionInfo(fanfictionInfo)
             }
         } else {
@@ -77,6 +112,7 @@ class DownloaderViewModel(
     }
 
     private fun presentFanfictionInfo(fanfictionInfo: Fanfiction) {
+        currentFanfiction = fanfictionInfo
         with(fanfictionInfo) {
             val fanfictionViewModel = FanfictionViewModel(
                 id = id,
@@ -89,12 +125,22 @@ class DownloaderViewModel(
                     ChapterViewModel(
                         id = it.id,
                         title = it.title,
-                        status = resources.getString(R.string.download_info_chapter_status_unsynced)
+                        status = resources.getString(
+                            when (it.status) {
+                                true -> R.string.download_info_chapter_status_synced
+                                false -> R.string.download_info_chapter_status_unsynced
+                            }
+                        )
                     )
                 }
             )
             CoroutineScope(Dispatchers.Main).launch {
-                currentFanfiction.value = fanfictionViewModel
+                chapterProgression.value = resources.getString(
+                    R.string.download_info_chapters_value,
+                    fanfictionInfo.chapterList.filter { it.status }.size,
+                    fanfictionInfo.chapterList.size
+                )
+                fanfiction.value = fanfictionViewModel
             }
         }
     }

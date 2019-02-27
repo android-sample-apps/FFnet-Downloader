@@ -10,7 +10,11 @@ class FanfictionBuilder @Inject constructor(
     private val jsoupParser: JsoupParser
 ) {
 
-    fun buildFanfiction(id: String, html: String): Fanfiction {
+    fun buildFanfiction(
+        id: String,
+        html: String,
+        existingChapters: List<String>
+    ): Fanfiction {
 
         val document = jsoupParser.parseHtml(html)
         val profileTop = document.select("div#profile_top")
@@ -21,7 +25,7 @@ class FanfictionBuilder @Inject constructor(
         val summary = profileTop.select("div").last()?.text() ?: "N/A"
         val published = dates[if (dates.size > 1) 1 else 0]?.attr("data-xutime")?.toLong() ?: 0
         val updated = dates[0]?.attr("data-xutime")?.toLong() ?: 0
-        val chapterList = extractChapterList(document.select("#chap_select"), title)
+        val chapterList = extractChapterList(document.select("#chap_select"), title, existingChapters)
 
         return Fanfiction(
             id = id,
@@ -39,20 +43,26 @@ class FanfictionBuilder @Inject constructor(
         return document.select("#storytext").first().text()
     }
 
-    private fun extractChapterList(select: Elements, title: String): List<Chapter> {
+    private fun extractChapterList(
+        select: Elements,
+        title: String,
+        existingChapters: List<String>
+    ): List<Chapter> {
         return if (select.isNotEmpty()) {
             select.first().select("option").map {
                 val chapterId = it.attr("value")
                 Chapter(
                     id = chapterId,
-                    title = it.text().replace("$chapterId. ", "")
+                    title = it.text().replace("$chapterId. ", ""),
+                    status = chapterId in existingChapters
                 )
             }
         } else {
             listOf(
                 Chapter(
                     id = "1",
-                    title = title
+                    title = title,
+                    status = "1" in existingChapters
                 )
             )
         }

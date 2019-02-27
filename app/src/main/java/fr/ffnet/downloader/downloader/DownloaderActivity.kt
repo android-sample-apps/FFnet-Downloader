@@ -1,6 +1,7 @@
 package fr.ffnet.downloader.downloader
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -28,18 +29,27 @@ class DownloaderActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
             DownloaderViewModel::class.java
         )
 
-        downloadButton.setOnClickListener {
+        fetchInformationButton.setOnClickListener {
+            widgetVisibilityGroup.visibility = View.GONE
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
+        }
+
+        downloadButton.setOnClickListener {
+            viewModel.loadChapters()
+            viewModel.getChapterList().observe(this, Observer { chapterList ->
+                (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
+            })
         }
         initRecyclerView()
 
         viewModel.getCurrentFanfiction().observe(this, Observer {
+            widgetVisibilityGroup.visibility = View.VISIBLE
             titleValueTextView.text = it.title
             wordsValueTextView.text = it.words
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = it.chapterList
 
-            viewModel.getChapterList().observe(this, Observer { chapterList ->
-                (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
+            viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->
+                chaptersValueTextView.text = chapterProgression
             })
         })
     }

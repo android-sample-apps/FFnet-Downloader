@@ -17,7 +17,7 @@ data class FanfictionEntity(
         entity = FanfictionEntity::class,
         parentColumns = ["id"],
         childColumns = ["fanfictionId"],
-        onDelete = ForeignKey.CASCADE
+        onDelete = ForeignKey.NO_ACTION
     )]
 )
 data class ChapterEntity(

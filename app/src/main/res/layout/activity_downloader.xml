@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,12 +12,13 @@
         android:layout_margin="16dp"
         android:hint="@string/download_url_hint"
         android:text="https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality"
+        android:textSize="16sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/downloadButton"
+        android:id="@+id/fetchInformationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -26,9 +26,9 @@
         android:paddingTop="8dp"
         android:paddingRight="16dp"
         android:paddingBottom="8dp"
-        android:text="@string/download_button_title"
+        android:text="@string/fetch_information_button_title"
         android:textAllCaps="true"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toBottomOf="@+id/downloadUrlEditText" />
@@ -39,16 +39,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/download_info_title_label"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@id/downloadButton" />
+        app:layout_constraintTop_toBottomOf="@id/fetchInformationButton" />
 
     <TextView
         android:id="@+id/titleValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:textSize="20sp"
+        android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
@@ -58,9 +58,9 @@
         android:id="@+id/wordsLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/download_info_words_label"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintTop_toBottomOf="@id/titleValueTextView" />
 
@@ -69,11 +69,47 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:textSize="20sp"
+        android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/wordsLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
         tools:text="661,619" />
+
+    <TextView
+        android:id="@+id/chaptersLabelTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_chapters_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/wordsValueTextView" />
+
+    <TextView
+        android:id="@+id/chaptersValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/chaptersLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/downloadButton"
+        tools:text="12/122" />
+
+    <Button
+        android:id="@+id/downloadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:minHeight="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/download_button_title"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/chaptersValueTextView"
+        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintTop_toTopOf="@+id/chaptersValueTextView" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chapterListRecyclerView"
@@ -85,14 +121,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wordsValueTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/chaptersValueTextView" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView" />
+        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView, chaptersLabelTextView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"
@@ -107,4 +143,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="16dp" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/widgetVisibilityGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="titleLabelTextView, titleValueTextView, wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
