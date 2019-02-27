@@ -3,13 +3,16 @@ package fr.ffnet.downloader.downloader
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity
 data class FanfictionEntity(
     @PrimaryKey val id: String,
     var title: String,
     var words: Int,
-    var summary: String
+    var summary: String,
+    var publishedDate: Date,
+    var updatedDate: Date
 )
 
 @Entity(

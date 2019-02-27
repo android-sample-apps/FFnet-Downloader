@@ -46,6 +46,8 @@ class DownloaderActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
             widgetVisibilityGroup.visibility = View.VISIBLE
             titleValueTextView.text = it.title
             wordsValueTextView.text = it.words
+            publishedDateValueTextView.text = it.publishedDate
+            updatedDateValueTextView.text = it.updatedDate
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = it.chapterList
 
             viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->

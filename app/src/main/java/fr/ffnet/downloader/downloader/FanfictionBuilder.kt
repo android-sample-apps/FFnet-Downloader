@@ -1,9 +1,8 @@
 package fr.ffnet.downloader.downloader
 
 import fr.ffnet.downloader.JsoupParser
+import org.joda.time.DateTime
 import org.jsoup.select.Elements
-import org.threeten.bp.DateTimeUtils
-import org.threeten.bp.Instant
 import javax.inject.Inject
 
 class FanfictionBuilder @Inject constructor(
@@ -32,8 +31,8 @@ class FanfictionBuilder @Inject constructor(
             title = title,
             words = words,
             summary = summary,
-            publishedDate = DateTimeUtils.toDate(Instant.ofEpochMilli(published)),
-            updatedDate = DateTimeUtils.toDate(Instant.ofEpochMilli(updated)),
+            publishedDate = DateTime(published * 1000).toDate(),
+            updatedDate = DateTime(updated * 1000).toDate(),
             chapterList = chapterList
         )
     }

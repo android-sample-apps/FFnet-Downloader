@@ -62,7 +62,6 @@ dependencies {
 
     // Debugging
     implementation "com.readystatesoftware.chuck:library:1.1.0"
-    implementation "com.readystatesoftware.chuck:library-no-op:1.1.0"
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
@@ -82,5 +81,5 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.3'
 
     // Dates
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.2'
+    implementation 'joda-time:joda-time:2.10.1'
 }

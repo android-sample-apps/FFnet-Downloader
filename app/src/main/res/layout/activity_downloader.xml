@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -76,6 +77,48 @@
         tools:text="661,619" />
 
     <TextView
+        android:id="@+id/publishedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_published_date_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/wordsLabelTextView" />
+
+    <TextView
+        android:id="@+id/publishedDateValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/publishedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="2010-02-28" />
+
+    <TextView
+        android:id="@+id/updatedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_updated_date_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/publishedDateLabelTextView" />
+
+    <TextView
+        android:id="@+id/updatedDateValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/updatedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="2015-03-14" />
+
+    <TextView
         android:id="@+id/chaptersLabelTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -83,7 +126,7 @@
         android:text="@string/download_info_chapters_label"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="@+id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/wordsValueTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView" />
 
     <TextView
         android:id="@+id/chaptersValueTextView"
@@ -110,7 +153,6 @@
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="@+id/chaptersValueTextView" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chapterListRecyclerView"
         android:layout_width="0dp"
@@ -128,7 +170,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView, chaptersLabelTextView" />
+        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView, chaptersLabelTextView, publishedDateLabelTextView, updatedDateLabelTextView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"
@@ -149,6 +191,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="titleLabelTextView, titleValueTextView, wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton"
+        app:constraint_referenced_ids="titleLabelTextView, titleValueTextView, wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton, publishedDateLabelTextView, publishedDateValueTextView, updatedDateLabelTextView, updatedDateValueTextView"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

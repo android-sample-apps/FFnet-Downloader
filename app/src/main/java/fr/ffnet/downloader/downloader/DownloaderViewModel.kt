@@ -82,28 +82,6 @@ class DownloaderViewModel(
         val fanfictionResult = repository.loadFanfictionInfo(fanfictionId)
         if (fanfictionResult is FanfictionRepositoryResultSuccess) {
             with(fanfictionResult) {
-                //                if (fanfictionInfo.chapterList.size > 1) {
-                //                    chapterList = Transformations.map(dao.getChaptersLivedata(fanfictionId)) { chapterList ->
-                //                        chapterProgression.value = resources.getString(
-                //                            R.string.download_info_chapters_value,
-                //                            chapterList.filter { it.isSynced }.size,
-                //                            fanfictionInfo.chapterList.size
-                //                        )
-                //                        chapterList.map {
-                //                            ChapterViewModel(
-                //                                id = it.chapterId,
-                //                                title = it.title,
-                //                                status = resources.getString(
-                //                                    when (it.isSynced) {
-                //                                        true -> R.string.download_info_chapter_status_synced
-                //                                        false -> R.string.download_info_chapter_status_unsynced
-                //                                    }
-                //                                )
-                //                            )
-                //                        }
-                //                    }
-                //                    repository.loadAllChapters(fanfictionInfo.id, fanfictionInfo.chapterList)
-                //                }
                 presentFanfictionInfo(fanfictionInfo)
             }
         } else {
@@ -114,13 +92,14 @@ class DownloaderViewModel(
     private fun presentFanfictionInfo(fanfictionInfo: Fanfiction) {
         currentFanfiction = fanfictionInfo
         with(fanfictionInfo) {
+            val formatter = SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
             val fanfictionViewModel = FanfictionViewModel(
                 id = id,
                 title = title,
                 words = words.toString(),
                 summary = summary,
-                updatedDate = SimpleDateFormat("yyyy-mm-dd").format(updatedDate),
-                publishedDate = SimpleDateFormat("yyyy-mm-dd").format(publishedDate),
+                updatedDate = formatter.format(updatedDate),
+                publishedDate = formatter.format(publishedDate),
                 chapterList = chapterList.map {
                     ChapterViewModel(
                         id = it.id,

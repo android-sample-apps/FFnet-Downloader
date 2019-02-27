@@ -17,10 +17,12 @@ class DownloaderRepository(
 
         val response = service.getPage(fanfictionId).execute()
         return if (response.isSuccessful) {
-            response.body()?.let {
+            response.body()?.let { responseBody ->
 
                 val existingChapters = dao.getChapters(fanfictionId).map { it.chapterId }
-                val fanfictionInfo = fanfictionBuilder.buildFanfiction(fanfictionId, it.string(), existingChapters)
+                val fanfictionInfo = fanfictionBuilder.buildFanfiction(
+                    fanfictionId, responseBody.string(), existingChapters
+                )
                 dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
 
                 if (existingChapters.isNotEmpty()) {
@@ -75,13 +77,15 @@ class DownloaderRepository(
     }
 
     private fun insertChapter(fanfictionId: String, chapter: Chapter) {
-        dao.insertChapterList(listOf(
-            ChapterEntity(
-                fanfictionId = fanfictionId,
-                chapterId = chapter.id,
-                title = chapter.title
+        dao.insertChapterList(
+            listOf(
+                ChapterEntity(
+                    fanfictionId = fanfictionId,
+                    chapterId = chapter.id,
+                    title = chapter.title
+                )
             )
-        ))
+        )
     }
 
     sealed class FanfictionRepositoryResult {
@@ -95,6 +99,8 @@ private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
         id = id,
         title = title,
         words = words,
-        summary = summary
+        summary = summary,
+        publishedDate = publishedDate,
+        updatedDate = updatedDate
     )
 }

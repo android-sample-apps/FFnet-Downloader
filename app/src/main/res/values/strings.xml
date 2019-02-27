@@ -8,8 +8,10 @@
 
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
+    <string name="download_info_published_date_label">Published date</string>
+    <string name="download_info_updated_date_label">Updated date</string>
     <string name="download_info_chapters_label">Chapters</string>
-    <string name="download_info_chapters_value">%s/%s</string>
+    <string name="download_info_chapters_value">%d/%d</string>
     <string name="download_info_chapter_status_unsynced">Not synced</string>
     <string name="download_info_chapter_status_synced">Synced</string>
 </resources>
