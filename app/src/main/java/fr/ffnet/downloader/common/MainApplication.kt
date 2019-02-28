@@ -6,14 +6,15 @@ import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 
 class MainApplication : DaggerApplication() {
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerMainApplicationComponent.builder().create(this)
-    }
 
     private lateinit var mainComponent: MainComponent
 
     companion object {
         fun getComponent(context: Context): MainComponent = (context.applicationContext as MainApplication).mainComponent
+    }
+
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerApplicationComponent.builder().create(this)
     }
 
     override fun onCreate() {
