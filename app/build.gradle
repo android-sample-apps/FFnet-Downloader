@@ -53,8 +53,10 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:16.0.0"
 
     // Dagger
-    implementation "com.google.dagger:dagger:2.16"
-    kapt "com.google.dagger:dagger-compiler:2.16"
+    implementation 'com.google.dagger:dagger:2.19'
+    kapt 'com.google.dagger:dagger-compiler:2.19'
+    implementation 'com.google.dagger:dagger-android-support:2.19'
+    kapt 'com.google.dagger:dagger-android-processor:2.19'
 
     // Network
     implementation "com.squareup.retrofit2:retrofit:2.5.0"

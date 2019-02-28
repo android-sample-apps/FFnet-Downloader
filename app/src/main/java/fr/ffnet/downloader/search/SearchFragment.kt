@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.common.MainApplication
 
 class SearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        MainApplication.getComponent().plus(DownloaderModule()).inject(this)
         super.onCreate(savedInstanceState)
     }
 
