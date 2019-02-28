@@ -1,10 +1,8 @@
-package fr.ffnet.downloader.downloader
+package fr.ffnet.downloader.search
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import fr.ffnet.downloader.R
@@ -29,31 +27,31 @@ class DownloaderActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
             DownloaderViewModel::class.java
         )
 
-        fetchInformationButton.setOnClickListener {
-            widgetVisibilityGroup.visibility = View.GONE
-            viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
-        }
-
-        downloadButton.setOnClickListener {
-            viewModel.loadChapters()
-            viewModel.getChapterList().observe(this, Observer { chapterList ->
-                (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
-            })
-        }
-        initRecyclerView()
-
-        viewModel.getCurrentFanfiction().observe(this, Observer {
-            widgetVisibilityGroup.visibility = View.VISIBLE
-            titleValueTextView.text = it.title
-            wordsValueTextView.text = it.words
-            publishedDateValueTextView.text = it.publishedDate
-            updatedDateValueTextView.text = it.updatedDate
-            (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = it.chapterList
-
-            viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->
-                chaptersValueTextView.text = chapterProgression
-            })
-        })
+//        fetchInformationButton.setOnClickListener {
+//            widgetVisibilityGroup.visibility = View.GONE
+//            viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
+//        }
+//
+//        downloadButton.setOnClickListener {
+//            viewModel.loadChapters()
+//            viewModel.getChapterList().observe(this, Observer { chapterList ->
+//                (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
+//            })
+//        }
+//        initRecyclerView()
+//
+//        viewModel.getCurrentFanfiction().observe(this, Observer {
+//            widgetVisibilityGroup.visibility = View.VISIBLE
+//            titleValueTextView.text = it.title
+//            wordsValueTextView.text = it.words
+//            publishedDateValueTextView.text = it.publishedDate
+//            updatedDateValueTextView.text = it.updatedDate
+//            (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = it.chapterList
+//
+//            viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->
+//                chaptersValueTextView.text = chapterProgression
+//            })
+//        })r
     }
 
     override fun onChapterSelected(chapter: ChapterViewModel) {

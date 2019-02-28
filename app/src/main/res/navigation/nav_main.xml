@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/bottomNavSearchFragment">
+
+    <fragment
+        android:id="@+id/bottomNavSearchFragment"
+        android:name="fr.ffnet.downloader.search.SearchFragment"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/bottomNavSyncedFragment"
+        android:name="fr.ffnet.downloader.synced.SyncedFragment"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/bottomNavProfileFragment"
+        android:name="fr.ffnet.downloader.profile.ProfileFragment"
+        tools:layout="@layout/fragment_search" />
+
+</navigation>

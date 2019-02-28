@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.downloader
+package fr.ffnet.downloader.search
 
 import fr.ffnet.downloader.JsoupParser
 import org.joda.time.DateTime

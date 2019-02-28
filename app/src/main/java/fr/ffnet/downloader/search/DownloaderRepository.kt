@@ -1,7 +1,7 @@
-package fr.ffnet.downloader.downloader
+package fr.ffnet.downloader.search
 
-import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
-import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.search.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
+import fr.ffnet.downloader.search.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback

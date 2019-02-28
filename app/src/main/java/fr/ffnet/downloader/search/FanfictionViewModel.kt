@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.downloader
+package fr.ffnet.downloader.search
 
 data class FanfictionViewModel(
     val id: String,

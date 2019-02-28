@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.downloader
+package fr.ffnet.downloader.search
 
 import dagger.Subcomponent
 import fr.ffnet.downloader.common.FeatureScope

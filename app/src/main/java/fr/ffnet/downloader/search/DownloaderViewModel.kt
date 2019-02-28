@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.downloader
+package fr.ffnet.downloader.search
 
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.downloader.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.search.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess

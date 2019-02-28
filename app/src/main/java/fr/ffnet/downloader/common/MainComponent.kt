@@ -1,8 +1,8 @@
 package fr.ffnet.downloader.common
 
 import dagger.Component
-import fr.ffnet.downloader.downloader.DownloaderComponent
-import fr.ffnet.downloader.downloader.DownloaderModule
+import fr.ffnet.downloader.search.DownloaderComponent
+import fr.ffnet.downloader.search.DownloaderModule
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
