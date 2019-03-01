@@ -18,17 +18,13 @@ class SearchFragment : DaggerFragment(), ChapterListAdapter.ChapterClickListener
 
     @Inject lateinit var viewModel: SearchViewModel
 
-    companion object {
-        private const val TITLE = "Search Fanfiction"
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_search, container, false).also {
-            activity?.title = TITLE
+            activity?.title = resources.getString(R.string.search_fanfiction_title)
         }
     }
 

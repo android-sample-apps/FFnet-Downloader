@@ -5,6 +5,7 @@
     <string name="download_url_hint">Url</string>
     <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Download</string>
+    <string name="search_fanfiction_title">Search Fanfiction</string>
 
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
