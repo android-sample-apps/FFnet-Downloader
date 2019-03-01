@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface DownloaderService {
+interface SearchService {
     @GET("s/{storyId}/{chapterId}")
     fun getPage(
         @Path("storyId") storyId: String,

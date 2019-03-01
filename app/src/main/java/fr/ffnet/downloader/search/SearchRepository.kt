@@ -8,7 +8,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DownloaderRepository(
-    private val service: DownloaderService,
+    private val service: SearchService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val dao: FanfictionDao
 ) {

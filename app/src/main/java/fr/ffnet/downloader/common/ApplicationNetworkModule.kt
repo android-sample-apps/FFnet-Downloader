@@ -14,17 +14,16 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
-class NetworkModule {
-
+class ApplicationNetworkModule {
     @Singleton
     @Provides
     fun provideOkhttpClient(
         context: Context,
         dispatcher: Dispatcher
     ): OkHttpClient.Builder = OkHttpClient().newBuilder()
-            .addInterceptor(ChuckInterceptor(context))
-            .addNetworkInterceptor(StethoInterceptor())
-            .dispatcher(dispatcher)
+        .addInterceptor(ChuckInterceptor(context))
+        .addNetworkInterceptor(StethoInterceptor())
+        .dispatcher(dispatcher)
 
     @Provides
     fun provideDispatcher(): Dispatcher {
@@ -39,10 +38,10 @@ class NetworkModule {
         client: OkHttpClient.Builder
     ): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(BuildConfig.API_BASE_URL)
-                .client(client.build())
-                .addConverterFactory(moshiConverterFactory)
-                .build()
+            .baseUrl(BuildConfig.API_BASE_URL)
+            .client(client.build())
+            .addConverterFactory(moshiConverterFactory)
+            .build()
     }
 
     @Provides

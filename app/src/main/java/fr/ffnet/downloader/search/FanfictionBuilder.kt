@@ -1,6 +1,6 @@
 package fr.ffnet.downloader.search
 
-import fr.ffnet.downloader.JsoupParser
+import fr.ffnet.downloader.utils.JsoupParser
 import org.joda.time.DateTime
 import org.jsoup.select.Elements
 import javax.inject.Inject

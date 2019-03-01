@@ -1,4 +1,4 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.utils
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
