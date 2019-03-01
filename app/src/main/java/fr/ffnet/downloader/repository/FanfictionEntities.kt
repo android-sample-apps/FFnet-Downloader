@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.search
+package fr.ffnet.downloader.repository
 
 import androidx.room.Entity
 import androidx.room.ForeignKey

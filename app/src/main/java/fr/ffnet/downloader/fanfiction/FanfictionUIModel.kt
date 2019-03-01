@@ -1,16 +1,16 @@
-package fr.ffnet.downloader.search
+package fr.ffnet.downloader.fanfiction
 
-data class FanfictionViewModel(
+data class FanfictionUIModel(
     val id: String,
     val title: String,
     val words: String,
     val summary: String,
     val publishedDate: String,
     val updatedDate: String,
-    val chapterList: List<ChapterViewModel> = emptyList()
+    val chapterList: List<ChapterUIModel> = emptyList()
 )
 
-data class ChapterViewModel(
+data class ChapterUIModel(
     val id: String,
     val title: String,
     val status: String

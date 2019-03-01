@@ -1,7 +1,7 @@
-package fr.ffnet.downloader.utils
+package fr.ffnet.downloader.fanfictionutils
 
-import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
-import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
+import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
+import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
 import javax.inject.Inject
 
 class UrlTransformer @Inject constructor() {

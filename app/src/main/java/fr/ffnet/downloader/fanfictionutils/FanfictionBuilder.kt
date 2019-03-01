@@ -1,5 +1,7 @@
-package fr.ffnet.downloader.search
+package fr.ffnet.downloader.fanfictionutils
 
+import fr.ffnet.downloader.search.Chapter
+import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.JsoupParser
 import org.joda.time.DateTime
 import org.jsoup.select.Elements

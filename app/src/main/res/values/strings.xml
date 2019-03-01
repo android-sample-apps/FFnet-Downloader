@@ -4,7 +4,7 @@
 
     <string name="download_url_hint">Url</string>
     <string name="fetch_information_button_title">Fetch information</string>
-    <string name="download_button_title">Download</string>
+    <string name="download_button_title">Sync chapters</string>
     <string name="search_fanfiction_title">Search Fanfiction</string>
 
     <string name="download_info_title_label">Title</string>
@@ -15,4 +15,6 @@
     <string name="download_info_chapters_value">%d/%d</string>
     <string name="download_info_chapter_status_unsynced">Not synced</string>
     <string name="download_info_chapter_status_synced">Synced</string>
+
+    <string name="synced_fanfictions_chapters">%d/%d synced chapters</string>
 </resources>

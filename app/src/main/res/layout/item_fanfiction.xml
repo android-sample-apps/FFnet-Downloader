@@ -9,33 +9,36 @@
     android:paddingBottom="8dp">
 
     <TextView
-        android:id="@+id/chapterNbTextView"
-        android:layout_width="wrap_content"
+        android:id="@+id/titleTextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/chapterStatusTextView"
+        android:layout_marginRight="8dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="18sp"
         app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintTop_toTopOf="@+id/chapterTitleTextView"
-        tools:text="1" />
-
-    <TextView
-        android:id="@+id/chapterTitleTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="64dp"
-        android:textSize="16sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/actionsImageButton"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="A Day of Very Low Probability" />
+        tools:text="Harry Potter and the Methods of Rationality" />
 
     <TextView
-        android:id="@+id/chapterStatusTextView"
+        android:id="@+id/chaptersTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@+id/chapterTitleTextView"
-        app:layout_constraintTop_toBottomOf="@+id/chapterTitleTextView"
-        tools:text="Not synced" />
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/actionsImageButton"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        tools:text="120/122 synced chapters" />
+
+    <ImageButton
+        android:id="@+id/actionsImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"

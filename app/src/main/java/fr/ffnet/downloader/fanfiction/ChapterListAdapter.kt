@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.search
+package fr.ffnet.downloader.fanfiction
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +13,7 @@ class ChapterListAdapter(
     private val listener: ChapterClickListener
 ) : RecyclerView.Adapter<ChapterListAdapter.ChapterViewHolder>() {
 
-    var chapterList: List<ChapterViewModel> = emptyList()
+    var chapterList: List<ChapterUIModel> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -39,17 +39,17 @@ class ChapterListAdapter(
         private val chapterTitleTextView: TextView = view.chapterTitleTextView
         private val chapterStatusTextView: TextView = view.chapterStatusTextView
 
-        fun bind(chapterViewModel: ChapterViewModel, listener: ChapterClickListener) {
-            chapterNbTextView.text = chapterViewModel.id
-            chapterTitleTextView.text = chapterViewModel.title
-            chapterStatusTextView.text = chapterViewModel.status
+        fun bind(chapterUIModel: ChapterUIModel, listener: ChapterClickListener) {
+            chapterNbTextView.text = chapterUIModel.id
+            chapterTitleTextView.text = chapterUIModel.title
+            chapterStatusTextView.text = chapterUIModel.status
             view.setOnClickListener {
-                listener.onChapterSelected(chapterViewModel)
+                listener.onChapterSelected(chapterUIModel)
             }
         }
     }
 
     interface ChapterClickListener {
-        fun onChapterSelected(chapter: ChapterViewModel)
+        fun onChapterSelected(chapter: ChapterUIModel)
     }
 }

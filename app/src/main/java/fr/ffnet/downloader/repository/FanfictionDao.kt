@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.search
+package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -15,6 +15,12 @@ interface FanfictionDao {
     @Insert
     fun insertChapterList(chapterList: List<ChapterEntity>)
 
+    @Query("SELECT * FROM FanfictionEntity WHERE id = :fanfictionId")
+    fun getFanfiction(fanfictionId: String): FanfictionEntity
+
+    @Query("SELECT * FROM FanfictionEntity")
+    fun getFanfictions(): List<FanfictionEntity>
+
     @Query("UPDATE ChapterEntity SET content = :content, isSynced = :isSynced WHERE fanfictionId = :fanfictionId AND chapterId = :chapterId")
     fun updateChapter(content: String, isSynced: Boolean, fanfictionId: String, chapterId: String)
 
@@ -24,4 +30,6 @@ interface FanfictionDao {
     @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
     fun getChapters(fanfictionId: String): List<ChapterEntity>
 
+    @Query("select COUNT(id), COUNT(isSynced) from ChapterEntity where chapterId = :chapterId")
+    fun getSyncedChaptersInfo(chapterId: String)
 }

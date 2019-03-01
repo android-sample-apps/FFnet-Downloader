@@ -1,7 +1,10 @@
-package fr.ffnet.downloader.search
+package fr.ffnet.downloader.repository
 
-import fr.ffnet.downloader.search.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
-import fr.ffnet.downloader.search.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.search.Chapter
+import fr.ffnet.downloader.search.Fanfiction
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,11 +91,46 @@ class DownloaderRepository(
         )
     }
 
+    fun getFanfictionFromDb(fanfictionId: String): Fanfiction {
+        return dao.getFanfiction(fanfictionId).toFanfiction(
+            dao.getChapters(fanfictionId)
+        )
+    }
+
+    fun getFanfictionsFromDb(): List<Fanfiction> {
+        return dao.getFanfictions().map {
+            Fanfiction(
+                id = it.id,
+                title = it.title,
+                words = it.words,
+                publishedDate = it.publishedDate,
+                summary = it.summary,
+                updatedDate = it.updatedDate
+            )
+        }
+    }
+
     sealed class FanfictionRepositoryResult {
         data class FanfictionRepositoryResultSuccess(val fanfictionInfo: Fanfiction) : FanfictionRepositoryResult()
         object FanfictionRepositoryResultFailure : FanfictionRepositoryResult()
     }
 }
+
+private fun FanfictionEntity.toFanfiction(chapterList: List<ChapterEntity>) = Fanfiction(
+    id = id,
+    title = title,
+    words = words,
+    publishedDate = publishedDate,
+    summary = summary,
+    updatedDate = updatedDate,
+    chapterList = chapterList.map { it.toChapter() }
+)
+
+private fun ChapterEntity.toChapter(): Chapter = Chapter(
+    id = chapterId,
+    title = title,
+    status = content.isNotEmpty()
+)
 
 private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
     return FanfictionEntity(
