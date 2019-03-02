@@ -47,8 +47,4 @@ class SearchViewModel(
             }
         }
     }
-
-    private fun presentFanfictionInfoError() {
-
-    }
 }

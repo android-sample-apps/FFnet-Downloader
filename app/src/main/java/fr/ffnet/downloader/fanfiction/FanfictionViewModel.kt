@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.search.Chapter
@@ -19,7 +20,8 @@ import java.util.*
 class FanfictionViewModel(
     private val resources: Resources,
     private val dao: FanfictionDao,
-    private val repository: DownloaderRepository
+    private val apiRepository: DownloaderRepository,
+    private val dbRepository: DatabaseRepository
 ) : ViewModel() {
 
     private lateinit var currentFanfiction: Fanfiction
@@ -32,9 +34,15 @@ class FanfictionViewModel(
         MutableLiveData<String>()
     }
 
+    fun getCurrentFanfiction(): LiveData<FanfictionUIModel> = fanfiction
+
+    fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
+
+    fun getChapterSyncingProgression(): LiveData<String> = chapterProgression
+
     fun loadFanfictionInfoFromDatabase(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val fanfictionInfo = repository.getFanfictionFromDb(fanfictionId)
+            val fanfictionInfo = dbRepository.getFanfictionFromDb(fanfictionId)
             presentFanfictionInfo(fanfictionInfo)
         }
     }
@@ -62,15 +70,9 @@ class FanfictionViewModel(
                     )
                 }
             }
-            repository.loadAllChapters(currentFanfiction.id, currentFanfiction.chapterList)
+            apiRepository.loadAllChapters(currentFanfiction.id, currentFanfiction.chapterList)
         }
     }
-
-    fun getCurrentFanfiction(): LiveData<FanfictionUIModel> = fanfiction
-
-    fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
-
-    fun getChapterSyncingProgression(): LiveData<String> = chapterProgression
 
     private fun presentFanfictionInfo(fanfictionInfo: Fanfiction) {
         currentFanfiction = fanfictionInfo
@@ -105,9 +107,5 @@ class FanfictionViewModel(
                 fanfiction.value = fanfictionUiModel
             }
         }
-    }
-
-    private fun presentFanfictionInfoError() {
-
     }
 }

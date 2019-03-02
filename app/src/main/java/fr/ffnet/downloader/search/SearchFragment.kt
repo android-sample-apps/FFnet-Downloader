@@ -27,10 +27,6 @@ class SearchFragment : DaggerFragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fetchInformationButton.setOnClickListener {
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())

@@ -12,7 +12,9 @@ data class FanfictionEntity(
     var words: Int,
     var summary: String,
     var publishedDate: Date,
-    var updatedDate: Date
+    var updatedDate: Date,
+    var nbChapters: Int = 0,
+    var nbSyncedChapters: Int = 0
 )
 
 @Entity(
@@ -20,7 +22,7 @@ data class FanfictionEntity(
         entity = FanfictionEntity::class,
         parentColumns = ["id"],
         childColumns = ["fanfictionId"],
-        onDelete = ForeignKey.NO_ACTION
+        onDelete = ForeignKey.CASCADE
     )]
 )
 data class ChapterEntity(
@@ -30,4 +32,9 @@ data class ChapterEntity(
     val title: String,
     val content: String = "",
     val isSynced: Boolean = false
+)
+
+data class CountChapters(
+    val nbChapters: Int,
+    val nbSyncedChapters: Int
 )

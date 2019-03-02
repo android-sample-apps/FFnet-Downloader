@@ -4,7 +4,7 @@ import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.common.FragmentScope
-import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.RepositoryModule
 
 @Module(includes = [RepositoryModule::class])
@@ -13,6 +13,6 @@ class SyncedModule {
     @Provides
     fun provideSearchViewModel(
         resources: Resources,
-        repository: DownloaderRepository
+        repository: DatabaseRepository
     ): SyncedViewModel = SyncedViewModel(resources, repository)
 }

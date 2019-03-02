@@ -35,6 +35,8 @@ class FanfictionBuilder @Inject constructor(
             summary = summary,
             publishedDate = DateTime(published * 1000).toDate(),
             updatedDate = DateTime(updated * 1000).toDate(),
+            nbChapters = chapterList.size,
+            nbSyncedChapters = 0,
             chapterList = chapterList
         )
     }

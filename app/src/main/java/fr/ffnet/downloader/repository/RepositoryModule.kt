@@ -24,4 +24,9 @@ class RepositoryModule {
     ): DownloaderRepository {
         return DownloaderRepository(service, fanfictionBuilder, dao)
     }
+
+    @Provides
+    fun provideDatabaseRepository(
+        dao: FanfictionDao
+    ): DatabaseRepository = DatabaseRepository(dao)
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/gotoFanfiction"
+        android:title="@string/synced_fanfictions_menu_goto" />
+    <item
+        android:id="@+id/exportPdf"
+        android:title="@string/synced_fanfictions_menu_exportPdf" />
+    <item
+        android:id="@+id/exportEpub"
+        android:title="@string/synced_fanfictions_menu_exportEpub" />
+    <item
+        android:id="@+id/deleteFanfiction"
+        android:title="@string/synced_fanfictions_menu_delete" />
+</menu>

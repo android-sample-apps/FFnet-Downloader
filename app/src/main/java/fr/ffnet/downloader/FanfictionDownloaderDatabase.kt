@@ -10,7 +10,7 @@ import fr.ffnet.downloader.utils.Converters
 
 @Database(
     entities = [FanfictionEntity::class, ChapterEntity::class],
-    version = 8
+    version = 10
 )
 @TypeConverters(Converters::class)
 abstract class FanfictionDownloaderDatabase : RoomDatabase() {

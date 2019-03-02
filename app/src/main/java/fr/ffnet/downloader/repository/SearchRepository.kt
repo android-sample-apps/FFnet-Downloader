@@ -21,7 +21,6 @@ class DownloaderRepository(
         val response = service.getPage(fanfictionId).execute()
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
-
                 val existingChapters = dao.getChapters(fanfictionId).map { it.chapterId }
                 val fanfictionInfo = fanfictionBuilder.buildFanfiction(
                     fanfictionId, responseBody.string(), existingChapters
@@ -91,54 +90,19 @@ class DownloaderRepository(
         )
     }
 
-    fun getFanfictionFromDb(fanfictionId: String): Fanfiction {
-        return dao.getFanfiction(fanfictionId).toFanfiction(
-            dao.getChapters(fanfictionId)
+    private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
+        return FanfictionEntity(
+            id = id,
+            title = title,
+            words = words,
+            summary = summary,
+            publishedDate = publishedDate,
+            updatedDate = updatedDate
         )
-    }
-
-    fun getFanfictionsFromDb(): List<Fanfiction> {
-        return dao.getFanfictions().map {
-            Fanfiction(
-                id = it.id,
-                title = it.title,
-                words = it.words,
-                publishedDate = it.publishedDate,
-                summary = it.summary,
-                updatedDate = it.updatedDate
-            )
-        }
     }
 
     sealed class FanfictionRepositoryResult {
         data class FanfictionRepositoryResultSuccess(val fanfictionInfo: Fanfiction) : FanfictionRepositoryResult()
         object FanfictionRepositoryResultFailure : FanfictionRepositoryResult()
     }
-}
-
-private fun FanfictionEntity.toFanfiction(chapterList: List<ChapterEntity>) = Fanfiction(
-    id = id,
-    title = title,
-    words = words,
-    publishedDate = publishedDate,
-    summary = summary,
-    updatedDate = updatedDate,
-    chapterList = chapterList.map { it.toChapter() }
-)
-
-private fun ChapterEntity.toChapter(): Chapter = Chapter(
-    id = chapterId,
-    title = title,
-    status = content.isNotEmpty()
-)
-
-private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
-    return FanfictionEntity(
-        id = id,
-        title = title,
-        words = words,
-        summary = summary,
-        publishedDate = publishedDate,
-        updatedDate = updatedDate
-    )
 }
