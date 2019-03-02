@@ -10,12 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import kotlinx.android.synthetic.main.fragment_synced.*
 import javax.inject.Inject
 
 class SyncedFragment : DaggerFragment(), SyncedAdapter.OnActionsClickListener {
 
     @Inject lateinit var viewModel: SyncedViewModel
+
+    companion object {
+        private const val DISPLAY_SYNCED_FANFICTIONS = 0
+        private const val DISPLAY_NO_SYNCED_FANFICTIONS = 1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +36,13 @@ class SyncedFragment : DaggerFragment(), SyncedAdapter.OnActionsClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        viewModel.getFanfictionList().observe(this, Observer { syncedList ->
-            (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).syncedList = syncedList
+        viewModel.getFanfictionList().observe(this, Observer { fanfictionResult ->
+            when (fanfictionResult) {
+                is SyncedFanfictionsResult.NoSyncedFanfictions -> showNoSyncedFanfictions()
+                is SyncedFanfictionsResult.SyncedFanfictions -> showSyncedFanfictions(
+                    fanfictionResult.fanfictionList
+                )
+            }
         })
     }
 
@@ -47,6 +58,15 @@ class SyncedFragment : DaggerFragment(), SyncedAdapter.OnActionsClickListener {
                 viewModel.deleteFanfiction(fanfictionId)
             }
         }
+    }
+
+    private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
+        (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).syncedList = fanfictionList
+        fanfictionResultViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
+    }
+
+    private fun showNoSyncedFanfictions() {
+        fanfictionResultViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
     }
 
     private fun startFanfictionActivity(fanfictionId: String) {

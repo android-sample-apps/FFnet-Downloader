@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FragmentScope
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
 @FragmentScope
-class SearchFragment : DaggerFragment() {
+class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
 
     @Inject lateinit var viewModel: SearchViewModel
 
@@ -39,5 +40,19 @@ class SearchFragment : DaggerFragment() {
                 }
             }
         })
+
+        initRecyclerView()
+        viewModel.loadHistory().observe(this, Observer { historyList ->
+            (historyRecyclerView.adapter as HistoryAdapter).historyList = historyList
+        })
+    }
+
+    override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
+        downloadUrlEditText.setText(fanfictionUrl)
+    }
+
+    private fun initRecyclerView() {
+        historyRecyclerView.layoutManager = LinearLayoutManager(context)
+        historyRecyclerView.adapter = HistoryAdapter(this)
     }
 }

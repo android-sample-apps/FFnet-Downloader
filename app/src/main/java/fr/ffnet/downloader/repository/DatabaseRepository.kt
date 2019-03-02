@@ -15,7 +15,11 @@ class DatabaseRepository(private val dao: FanfictionDao) {
 
     fun getFanfictionsFromDbLiveData(): LiveData<List<Fanfiction>> {
         return Transformations.map(dao.getFanfictionsLiveData()) { fanfictionList ->
-            fanfictionList.map { buildFanfiction(it) }
+            if (fanfictionList.isEmpty()) {
+                emptyList()
+            } else {
+                fanfictionList.map { buildFanfiction(it) }
+            }
         }
     }
 

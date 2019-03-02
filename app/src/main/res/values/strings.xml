@@ -16,8 +16,9 @@
     <string name="download_info_chapter_status_unsynced">Not synced</string>
     <string name="download_info_chapter_status_synced">Synced</string>
 
-    <string name="synced_fanfictions_chapters">%d/%d synced chapters</string>
+    <string name="synced_fanfictions_no_fanfictions">No fanfictions synced</string>
     <string name="synced_fanfictions_synced_date_label">Synced</string>
+    <string name="synced_fanfictions_chapters">%d/%d synced chapters</string>
     <string name="synced_fanfictions_menu_goto">See details</string>
     <string name="synced_fanfictions_menu_exportPdf">Export PDF</string>
     <string name="synced_fanfictions_menu_exportEpub">Export EPUB</string>

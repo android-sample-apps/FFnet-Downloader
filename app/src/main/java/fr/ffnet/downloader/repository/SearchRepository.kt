@@ -1,11 +1,13 @@
 package fr.ffnet.downloader.repository
 
+import androidx.lifecycle.LiveData
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 import okhttp3.ResponseBody
+import org.joda.time.DateTime
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,7 +19,6 @@ class DownloaderRepository(
 ) {
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
-
         val response = service.getPage(fanfictionId).execute()
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
@@ -25,7 +26,15 @@ class DownloaderRepository(
                 val fanfictionInfo = fanfictionBuilder.buildFanfiction(
                     fanfictionId, responseBody.string(), existingChapters
                 )
+
                 dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
+                dao.insertInHistory(
+                    HistoryEntity(
+                        fanfictionInfo.id,
+                        fanfictionInfo.title,
+                        DateTime.now().toDate()
+                    )
+                )
 
                 if (existingChapters.isNotEmpty()) {
                     fanfictionInfo.chapterList.filter { it.id !in existingChapters }.map { chapter ->
@@ -42,6 +51,8 @@ class DownloaderRepository(
             FanfictionRepositoryResultFailure
         }
     }
+
+    fun loadHistory(): LiveData<List<HistoryEntity>> = dao.getHistory()
 
     fun loadAllChapters(
         fanfictionId: String,
@@ -97,7 +108,8 @@ class DownloaderRepository(
             words = words,
             summary = summary,
             publishedDate = publishedDate,
-            updatedDate = updatedDate
+            updatedDate = updatedDate,
+            syncedDate = DateTime.now().toDate()
         )
     }
 

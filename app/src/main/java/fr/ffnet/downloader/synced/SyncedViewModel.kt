@@ -17,28 +17,32 @@ class SyncedViewModel(
     private val repository: DatabaseRepository
 ) : ViewModel() {
 
-    private lateinit var fanfictionList: LiveData<List<FanfictionSyncedUIModel>>
+    private lateinit var fanfictionResult: LiveData<SyncedFanfictionsResult>
 
-    fun getFanfictionList(): LiveData<List<FanfictionSyncedUIModel>> = fanfictionList
+    fun getFanfictionList(): LiveData<SyncedFanfictionsResult> = fanfictionResult
 
     fun loadFanfictionsFromDb() {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        fanfictionList = Transformations.map(
+        fanfictionResult = Transformations.map(
             repository.getFanfictionsFromDbLiveData()
         ) { fanfictionList ->
-            fanfictionList.map { fanfiction ->
-                FanfictionSyncedUIModel(
-                    id = fanfiction.id,
-                    title = fanfiction.title,
-                    updatedDate = formatter.format(fanfiction.updatedDate),
-                    publishedDate = formatter.format(fanfiction.publishedDate),
-                    syncedDate = formatter.format(fanfiction.publishedDate),
-                    chapters = resources.getString(
-                        R.string.synced_fanfictions_chapters,
-                        fanfiction.nbSyncedChapters,
-                        fanfiction.nbChapters
+            if (fanfictionList.isNotEmpty()) {
+                SyncedFanfictionsResult.SyncedFanfictions(fanfictionList.map { fanfiction ->
+                    FanfictionSyncedUIModel(
+                        id = fanfiction.id,
+                        title = fanfiction.title,
+                        updatedDate = formatter.format(fanfiction.updatedDate),
+                        publishedDate = formatter.format(fanfiction.publishedDate),
+                        syncedDate = formatter.format(fanfiction.publishedDate),
+                        chapters = resources.getString(
+                            R.string.synced_fanfictions_chapters,
+                            fanfiction.nbSyncedChapters,
+                            fanfiction.nbChapters
+                        )
                     )
-                )
+                })
+            } else {
+                SyncedFanfictionsResult.NoSyncedFanfictions
             }
         }
     }
@@ -47,5 +51,10 @@ class SyncedViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             repository.deleteFanfiction(fanfictionId)
         }
+    }
+
+    sealed class SyncedFanfictionsResult {
+        data class SyncedFanfictions(val fanfictionList: List<FanfictionSyncedUIModel>) : SyncedFanfictionsResult()
+        object NoSyncedFanfictions : SyncedFanfictionsResult()
     }
 }
