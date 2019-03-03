@@ -23,4 +23,6 @@
     <string name="synced_fanfictions_menu_exportPdf">Export PDF</string>
     <string name="synced_fanfictions_menu_exportEpub">Export EPUB</string>
     <string name="synced_fanfictions_menu_delete">Delete</string>
+
+    <string name="profile_associate_profile_button">Associate profile</string>
 </resources>

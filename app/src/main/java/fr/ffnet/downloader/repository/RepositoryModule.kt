@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
+import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import retrofit2.Retrofit
 
 @Module
@@ -29,6 +30,13 @@ class RepositoryModule {
     ): DownloaderRepository {
         return DownloaderRepository(service, fanfictionBuilder, fanfictionDao, historyDao)
     }
+
+    @Provides
+    fun provideProfileRepository(
+        service: SearchService,
+        profileDao: ProfileDao,
+        profileBuilder: ProfileBuilder
+    ): ProfileRepository = ProfileRepository(service, profileDao, profileBuilder)
 
     @Provides
     fun provideDatabaseRepository(

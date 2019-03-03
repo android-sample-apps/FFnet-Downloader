@@ -20,7 +20,7 @@ class DownloaderRepository(
 ) {
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
-        val response = service.getPage(fanfictionId).execute()
+        val response = service.getFanfiction(fanfictionId).execute()
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
                 val existingChapters = fanfictionDao.getChapters(fanfictionId).map { it.chapterId }
@@ -61,7 +61,7 @@ class DownloaderRepository(
     ) {
         chapterList.forEach { chapter ->
             println("Adding request for chapter ${chapter.id}")
-            service.getPage(fanfictionId, chapter.id).enqueue(object : Callback<ResponseBody> {
+            service.getFanfiction(fanfictionId, chapter.id).enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("onFailure Nope")
                 }

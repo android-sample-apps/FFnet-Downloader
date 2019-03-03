@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class SearchViewModel(
     private val urlTransformer: UrlTransformer,
     private val resources: Resources,
@@ -30,18 +29,15 @@ class SearchViewModel(
         get() = navigateToFanfictionActivity
 
     private lateinit var historyList: LiveData<List<HistoryUIModel>>
-//    fun getHistoryList(): LiveData<List<HistoryUIModel>> = historyList
 
     fun loadFanfictionInfos(url: String?) {
         if (!url.isNullOrEmpty()) {
-            val urlTransformationResult = urlTransformer.getIdFromUrl(url)
-            CoroutineScope(Dispatchers.IO).launch {
-                when (urlTransformationResult) {
-                    is UrlTransformSuccess -> loadFanfictionInfo(
-                        urlTransformationResult.fanfictionId
-                    )
-                    is UrlTransformFailure -> TODO()
-                }
+            val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(url)
+            when (urlTransformationResult) {
+                is UrlTransformSuccess -> loadFanfictionInfo(
+                    urlTransformationResult.id
+                )
+                is UrlTransformFailure -> TODO()
             }
         }
     }
@@ -62,10 +58,12 @@ class SearchViewModel(
     }
 
     private fun loadFanfictionInfo(fanfictionId: String) {
-        val fanfictionResult = repository.loadFanfictionInfo(fanfictionId)
-        if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-            CoroutineScope(Dispatchers.Main).launch {
-                navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
+        CoroutineScope(Dispatchers.IO).launch {
+            val fanfictionResult = repository.loadFanfictionInfo(fanfictionId)
+            if (fanfictionResult is FanfictionRepositoryResultSuccess) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
+                }
             }
         }
     }

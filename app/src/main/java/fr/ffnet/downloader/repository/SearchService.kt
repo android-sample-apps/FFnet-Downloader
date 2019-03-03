@@ -7,8 +7,11 @@ import retrofit2.http.Path
 
 interface SearchService {
     @GET("s/{storyId}/{chapterId}")
-    fun getPage(
+    fun getFanfiction(
         @Path("storyId") storyId: String,
         @Path("chapterId") chapterId: String? = "1"
     ): Call<ResponseBody>
+
+    @GET("u/{profileId}")
+    fun getProfile(@Path("profileId") profileId: String): Call<ResponseBody>
 }
