@@ -48,6 +48,8 @@ class ProfileRepository(
         }
     }
 
+    fun hasAssociatedProfile(): Boolean = profileDao.getProfile().isNotEmpty()
+
     private fun insertListAndReturnIds(fanfictionList: List<Fanfiction>): List<String> {
         return fanfictionList.map { fanfiction ->
             val fanfictionInfo = fanfictionDao.getFanfiction(fanfiction.id)

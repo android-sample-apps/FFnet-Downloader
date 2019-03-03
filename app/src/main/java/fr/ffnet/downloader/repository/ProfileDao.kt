@@ -15,6 +15,9 @@ interface ProfileDao {
     fun updateProfile(profileId: String, myFavorites: String, myStories: String)
 
     @Query("SELECT * FROM ProfileEntity WHERE profileId = :profileId")
-    fun getProfile(profileId: String): ProfileEntity
+    fun getProfile(profileId: String): ProfileEntity?
+
+    @Query("SELECT * FROM ProfileEntity")
+    fun getProfile(): List<ProfileEntity>
 
 }

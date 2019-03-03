@@ -8,23 +8,33 @@ import fr.ffnet.downloader.search.Fanfiction
 class DatabaseRepository(private val dao: FanfictionDao) {
 
     fun getFanfictionFromDb(fanfictionId: String): Fanfiction {
-        return dao.getFanfiction(fanfictionId).toFanfiction(
+        return dao.getFanfiction(fanfictionId)!!.toFanfiction(
             dao.getChapters(fanfictionId)
         )
     }
 
-    fun getFanfictionsFromDbLiveData(): LiveData<List<Fanfiction>> {
-        return Transformations.map(dao.getFanfictionsLiveData()) { fanfictionList ->
-            if (fanfictionList.isEmpty()) {
-                emptyList()
-            } else {
-                fanfictionList.map { it.toFanfiction(emptyList()) }
-            }
-        }
-    }
+    fun getFanfictionsFromDbLiveData(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(
+        dao.getFanfictionsLiveData()
+    )
 
     fun deleteFanfiction(fanfictionId: String) {
         dao.deleteFanfiction(fanfictionId)
+    }
+
+    fun getFanfictionsFromProfile(profileId: String): LiveData<List<Fanfiction>> {
+        return transformEntityLiveDataToModelLiveData(
+            dao.getFanfictionsFromProfileLiveData(profileId)
+        )
+    }
+
+    fun transformEntityLiveDataToModelLiveData(
+        liveData: LiveData<List<FanfictionEntity>>
+    ): LiveData<List<Fanfiction>> = Transformations.map(liveData) { fanfictionList ->
+        if (fanfictionList.isEmpty()) {
+            emptyList()
+        } else {
+            fanfictionList.map { it.toFanfiction(emptyList()) }
+        }
     }
 
     private fun buildFanfiction(fanfictionEntity: FanfictionEntity): Fanfiction {
@@ -48,7 +58,7 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         summary = summary,
         publishedDate = publishedDate,
         updatedDate = updatedDate,
-        syncedDate= syncedDate,
+        syncedDate = syncedDate,
         nbChapters = nbChapters,
         nbSyncedChapters = nbSyncedChapters,
         chapterList = chapterList.map { it.toChapter() }

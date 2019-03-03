@@ -34,7 +34,7 @@ class ProfileBuilder @Inject constructor(
                 summary = "N/A",
                 publishedDate = DateTime(it.attr("data-datesubmit").toLong() * 1000).toDate(),
                 updatedDate = DateTime(it.attr("data-dateupdate").toLong() * 1000).toDate(),
-                syncedDate = DateTime.now().toDate(),
+                syncedDate = null,
                 nbChapters = it.attr("data-chapters").toInt(),
                 nbSyncedChapters = 0,
                 chapterList = emptyList()

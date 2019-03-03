@@ -64,7 +64,7 @@ class FanfictionViewModel(
                         status = resources.getString(
                             when (it.isSynced) {
                                 true -> R.string.download_info_chapter_status_synced
-                                false -> R.string.download_info_chapter_status_unsynced
+                                false -> R.string.download_info_chapter_status_not_synced
                             }
                         )
                     )
@@ -92,7 +92,7 @@ class FanfictionViewModel(
                         status = resources.getString(
                             when (it.status) {
                                 true -> R.string.download_info_chapter_status_synced
-                                false -> R.string.download_info_chapter_status_unsynced
+                                false -> R.string.download_info_chapter_status_not_synced
                             }
                         )
                     )

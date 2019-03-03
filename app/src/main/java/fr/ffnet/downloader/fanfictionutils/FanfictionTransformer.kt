@@ -15,7 +15,9 @@ class FanfictionTransformer @Inject constructor() {
         summary = fanfiction.summary,
         publishedDate = fanfiction.publishedDate,
         updatedDate = fanfiction.updatedDate,
-        syncedDate = fanfiction.syncedDate
+        syncedDate = fanfiction.syncedDate,
+        nbChapters = fanfiction.nbChapters,
+        nbSyncedChapters = fanfiction.nbSyncedChapters
     )
 
     fun toChapterEntityList(

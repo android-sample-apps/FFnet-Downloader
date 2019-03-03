@@ -28,14 +28,14 @@ interface FanfictionDao {
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE id = :fanfictionId"
     )
-    fun getFanfiction(fanfictionId: String): FanfictionEntity
+    fun getFanfiction(fanfictionId: String): FanfictionEntity?
 
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
-            "FROM FanfictionEntity"
+            "FROM FanfictionEntity WHERE syncedDate IS NOT NULL"
     )
     fun getFanfictionsLiveData(): LiveData<List<FanfictionEntity>>
 
@@ -44,4 +44,14 @@ interface FanfictionDao {
 
     @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
     fun getChapters(fanfictionId: String): List<ChapterEntity>
+
+    @Query(
+        "SELECT " +
+            "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
+            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "FROM FanfictionEntity " +
+            "WHERE id IN (SELECT myFavoritesList FROM ProfileEntity)"
+    )
+    fun getFanfictionsFromProfileLiveData(profileId: String): LiveData<List<FanfictionEntity>>
 }

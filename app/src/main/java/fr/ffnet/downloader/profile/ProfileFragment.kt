@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
@@ -15,19 +14,26 @@ class ProfileFragment : DaggerFragment() {
 
     @Inject lateinit var viewModel: ProfileViewModel
 
+    companion object {
+        private const val DISPLAY_LIST = 0
+        private const val DISPLAY_ASSOCIATE = 1
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getIsProfileAssociated().observe(this, Observer { isAssociated ->
-            Toast.makeText(context, "Profile is associated : $isAssociated", Toast.LENGTH_LONG).show()
+            if (isAssociated) {
+                profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
+            } else {
+                profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
+            }
         })
 
         fetchInformationButton.setOnClickListener {
