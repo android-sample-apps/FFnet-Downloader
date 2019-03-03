@@ -41,8 +41,3 @@ data class ChapterEntity(
     val content: String = "",
     val isSynced: Boolean = false
 )
-
-data class CountChapters(
-    val nbChapters: Int,
-    val nbSyncedChapters: Int
-)

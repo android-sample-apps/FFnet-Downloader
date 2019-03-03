@@ -10,9 +10,6 @@ import androidx.room.Query
 interface FanfictionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertInHistory(history: HistoryEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFanfiction(fanfiction: FanfictionEntity)
 
     @Insert
@@ -23,9 +20,6 @@ interface FanfictionDao {
 
     @Query("DELETE FROM fanfictionentity WHERE id = :fanfictionId")
     fun deleteFanfiction(fanfictionId: String): Int
-
-    @Query("SELECT * FROM HistoryEntity")
-    fun getHistory(): LiveData<List<HistoryEntity>>
 
     @Query("SELECT FanfictionEntity.*, COUNT(*) AS nbChapters, SUM(isSynced) AS nbSyncedChapters FROM FanfictionEntity LEFT JOIN ChapterEntity ON (ChapterEntity.fanfictionId = FanfictionEntity.id) WHERE FanfictionEntity.id = :fanfictionId")
     fun getFanfiction(fanfictionId: String): FanfictionEntity

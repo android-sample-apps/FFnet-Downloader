@@ -8,8 +8,12 @@ import retrofit2.Retrofit
 
 @Module
 class RepositoryModule {
+
     @Provides
     fun provideFanfictionDao(database: FanfictionDownloaderDatabase): FanfictionDao = database.fanfictionDao()
+
+    @Provides
+    fun provideHistoryDao(database: FanfictionDownloaderDatabase): HistoryDao = database.historyDao()
 
     @Provides
     fun provideDownloaderService(retrofit: Retrofit): SearchService {
@@ -19,10 +23,11 @@ class RepositoryModule {
     @Provides
     fun provideDownloaderRepository(
         service: SearchService,
-        dao: FanfictionDao,
+        fanfictionDao: FanfictionDao,
+        historyDao: HistoryDao,
         fanfictionBuilder: FanfictionBuilder
     ): DownloaderRepository {
-        return DownloaderRepository(service, fanfictionBuilder, dao)
+        return DownloaderRepository(service, fanfictionBuilder, fanfictionDao, historyDao)
     }
 
     @Provides

@@ -33,7 +33,7 @@ class SyncedViewModel(
                         title = fanfiction.title,
                         updatedDate = formatter.format(fanfiction.updatedDate),
                         publishedDate = formatter.format(fanfiction.publishedDate),
-                        syncedDate = formatter.format(fanfiction.publishedDate),
+                        syncedDate = formatter.format(fanfiction.syncedDate),
                         chapters = resources.getString(
                             R.string.synced_fanfictions_chapters,
                             fanfiction.nbSyncedChapters,

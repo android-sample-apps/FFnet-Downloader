@@ -15,20 +15,21 @@ import retrofit2.Response
 class DownloaderRepository(
     private val service: SearchService,
     private val fanfictionBuilder: FanfictionBuilder,
-    private val dao: FanfictionDao
+    private val fanfictionDao: FanfictionDao,
+    private val historyDao: HistoryDao
 ) {
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
         val response = service.getPage(fanfictionId).execute()
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
-                val existingChapters = dao.getChapters(fanfictionId).map { it.chapterId }
+                val existingChapters = fanfictionDao.getChapters(fanfictionId).map { it.chapterId }
                 val fanfictionInfo = fanfictionBuilder.buildFanfiction(
                     fanfictionId, responseBody.string(), existingChapters
                 )
 
-                dao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
-                dao.insertInHistory(
+                fanfictionDao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
+                historyDao.insertInHistory(
                     HistoryEntity(
                         fanfictionInfo.id,
                         fanfictionInfo.title,
@@ -52,7 +53,7 @@ class DownloaderRepository(
         }
     }
 
-    fun loadHistory(): LiveData<List<HistoryEntity>> = dao.getHistory()
+    fun loadHistory(): LiveData<List<HistoryEntity>> = historyDao.getHistory()
 
     fun loadAllChapters(
         fanfictionId: String,
@@ -73,7 +74,7 @@ class DownloaderRepository(
                         response.body()?.let {
                             val chapterContent = fanfictionBuilder.extractChapter(it.string())
                             Thread {
-                                dao.updateChapter(
+                                fanfictionDao.updateChapter(
                                     content = chapterContent,
                                     isSynced = true,
                                     chapterId = chapter.id,
@@ -90,7 +91,7 @@ class DownloaderRepository(
     }
 
     private fun insertChapter(fanfictionId: String, chapter: Chapter) {
-        dao.insertChapterList(
+        fanfictionDao.insertChapterList(
             listOf(
                 ChapterEntity(
                     fanfictionId = fanfictionId,
@@ -109,7 +110,7 @@ class DownloaderRepository(
             summary = summary,
             publishedDate = publishedDate,
             updatedDate = updatedDate,
-            syncedDate = DateTime.now().toDate()
+            syncedDate = syncedDate
         )
     }
 

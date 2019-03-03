@@ -18,7 +18,7 @@ class DatabaseRepository(private val dao: FanfictionDao) {
             if (fanfictionList.isEmpty()) {
                 emptyList()
             } else {
-                fanfictionList.map { buildFanfiction(it) }
+                fanfictionList.map { it.toFanfiction(emptyList()) }
             }
         }
     }
@@ -32,9 +32,10 @@ class DatabaseRepository(private val dao: FanfictionDao) {
             id = fanfictionEntity.id,
             title = fanfictionEntity.title,
             words = fanfictionEntity.words,
-            publishedDate = fanfictionEntity.publishedDate,
             summary = fanfictionEntity.summary,
+            publishedDate = fanfictionEntity.publishedDate,
             updatedDate = fanfictionEntity.updatedDate,
+            syncedDate = fanfictionEntity.syncedDate,
             nbChapters = fanfictionEntity.nbChapters,
             nbSyncedChapters = fanfictionEntity.nbSyncedChapters
         )
@@ -44,11 +45,12 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         id = id,
         title = title,
         words = words,
-        publishedDate = publishedDate,
         summary = summary,
+        publishedDate = publishedDate,
         updatedDate = updatedDate,
-        nbChapters = chapterList.size,
-        nbSyncedChapters = chapterList.filter(ChapterEntity::isSynced).size,
+        syncedDate= syncedDate,
+        nbChapters = nbChapters,
+        nbSyncedChapters = nbSyncedChapters,
         chapterList = chapterList.map { it.toChapter() }
     )
 
