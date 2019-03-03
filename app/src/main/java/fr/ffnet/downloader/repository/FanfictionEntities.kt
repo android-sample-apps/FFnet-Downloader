@@ -28,7 +28,7 @@ data class HistoryEntity(
 @Entity(
     foreignKeys = [ForeignKey(
         entity = FanfictionEntity::class,
-        parentColumns = ["profile"],
+        parentColumns = ["id"],
         childColumns = ["fanfictionId"],
         onDelete = ForeignKey.CASCADE
     )]

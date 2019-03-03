@@ -21,7 +21,13 @@ interface FanfictionDao {
     @Query("DELETE FROM FanfictionEntity WHERE id = :fanfictionId")
     fun deleteFanfiction(fanfictionId: String): Int
 
-    @Query("SELECT FanfictionEntity.*, COUNT(*) AS nbChapters, SUM(isSynced) AS nbSyncedChapters FROM FanfictionEntity LEFT JOIN ChapterEntity ON (ChapterEntity.fanfictionId = FanfictionEntity.id) WHERE FanfictionEntity.id = :fanfictionId")
+    @Query(
+        "SELECT " +
+            "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
+            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "FROM FanfictionEntity WHERE id = :fanfictionId"
+    )
     fun getFanfiction(fanfictionId: String): FanfictionEntity
 
     @Query(
