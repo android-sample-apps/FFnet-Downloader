@@ -36,12 +36,14 @@ class ProfileViewModel(
 
     fun associateProfile(profileUrl: String?) {
         if (!profileUrl.isNullOrEmpty()) {
-            val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(profileUrl)
+            val urlTransformationResult = urlTransformer.getProfileIdFromUrl(profileUrl)
             when (urlTransformationResult) {
                 is UrlTransformer.UrlTransformationResult.UrlTransformSuccess -> loadProfileInfo(
                     urlTransformationResult.id
                 )
-                is UrlTransformer.UrlTransformationResult.UrlTransformFailure -> TODO()
+                is UrlTransformer.UrlTransformationResult.UrlTransformFailure -> {
+                    // Do nothing
+                }
             }
         }
     }

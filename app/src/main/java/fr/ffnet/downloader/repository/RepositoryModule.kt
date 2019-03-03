@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
+import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import retrofit2.Retrofit
 
@@ -17,6 +18,9 @@ class RepositoryModule {
     fun provideHistoryDao(database: FanfictionDownloaderDatabase): HistoryDao = database.historyDao()
 
     @Provides
+    fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao = database.profileDao()
+
+    @Provides
     fun provideDownloaderService(retrofit: Retrofit): SearchService {
         return retrofit.create(SearchService::class.java)
     }
@@ -26,17 +30,32 @@ class RepositoryModule {
         service: SearchService,
         fanfictionDao: FanfictionDao,
         historyDao: HistoryDao,
-        fanfictionBuilder: FanfictionBuilder
+        fanfictionBuilder: FanfictionBuilder,
+        fanfictionTransformer: FanfictionTransformer
     ): DownloaderRepository {
-        return DownloaderRepository(service, fanfictionBuilder, fanfictionDao, historyDao)
+        return DownloaderRepository(
+            service,
+            fanfictionBuilder,
+            fanfictionDao,
+            historyDao,
+            fanfictionTransformer
+        )
     }
 
     @Provides
     fun provideProfileRepository(
         service: SearchService,
         profileDao: ProfileDao,
-        profileBuilder: ProfileBuilder
-    ): ProfileRepository = ProfileRepository(service, profileDao, profileBuilder)
+        profileBuilder: ProfileBuilder,
+        fanfictionTransformer: FanfictionTransformer,
+        fanfictionDao: FanfictionDao
+    ): ProfileRepository = ProfileRepository(
+        service,
+        profileDao,
+        fanfictionDao,
+        profileBuilder,
+        fanfictionTransformer
+    )
 
     @Provides
     fun provideDatabaseRepository(

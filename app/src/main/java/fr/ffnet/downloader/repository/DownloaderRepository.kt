@@ -2,6 +2,7 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
+import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.search.Chapter
@@ -16,7 +17,8 @@ class DownloaderRepository(
     private val service: SearchService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
-    private val historyDao: HistoryDao
+    private val historyDao: HistoryDao,
+    private val fanfictionTransformer: FanfictionTransformer
 ) {
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
@@ -28,7 +30,9 @@ class DownloaderRepository(
                     fanfictionId, responseBody.string(), existingChapters
                 )
 
-                fanfictionDao.insertFanfiction(fanfictionInfo.toFanfictionEntity())
+                fanfictionDao.insertFanfiction(
+                    fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
+                )
                 historyDao.insertInHistory(
                     HistoryEntity(
                         fanfictionInfo.id,
@@ -36,16 +40,14 @@ class DownloaderRepository(
                         DateTime.now().toDate()
                     )
                 )
-
-                if (existingChapters.isNotEmpty()) {
-                    fanfictionInfo.chapterList.filter { it.id !in existingChapters }.map { chapter ->
-                        insertChapter(fanfictionId, chapter)
-                    }
+                val chapterList = if (existingChapters.isNotEmpty()) {
+                    fanfictionInfo.chapterList.filter { it.id !in existingChapters }
                 } else {
-                    fanfictionInfo.chapterList.map { chapter ->
-                        insertChapter(fanfictionId, chapter)
-                    }
+                    fanfictionInfo.chapterList
                 }
+                fanfictionDao.insertChapterList(
+                    fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
+                )
                 FanfictionRepositoryResultSuccess(fanfictionInfo)
             } ?: FanfictionRepositoryResultFailure
         } else {
@@ -61,7 +63,9 @@ class DownloaderRepository(
     ) {
         chapterList.forEach { chapter ->
             println("Adding request for chapter ${chapter.id}")
-            service.getFanfiction(fanfictionId, chapter.id).enqueue(object : Callback<ResponseBody> {
+            service.getFanfiction(
+                fanfictionId, chapter.id
+            ).enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     println("onFailure Nope")
                 }
@@ -88,30 +92,6 @@ class DownloaderRepository(
                 }
             })
         }
-    }
-
-    private fun insertChapter(fanfictionId: String, chapter: Chapter) {
-        fanfictionDao.insertChapterList(
-            listOf(
-                ChapterEntity(
-                    fanfictionId = fanfictionId,
-                    chapterId = chapter.id,
-                    title = chapter.title
-                )
-            )
-        )
-    }
-
-    private fun Fanfiction.toFanfictionEntity(): FanfictionEntity {
-        return FanfictionEntity(
-            id = id,
-            title = title,
-            words = words,
-            summary = summary,
-            publishedDate = publishedDate,
-            updatedDate = updatedDate,
-            syncedDate = syncedDate
-        )
     }
 
     sealed class FanfictionRepositoryResult {

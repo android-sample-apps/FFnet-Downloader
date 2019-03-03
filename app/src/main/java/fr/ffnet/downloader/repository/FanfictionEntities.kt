@@ -13,7 +13,7 @@ data class FanfictionEntity(
     var summary: String,
     var publishedDate: Date,
     var updatedDate: Date,
-    var syncedDate: Date,
+    var syncedDate: Date?,
     var nbChapters: Int = 0,
     var nbSyncedChapters: Int = 0
 )
@@ -28,8 +28,8 @@ data class HistoryEntity(
 @Entity(
     foreignKeys = [ForeignKey(
         entity = FanfictionEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["id"],
+        parentColumns = ["profile"],
+        childColumns = ["fanfictionId"],
         onDelete = ForeignKey.CASCADE
     )]
 )

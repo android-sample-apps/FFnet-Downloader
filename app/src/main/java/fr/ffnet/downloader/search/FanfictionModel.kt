@@ -9,7 +9,7 @@ data class Fanfiction(
     var summary: String,
     val publishedDate: Date,
     val updatedDate: Date,
-    val syncedDate: Date,
+    val syncedDate: Date?,
     val nbChapters: Int,
     val nbSyncedChapters: Int,
     val chapterList: List<Chapter> = emptyList()
