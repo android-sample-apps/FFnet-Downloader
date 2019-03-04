@@ -22,10 +22,8 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false).also {
-            activity?.title = resources.getString(R.string.search_fanfiction_title)
-        }
+    ): View? = inflater.inflate(R.layout.fragment_search, container, false).also {
+        activity?.title = resources.getString(R.string.search_title)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

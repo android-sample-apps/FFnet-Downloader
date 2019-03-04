@@ -18,8 +18,8 @@ interface FanfictionDao {
     @Query("UPDATE ChapterEntity SET content = :content, isSynced = :isSynced WHERE fanfictionId = :fanfictionId AND chapterId = :chapterId")
     fun updateChapter(content: String, isSynced: Boolean, fanfictionId: String, chapterId: String)
 
-    @Query("DELETE FROM FanfictionEntity WHERE id = :fanfictionId")
-    fun deleteFanfiction(fanfictionId: String): Int
+    @Query("UPDATE ChapterEntity SET content = '', isSynced = 0 WHERE fanfictionId = :fanfictionId")
+    fun unsyncFanfiction(fanfictionId: String): Int
 
     @Query(
         "SELECT " +
@@ -33,7 +33,7 @@ interface FanfictionDao {
         "SELECT " +
             "FanfictionEntity.*, " +
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
-            "FROM FanfictionEntity WHERE syncedDate IS NOT NULL"
+            "FROM FanfictionEntity WHERE id IN (SELECT fanfictionId FROM ChapterEntity WHERE isSynced = 1)"
     )
     fun getFanfictionsLiveData(): LiveData<List<FanfictionEntity>>
 

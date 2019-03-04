@@ -31,6 +31,7 @@ class SyncedFragment : DaggerFragment(), OnActionsClickListener {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_synced, container, false).also {
+            activity?.title = resources.getString(R.string.synced_title)
             viewModel.loadFanfictionsFromDb()
         }
     }

@@ -17,8 +17,8 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         dao.getFanfictionsLiveData()
     )
 
-    fun deleteFanfiction(fanfictionId: String) {
-        dao.deleteFanfiction(fanfictionId)
+    fun unsyncFanfiction(fanfictionId: String) {
+        dao.unsyncFanfiction(fanfictionId)
     }
 
     fun getFanfictionsFromProfile(): LiveData<List<Fanfiction>> {

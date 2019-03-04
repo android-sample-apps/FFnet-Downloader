@@ -1,5 +1,7 @@
 package fr.ffnet.downloader.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import fr.ffnet.downloader.search.Fanfiction
@@ -23,18 +25,22 @@ class ProfileRepository(
 
                 profileDao.deleteProfileMapping(profileId)
                 favoriteIds.map {
-                    profileDao.insertProfileFanfiction(ProfileFanfictionEntity(
-                        profileId = profileId,
-                        fanfictionId = it,
-                        isFavorite = true
-                    ))
+                    profileDao.insertProfileFanfiction(
+                        ProfileFanfictionEntity(
+                            profileId = profileId,
+                            fanfictionId = it,
+                            isFavorite = true
+                        )
+                    )
                 }
                 storyIds.map {
-                    profileDao.insertProfileFanfiction(ProfileFanfictionEntity(
-                        profileId = profileId,
-                        fanfictionId = it,
-                        isFavorite = false
-                    ))
+                    profileDao.insertProfileFanfiction(
+                        ProfileFanfictionEntity(
+                            profileId = profileId,
+                            fanfictionId = it,
+                            isFavorite = false
+                        )
+                    )
                 }
 
                 val profile = profileDao.getProfile(profileId)
@@ -46,6 +52,8 @@ class ProfileRepository(
                             isAssociated = true
                         )
                     )
+                } else {
+                    profileDao.associateProfile(profileId)
                 }
 
                 ProfileRepositoryResult.ProfileRepositoryResultSuccess(
@@ -57,7 +65,9 @@ class ProfileRepository(
         }
     }
 
-    fun hasAssociatedProfile(): Boolean = profileDao.getProfile().isNotEmpty()
+    fun hasAssociatedProfile(): LiveData<Boolean> = Transformations.map(profileDao.getProfile()) {
+        it?.let { true } ?: false
+    }
 
     private fun insertListAndReturnIds(fanfictionList: List<Fanfiction>): List<String> {
         return fanfictionList.map { fanfiction ->
@@ -68,6 +78,10 @@ class ProfileRepository(
             }
             fanfiction.id
         }
+    }
+
+    fun dissociateProfile() {
+        profileDao.dissociateProfile()
     }
 
     sealed class ProfileRepositoryResult {

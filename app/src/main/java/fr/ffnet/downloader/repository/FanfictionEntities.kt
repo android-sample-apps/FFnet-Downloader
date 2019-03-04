@@ -30,7 +30,7 @@ data class HistoryEntity(
         entity = FanfictionEntity::class,
         parentColumns = ["id"],
         childColumns = ["fanfictionId"],
-        onDelete = ForeignKey.CASCADE
+        onDelete = ForeignKey.NO_ACTION
     )]
 )
 data class ChapterEntity(

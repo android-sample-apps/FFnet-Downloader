@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="title_activity_ffnet">FFnet</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <string name="download_url_hint">Url</string>
     <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Sync chapters</string>
-    <string name="search_fanfiction_title">Search Fanfiction</string>
+    <string name="search_title">Search Fanfiction</string>
+    <string name="profile_title">My profile</string>
+    <string name="synced_title">Synced Fanfictions</string>
 
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
@@ -25,5 +29,7 @@
     <string name="synced_fanfictions_menu_delete">Delete</string>
 
     <string name="profile_associate_profile_button">Associate profile</string>
+    <string name="profile_dissociate_profile">Dissociate profile</string>
+    <string name="profile_dissociate_confirmation">Do you really want to dissociate your profile?</string>
     <string name="profile_associate_no_fanfiction_found">No fanfiction found for the associated profile, do you wish to associate another profile ?</string>
 </resources>

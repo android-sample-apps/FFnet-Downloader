@@ -30,19 +30,16 @@ class ProfileViewModel(
     private lateinit var fanfictionResult: LiveData<ProfileFanfictionsResult>
     fun getFanfictionList(): LiveData<ProfileFanfictionsResult> = fanfictionResult
 
+    private lateinit var isAssociatedLiveData: LiveData<Boolean>
+    fun getIsAssociated(): LiveData<Boolean> = isAssociatedLiveData
+
     private val navigateToFanfictionActivity = MutableLiveData<LiveEvent<String>>()
     val navigateToFanfiction: LiveData<LiveEvent<String>>
         get() = navigateToFanfictionActivity
 
-    private val isProfileAssociated: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
+    fun loadIsProfileAssociated() {
+        isAssociatedLiveData = profileRepository.hasAssociatedProfile()
     }
-
-    init {
-        setIsProfileAssociated()
-    }
-
-    fun getIsProfileAssociated(): LiveData<Boolean> = isProfileAssociated
 
     fun loadFanfictionsFromProfile() {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -97,19 +94,16 @@ class ProfileViewModel(
         }
     }
 
+    fun dissociateProfile() {
+        CoroutineScope(Dispatchers.IO).launch {
+            profileRepository.dissociateProfile()
+        }
+    }
+
     private fun loadProfileInfo(profileId: String) {
         this.profileId = profileId
         CoroutineScope(Dispatchers.IO).launch {
             profileRepository.loadProfileInfo(profileId)
-        }
-    }
-
-    private fun setIsProfileAssociated() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val hasAssociatedProfile = profileRepository.hasAssociatedProfile()
-            CoroutineScope(Dispatchers.Main).launch {
-                isProfileAssociated.value = hasAssociatedProfile
-            }
         }
     }
 

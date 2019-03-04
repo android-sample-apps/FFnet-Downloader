@@ -49,7 +49,7 @@ class SyncedViewModel(
 
     fun deleteFanfiction(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            repository.deleteFanfiction(fanfictionId)
+            repository.unsyncFanfiction(fanfictionId)
         }
     }
 
