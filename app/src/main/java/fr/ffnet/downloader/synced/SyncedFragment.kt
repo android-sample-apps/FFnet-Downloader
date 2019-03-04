@@ -11,10 +11,12 @@ import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
+import fr.ffnet.downloader.utils.FanfictionAction
+import fr.ffnet.downloader.utils.OnActionsClickListener
 import kotlinx.android.synthetic.main.fragment_synced.*
 import javax.inject.Inject
 
-class SyncedFragment : DaggerFragment(), SyncedAdapter.OnActionsClickListener {
+class SyncedFragment : DaggerFragment(), OnActionsClickListener {
 
     @Inject lateinit var viewModel: SyncedViewModel
 
@@ -46,15 +48,12 @@ class SyncedFragment : DaggerFragment(), SyncedAdapter.OnActionsClickListener {
         })
     }
 
-    override fun onActionClicked(
-        fanfictionId: String,
-        action: SyncedAdapter.FanfictionAction
-    ) {
+    override fun onActionClicked(fanfictionId: String, action: FanfictionAction) {
         when (action) {
-            SyncedAdapter.FanfictionAction.GOTO_FANFICTION -> startFanfictionActivity(fanfictionId)
-            SyncedAdapter.FanfictionAction.EXPORT_PDF -> Log.d("ACTION", "EXPORT_PDF")
-            SyncedAdapter.FanfictionAction.EXPORT_EPUB -> Log.d("ACTION", "EXPORT_EPUB")
-            SyncedAdapter.FanfictionAction.DELETE_FANFICTION -> {
+            FanfictionAction.GOTO_FANFICTION -> startFanfictionActivity(fanfictionId)
+            FanfictionAction.EXPORT_PDF -> Log.d("ACTION", "EXPORT_PDF")
+            FanfictionAction.EXPORT_EPUB -> Log.d("ACTION", "EXPORT_EPUB")
+            FanfictionAction.DELETE_FANFICTION -> {
                 viewModel.deleteFanfiction(fanfictionId)
             }
         }

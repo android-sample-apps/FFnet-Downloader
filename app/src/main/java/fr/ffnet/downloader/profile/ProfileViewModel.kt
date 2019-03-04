@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.profile
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.DatabaseRepository
+import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.ProfileRepository
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,21 +21,21 @@ import java.util.*
 class ProfileViewModel(
     private val urlTransformer: UrlTransformer,
     private val resources: Resources,
-    private val sharedPreferences: SharedPreferences,
     private val databaseRepository: DatabaseRepository,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val downloaderRepository: DownloaderRepository
 ) : ViewModel() {
 
     private lateinit var profileId: String
     private lateinit var fanfictionResult: LiveData<ProfileFanfictionsResult>
     fun getFanfictionList(): LiveData<ProfileFanfictionsResult> = fanfictionResult
 
+    private val navigateToFanfictionActivity = MutableLiveData<LiveEvent<String>>()
+    val navigateToFanfiction: LiveData<LiveEvent<String>>
+        get() = navigateToFanfictionActivity
+
     private val isProfileAssociated: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
-    }
-
-    companion object {
-        private const val ASSOCIATED_PROFILE = "ASSOCIATED_PROFILE"
     }
 
     init {
@@ -80,6 +81,17 @@ class ProfileViewModel(
                 )
                 is UrlTransformer.UrlTransformationResult.UrlTransformFailure -> {
                     // Do nothing
+                }
+            }
+        }
+    }
+
+    fun loadFanfictionInfo(fanfictionId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
+            if (fanfictionResult is DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
                 }
             }
         }

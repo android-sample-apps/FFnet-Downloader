@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-light"
+        android:singleLine="true"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/actionsImageButton"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Harry Potter and the Methods of Rationality" />
+
+    <TextView
+        android:id="@+id/chaptersTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/actionsImageButton"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        tools:text="122 chapters / 600000 words" />
+
+    <TextView
+        android:id="@+id/publishedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/download_info_published_date_label"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/chaptersTextView" />
+
+    <TextView
+        android:id="@+id/publishedDateValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/publishedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        tools:text="2010/02/28" />
+
+    <TextView
+        android:id="@+id/updatedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/download_info_updated_date_label"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/publishedDateLabelTextView" />
+
+    <TextView
+        android:id="@+id/updatedDateValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/updatedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        tools:text="2015/03/14" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="publishedDateLabelTextView, updatedDateLabelTextView" />
+
+    <ImageButton
+        android:id="@+id/actionsImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="@id/chaptersTextView"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
