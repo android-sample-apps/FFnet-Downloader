@@ -21,21 +21,30 @@ class ProfileRepository(
                 val favoriteIds = insertListAndReturnIds(profileInfo.favoriteFanfictionList)
                 val storyIds = insertListAndReturnIds(profileInfo.myFanfictionList)
 
+                profileDao.deleteProfileMapping(profileId)
+                favoriteIds.map {
+                    profileDao.insertProfileFanfiction(ProfileFanfictionEntity(
+                        profileId = profileId,
+                        fanfictionId = it,
+                        isFavorite = true
+                    ))
+                }
+                storyIds.map {
+                    profileDao.insertProfileFanfiction(ProfileFanfictionEntity(
+                        profileId = profileId,
+                        fanfictionId = it,
+                        isFavorite = false
+                    ))
+                }
+
                 val profile = profileDao.getProfile(profileId)
                 if (profile == null) {
                     profileDao.insertProfile(
                         ProfileEntity(
                             profileId = profileInfo.profileId,
                             name = profileInfo.name,
-                            myFavoritesList = favoriteIds.joinToString(),
-                            myStoriesList = storyIds.joinToString()
+                            isAssociated = true
                         )
-                    )
-                } else {
-                    profileDao.updateProfile(
-                        profileId,
-                        favoriteIds.joinToString(),
-                        storyIds.joinToString()
                     )
                 }
 

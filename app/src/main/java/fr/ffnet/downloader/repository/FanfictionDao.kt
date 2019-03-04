@@ -51,7 +51,7 @@ interface FanfictionDao {
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
-            "WHERE id IN (SELECT myFavoritesList FROM ProfileEntity)"
+            "WHERE id IN (SELECT fanfictionId FROM ProfileFanfictionEntity LEFT JOIN ProfileEntity ON (ProfileFanfictionEntity.profileId = ProfileEntity.profileId) WHERE isAssociated = 1)"
     )
-    fun getFanfictionsFromProfileLiveData(profileId: String): LiveData<List<FanfictionEntity>>
+    fun getFanfictionsFromAssociatedProfileLiveData(): LiveData<List<FanfictionEntity>>
 }

@@ -36,6 +36,18 @@ class ProfileFragment : DaggerFragment() {
             }
         })
 
+        viewModel.loadFanfictionsFromProfile()
+        viewModel.getFanfictionList().observe(this, Observer {
+            when (it) {
+                is ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions -> {
+                    println(it.fanfictionList.size)
+                }
+                is ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions -> {
+                    println("No fanfiction")
+                }
+            }
+        })
+
         fetchInformationButton.setOnClickListener {
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }

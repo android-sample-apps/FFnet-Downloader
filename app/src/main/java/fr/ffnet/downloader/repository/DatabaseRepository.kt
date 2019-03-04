@@ -21,9 +21,9 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         dao.deleteFanfiction(fanfictionId)
     }
 
-    fun getFanfictionsFromProfile(profileId: String): LiveData<List<Fanfiction>> {
+    fun getFanfictionsFromProfile(): LiveData<List<Fanfiction>> {
         return transformEntityLiveDataToModelLiveData(
-            dao.getFanfictionsFromProfileLiveData(profileId)
+            dao.getFanfictionsFromAssociatedProfileLiveData()
         )
     }
 

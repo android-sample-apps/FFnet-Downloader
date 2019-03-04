@@ -46,7 +46,7 @@ class ProfileViewModel(
     fun loadFanfictionsFromProfile() {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         fanfictionResult = Transformations.map(
-            databaseRepository.getFanfictionsFromProfile(profileId)
+            databaseRepository.getFanfictionsFromProfile()
         ) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 ProfileFanfictionsResult.ProfileHasFanfictions(fanfictionList.map { fanfiction ->
