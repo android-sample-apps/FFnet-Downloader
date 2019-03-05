@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
@@ -49,7 +48,7 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initRecyclerView()
+        initViewPager()
         fetchInformationButton.setOnClickListener {
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }
@@ -71,7 +70,7 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
         viewModel.getFanfictionList().observe(this, Observer {
             when (it) {
                 is ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions -> {
-                    showSyncedFanfictions(it.fanfictionList)
+                    showFanfictions(it.fanfictionList)
                 }
                 is ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions -> {
                     profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
@@ -119,13 +118,15 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
         viewModel.loadFanfictionInfo(fanfictionId)
     }
 
-    private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (favoriteFanfictionsRecyclerView.adapter as MyFanfictionsAdapter).fanfictionList = fanfictionList
+    private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
+        (fanfictionsViewPager.adapter as FanfictionViewPagerAdapter).adapterList = listOf(
+            fanfictionList to MyFanfictionsAdapter(this),
+            fanfictionList to MyFanfictionsAdapter(this)
+        )
         profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
     }
 
-    private fun initRecyclerView() {
-        favoriteFanfictionsRecyclerView.layoutManager = LinearLayoutManager(context)
-        favoriteFanfictionsRecyclerView.adapter = MyFanfictionsAdapter(this)
+    private fun initViewPager() {
+        fanfictionsViewPager.adapter = FanfictionViewPagerAdapter()
     }
 }

@@ -108,7 +108,9 @@ class ProfileViewModel(
     }
 
     sealed class ProfileFanfictionsResult {
-        data class ProfileHasFanfictions(val fanfictionList: List<FanfictionSyncedUIModel>) : ProfileFanfictionsResult()
+        data class ProfileHasFanfictions(
+            val fanfictionList: List<FanfictionSyncedUIModel>
+        ) : ProfileFanfictionsResult()
         object ProfileHasNoFanfictions : ProfileFanfictionsResult()
     }
 }

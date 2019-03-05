@@ -60,8 +60,14 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favoriteFanfictionsRecyclerView"
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/fanfictionsViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <!--<androidx.recyclerview.widget.RecyclerView-->
+        <!--android:id="@+id/favoriteFanfictionsRecyclerView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 </ViewFlipper>
