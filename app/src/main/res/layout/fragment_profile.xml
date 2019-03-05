@@ -71,8 +71,10 @@
             android:layout_height="wrap_content"
             app:tabBackground="@color/colorPrimary"
             app:tabIndicatorColor="@android:color/white"
-            app:tabIndicatorHeight="4dp"
-            app:tabMode="fixed" />
+            app:tabIndicatorHeight="3dp"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabTextColor="@android:color/black" />
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/fanfictionsViewPager"

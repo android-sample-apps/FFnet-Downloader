@@ -36,6 +36,10 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             viewModel.loadFanfictionInfoFromDatabase(it)
         } ?: closeActivityNoExtra()
 
+        swipeRefresh.setOnRefreshListener {
+            viewModel.loadFanfictionInfos(intent.getStringExtra(EXTRA_ID))
+        }
+
         downloadButton.setOnClickListener {
             viewModel.loadChapters()
             viewModel.getChapterList().observe(this, Observer { chapterList ->
@@ -43,7 +47,11 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             })
         }
         initRecyclerView()
-
+        viewModel.stopRefresh.observe(this, Observer { liveEvent ->
+            liveEvent.getContentIfNotHandled()?.let {
+                swipeRefresh.isRefreshing = false
+            }
+        })
         viewModel.getCurrentFanfiction().observe(this, Observer {
             widgetVisibilityGroup.visibility = View.VISIBLE
             titleValueTextView.text = it.title

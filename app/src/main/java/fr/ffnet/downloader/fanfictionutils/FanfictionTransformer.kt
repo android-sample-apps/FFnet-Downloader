@@ -27,7 +27,9 @@ class FanfictionTransformer @Inject constructor() {
         ChapterEntity(
             fanfictionId = fanfictionId,
             chapterId = chapter.id,
-            title = chapter.title
+            title = chapter.title,
+            content = chapter.content,
+            isSynced = chapter.status
         )
     }
 

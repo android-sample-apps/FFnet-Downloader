@@ -26,7 +26,7 @@ class DownloaderRepository(
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
                 val existingChapters = fanfictionDao.getChaptersIds(fanfictionId)
-                val fanfictionInfo = fanfictionBuilder.buildFanfiction(
+                val (firstChapter, fanfictionInfo) = fanfictionBuilder.buildFanfiction(
                     fanfictionId, responseBody.string(), existingChapters
                 )
 

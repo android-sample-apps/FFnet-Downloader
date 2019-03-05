@@ -15,7 +15,7 @@ class FanfictionBuilder @Inject constructor(
         id: String,
         html: String,
         existingChapters: List<String>
-    ): Fanfiction {
+    ): Pair<String, Fanfiction> {
 
         val document = jsoupParser.parseHtml(html)
         val profileTop = document.select("div#profile_top")
@@ -26,9 +26,14 @@ class FanfictionBuilder @Inject constructor(
         val summary = profileTop.select("div").last()?.text() ?: "N/A"
         val published = dates[if (dates.size > 1) 1 else 0]?.attr("data-xutime")?.toLong() ?: 0
         val updated = dates[0]?.attr("data-xutime")?.toLong() ?: 0
-        val chapterList = extractChapterList(document.select("#chap_select"), title, existingChapters)
+        val chapterList = extractChapterList(
+            document.select("#storytext").first().text(),
+            document.select("#chap_select"),
+            title,
+            existingChapters
+        )
 
-        return Fanfiction(
+        return document.select("#storytext").first().text() to Fanfiction(
             id = id,
             title = title,
             words = words,
@@ -49,6 +54,7 @@ class FanfictionBuilder @Inject constructor(
     }
 
     private fun extractChapterList(
+        firstChapter: String,
         select: Elements,
         title: String,
         existingChapters: List<String>
@@ -56,10 +62,13 @@ class FanfictionBuilder @Inject constructor(
         return if (select.isNotEmpty()) {
             select.first().select("option").map {
                 val chapterId = it.attr("value")
+                val content = if (chapterId.toInt() == 1) firstChapter else ""
+                val status = chapterId.toInt() == 1 || chapterId in existingChapters
                 Chapter(
                     id = chapterId,
                     title = it.text().replace("$chapterId. ", ""),
-                    status = chapterId in existingChapters
+                    content = content,
+                    status = status
                 )
             }
         } else {
@@ -67,6 +76,7 @@ class FanfictionBuilder @Inject constructor(
                 Chapter(
                     id = "1",
                     title = title,
+                    content = firstChapter,
                     status = "1" in existingChapters
                 )
             )

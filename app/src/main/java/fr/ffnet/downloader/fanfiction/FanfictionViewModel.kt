@@ -11,6 +11,7 @@ import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
+import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +26,10 @@ class FanfictionViewModel(
 ) : ViewModel() {
 
     private lateinit var currentFanfiction: Fanfiction
+
+    private val stopRefreshing = MutableLiveData<LiveEvent<String>>()
+    val stopRefresh: LiveData<LiveEvent<String>>
+        get() = stopRefreshing
 
     private val fanfiction: MutableLiveData<FanfictionUIModel> by lazy {
         MutableLiveData<FanfictionUIModel>()
@@ -44,6 +49,17 @@ class FanfictionViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             val fanfictionInfo = dbRepository.getFanfictionFromDb(fanfictionId)
             presentFanfictionInfo(fanfictionInfo)
+        }
+    }
+
+    fun loadFanfictionInfos(fanfictionId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
+            if (fanfictionResult is DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    stopRefreshing.value = LiveEvent(fanfictionId)
+                }
+            }
         }
     }
 
