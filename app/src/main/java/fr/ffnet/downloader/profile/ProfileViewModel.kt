@@ -10,6 +10,7 @@ import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.ProfileRepository
+import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
@@ -42,27 +43,14 @@ class ProfileViewModel(
     }
 
     fun loadFanfictionsFromProfile() {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         fanfictionResult = Transformations.map(
             databaseRepository.getFanfictionsFromProfile()
         ) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
-                ProfileFanfictionsResult.ProfileHasFanfictions(fanfictionList.map { fanfiction ->
-                    FanfictionSyncedUIModel(
-                        id = fanfiction.id,
-                        title = fanfiction.title,
-                        updatedDate = formatter.format(fanfiction.updatedDate),
-                        publishedDate = formatter.format(fanfiction.publishedDate),
-                        syncedDate = fanfiction.syncedDate?.let {
-                            formatter.format(fanfiction.syncedDate)
-                        } ?: resources.getString(R.string.download_info_chapter_status_not_synced),
-                        chapters = resources.getString(
-                            R.string.synced_fanfictions_chapters,
-                            fanfiction.nbSyncedChapters,
-                            fanfiction.nbChapters
-                        )
-                    )
-                })
+                ProfileFanfictionsResult.ProfileHasFanfictions(
+                    buildFanfictionSyncedUIModelList(fanfictionList),
+                    buildFanfictionSyncedUIModelList(fanfictionList)
+                )
             } else {
                 ProfileFanfictionsResult.ProfileHasNoFanfictions
             }
@@ -100,6 +88,26 @@ class ProfileViewModel(
         }
     }
 
+    private fun buildFanfictionSyncedUIModelList(fanfictionList: List<Fanfiction>): List<FanfictionSyncedUIModel> {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return fanfictionList.map { fanfiction ->
+            FanfictionSyncedUIModel(
+                id = fanfiction.id,
+                title = fanfiction.title,
+                updatedDate = formatter.format(fanfiction.updatedDate),
+                publishedDate = formatter.format(fanfiction.publishedDate),
+                syncedDate = fanfiction.syncedDate?.let {
+                    formatter.format(fanfiction.syncedDate)
+                } ?: resources.getString(R.string.download_info_chapter_status_not_synced),
+                chapters = resources.getString(
+                    R.string.synced_fanfictions_chapters,
+                    fanfiction.nbSyncedChapters,
+                    fanfiction.nbChapters
+                )
+            )
+        }
+    }
+
     private fun loadProfileInfo(profileId: String) {
         this.profileId = profileId
         CoroutineScope(Dispatchers.IO).launch {
@@ -109,8 +117,10 @@ class ProfileViewModel(
 
     sealed class ProfileFanfictionsResult {
         data class ProfileHasFanfictions(
-            val fanfictionList: List<FanfictionSyncedUIModel>
+            val myFanfictionList: List<FanfictionSyncedUIModel>,
+            val myStoriesList: List<FanfictionSyncedUIModel>
         ) : ProfileFanfictionsResult()
+
         object ProfileHasNoFanfictions : ProfileFanfictionsResult()
     }
 }

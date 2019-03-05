@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.FanfictionAction
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 class ProfileFragment : DaggerFragment(), OnActionsClickListener {
 
-    @Inject lateinit var viewModel: ProfileViewModel
+    private lateinit var viewModel: ProfileViewModel
+    @Inject lateinit var viewModelFactory: ViewModelFactory<ProfileViewModel>
 
     companion object {
         private const val DISPLAY_ASSOCIATE = 0
@@ -29,6 +32,7 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_profile, container, false).also {
         activity?.title = resources.getString(R.string.profile_title)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -70,7 +74,7 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
         viewModel.getFanfictionList().observe(this, Observer {
             when (it) {
                 is ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions -> {
-                    showFanfictions(it.fanfictionList)
+                    showFanfictions(it.myFanfictionList)
                 }
                 is ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions -> {
                     profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
