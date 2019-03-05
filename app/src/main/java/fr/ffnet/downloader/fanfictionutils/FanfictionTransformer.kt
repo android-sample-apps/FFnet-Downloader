@@ -39,6 +39,7 @@ class FanfictionTransformer @Inject constructor() {
         publishedDate = fanfictionEntity.publishedDate,
         updatedDate = fanfictionEntity.updatedDate,
         syncedDate = fanfictionEntity.syncedDate,
+        profileType = fanfictionEntity.profileType,
         nbChapters = fanfictionEntity.nbChapters,
         nbSyncedChapters = fanfictionEntity.nbSyncedChapters,
         chapterList = emptyList()

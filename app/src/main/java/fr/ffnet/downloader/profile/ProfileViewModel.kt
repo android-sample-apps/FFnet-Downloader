@@ -28,8 +28,11 @@ class ProfileViewModel(
 ) : ViewModel() {
 
     private lateinit var profileId: String
-    private lateinit var fanfictionResult: LiveData<ProfileFanfictionsResult>
-    fun getFanfictionList(): LiveData<ProfileFanfictionsResult> = fanfictionResult
+    private lateinit var myFavoritesResult: LiveData<ProfileFanfictionsResult>
+    fun getMyFavoritesList(): LiveData<ProfileFanfictionsResult> = myFavoritesResult
+
+    private lateinit var myStoriesResult: LiveData<ProfileFanfictionsResult>
+    fun getMyStoriesResult(): LiveData<ProfileFanfictionsResult> = myStoriesResult
 
     private lateinit var isAssociatedLiveData: LiveData<Boolean>
     fun getIsAssociated(): LiveData<Boolean> = isAssociatedLiveData
@@ -42,13 +45,26 @@ class ProfileViewModel(
         isAssociatedLiveData = profileRepository.hasAssociatedProfile()
     }
 
-    fun loadFanfictionsFromProfile() {
-        fanfictionResult = Transformations.map(
-            databaseRepository.getFanfictionsFromProfile()
+    fun loadFavoriteFanfictions() {
+        myFavoritesResult = Transformations.map(
+            databaseRepository.getMyFavoriteFanfictions()
         ) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 ProfileFanfictionsResult.ProfileHasFanfictions(
-                    buildFanfictionSyncedUIModelList(fanfictionList),
+                    buildFanfictionSyncedUIModelList(fanfictionList)
+                )
+            } else {
+                ProfileFanfictionsResult.ProfileHasNoFanfictions
+            }
+        }
+    }
+
+    fun loadMyFanfictions() {
+        myStoriesResult = Transformations.map(
+            databaseRepository.getMyFanfictions()
+        ) { fanfictionList ->
+            if (fanfictionList.isNotEmpty()) {
+                ProfileFanfictionsResult.ProfileHasFanfictions(
                     buildFanfictionSyncedUIModelList(fanfictionList)
                 )
             } else {
@@ -117,8 +133,7 @@ class ProfileViewModel(
 
     sealed class ProfileFanfictionsResult {
         data class ProfileHasFanfictions(
-            val myFanfictionList: List<FanfictionSyncedUIModel>,
-            val myStoriesList: List<FanfictionSyncedUIModel>
+            val fanfictionList: List<FanfictionSyncedUIModel>
         ) : ProfileFanfictionsResult()
 
         object ProfileHasNoFanfictions : ProfileFanfictionsResult()

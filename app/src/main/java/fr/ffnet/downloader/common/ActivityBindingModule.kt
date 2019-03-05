@@ -6,6 +6,7 @@ import fr.ffnet.downloader.MainActivity
 import fr.ffnet.downloader.MainActivityModule
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.fanfiction.FanfictionModule
+import fr.ffnet.downloader.profile.ProfileFanfictionFragment
 import fr.ffnet.downloader.profile.ProfileFragment
 import fr.ffnet.downloader.profile.ProfileModule
 import fr.ffnet.downloader.search.SearchFragment
@@ -35,4 +36,8 @@ abstract class ActivityBindingModule {
     @ContributesAndroidInjector(modules = [ProfileModule::class])
     @FragmentScope
     abstract fun contributeProfileFragmentInjector(): ProfileFragment
+
+    @ContributesAndroidInjector(modules = [ProfileModule::class])
+    @FragmentScope
+    abstract fun contributeProfileFanfictionFragmentInjector(): ProfileFanfictionFragment
 }

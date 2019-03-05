@@ -60,14 +60,25 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/fanfictionsViewPager"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!--<androidx.recyclerview.widget.RecyclerView-->
-        <!--android:id="@+id/favoriteFanfictionsRecyclerView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/fanfictionsTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabBackground="@color/colorPrimary"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabIndicatorHeight="4dp"
+            app:tabMode="fixed" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/fanfictionsViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 </ViewFlipper>

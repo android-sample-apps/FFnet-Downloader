@@ -13,6 +13,12 @@ class ProfileRepository(
     private val profileBuilder: ProfileBuilder,
     private val fanfictionTransformer: FanfictionTransformer
 ) {
+
+    companion object {
+        const val PROFILE_TYPE_FAVORITE = 1
+        const val PROFILE_TYPE_MY_STORY = 2
+    }
+
     fun loadProfileInfo(profileId: String): ProfileRepositoryResult {
         val response = service.getProfile(profileId).execute()
         return if (response.isSuccessful) {
@@ -29,7 +35,7 @@ class ProfileRepository(
                         ProfileFanfictionEntity(
                             profileId = profileId,
                             fanfictionId = it,
-                            isFavorite = true
+                            profileType = PROFILE_TYPE_FAVORITE
                         )
                     )
                 }
@@ -38,7 +44,7 @@ class ProfileRepository(
                         ProfileFanfictionEntity(
                             profileId = profileId,
                             fanfictionId = it,
-                            isFavorite = false
+                            profileType = PROFILE_TYPE_MY_STORY
                         )
                     )
                 }

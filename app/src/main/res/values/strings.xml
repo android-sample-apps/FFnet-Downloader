@@ -28,6 +28,9 @@
     <string name="synced_fanfictions_menu_exportEpub">Export EPUB</string>
     <string name="synced_fanfictions_menu_delete">Delete</string>
 
+    <string name="profile_list_no_fanfictions">No stories in this category</string>
+    <string name="profile_my_favorites">My favorites</string>
+    <string name="profile_my_stories">My stories</string>
     <string name="profile_associate_profile_button">Associate profile</string>
     <string name="profile_dissociate_profile">Dissociate profile</string>
     <string name="profile_dissociate_confirmation">Do you really want to dissociate your profile?</string>

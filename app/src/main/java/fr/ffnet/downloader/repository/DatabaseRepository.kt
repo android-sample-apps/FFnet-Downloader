@@ -2,6 +2,8 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
+import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 
@@ -21,9 +23,15 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         dao.unsyncFanfiction(fanfictionId)
     }
 
-    fun getFanfictionsFromProfile(): LiveData<List<Fanfiction>> {
+    fun getMyFavoriteFanfictions(): LiveData<List<Fanfiction>> {
         return transformEntityLiveDataToModelLiveData(
-            dao.getFanfictionsFromAssociatedProfileLiveData()
+            dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_FAVORITE)
+        )
+    }
+
+    fun getMyFanfictions(): LiveData<List<Fanfiction>> {
+        return transformEntityLiveDataToModelLiveData(
+            dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_MY_STORY)
         )
     }
 
@@ -37,20 +45,6 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         }
     }
 
-    private fun buildFanfiction(fanfictionEntity: FanfictionEntity): Fanfiction {
-        return Fanfiction(
-            id = fanfictionEntity.id,
-            title = fanfictionEntity.title,
-            words = fanfictionEntity.words,
-            summary = fanfictionEntity.summary,
-            publishedDate = fanfictionEntity.publishedDate,
-            updatedDate = fanfictionEntity.updatedDate,
-            syncedDate = fanfictionEntity.syncedDate,
-            nbChapters = fanfictionEntity.nbChapters,
-            nbSyncedChapters = fanfictionEntity.nbSyncedChapters
-        )
-    }
-
     private fun FanfictionEntity.toFanfiction(chapterList: List<ChapterEntity>) = Fanfiction(
         id = id,
         title = title,
@@ -59,6 +53,7 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         publishedDate = publishedDate,
         updatedDate = updatedDate,
         syncedDate = syncedDate,
+        profileType = profileType,
         nbChapters = nbChapters,
         nbSyncedChapters = nbSyncedChapters,
         chapterList = chapterList.map { it.toChapter() }

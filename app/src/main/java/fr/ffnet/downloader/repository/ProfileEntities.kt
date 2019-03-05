@@ -15,5 +15,5 @@ data class ProfileFanfictionEntity(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var profileId: String,
     var fanfictionId: String,
-    var isFavorite: Boolean
+    var profileType: Int
 )

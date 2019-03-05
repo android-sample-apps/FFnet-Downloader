@@ -14,7 +14,7 @@ import fr.ffnet.downloader.utils.Converters
         ProfileEntity::class,
         ProfileFanfictionEntity::class
     ],
-    version = 18
+    version = 19
 )
 @TypeConverters(Converters::class)
 abstract class FanfictionDownloaderDatabase : RoomDatabase() {

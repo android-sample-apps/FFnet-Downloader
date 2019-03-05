@@ -48,12 +48,13 @@ interface FanfictionDao {
 
     @Query(
         "SELECT " +
-            "FanfictionEntity.*, ProfileFanfictionEntity.isFavorite, " +
+            "FanfictionEntity.*, ProfileFanfictionEntity.profileType, " +
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "LEFT JOIN ProfileFanfictionEntity ON (ProfileFanfictionEntity.fanfictionId = FanfictionEntity.id) " +
             "LEFT JOIN ProfileEntity ON (ProfileFanfictionEntity.profileId = ProfileEntity.profileId) " +
-            "WHERE ProfileEntity.isAssociated = 1"
+            "WHERE ProfileEntity.isAssociated = 1 " +
+            "AND ProfileFanfictionEntity.profileType = :profileType"
     )
-    fun getFanfictionsFromAssociatedProfileLiveData(): LiveData<List<FanfictionEntity>>
+    fun getFanfictionsFromAssociatedProfileLiveData(profileType: Int): LiveData<List<FanfictionEntity>>
 }

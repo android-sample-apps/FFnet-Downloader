@@ -2,10 +2,11 @@ package fr.ffnet.downloader.profile
 
 import android.view.LayoutInflater
 import android.view.View
-import fr.ffnet.downloader.R
 import android.view.ViewGroup
+import android.widget.ViewFlipper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import fr.ffnet.downloader.R
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import kotlinx.android.synthetic.main.item_fanfiction_view_pager_adapter.view.*
 
@@ -31,16 +32,16 @@ class FanfictionViewPagerAdapter : RecyclerView.Adapter<FanfictionViewPagerAdapt
         holder.bind(adapterList[position])
     }
 
-    inner class FanfictionViewPagerHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class FanfictionViewPagerHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val fanfictionRecyclerView: RecyclerView = view.fanfictionRecyclerView
+        private val recyclerView: RecyclerView = view.fanfictionRecyclerView
+        private val profileFanfictionsViewFlipper: ViewFlipper = view.profileFanfictionsViewFlipper
 
         fun bind(adapter: Pair<List<FanfictionSyncedUIModel>, MyFanfictionsAdapter>) {
-
-            fanfictionRecyclerView.layoutManager = LinearLayoutManager(fanfictionRecyclerView.context)
-            fanfictionRecyclerView.adapter = adapter.second
-            (fanfictionRecyclerView.adapter as MyFanfictionsAdapter).fanfictionList = adapter.first
-
+            profileFanfictionsViewFlipper.displayedChild = if (adapter.first.isNotEmpty()) 1 else 0
+            recyclerView.layoutManager = LinearLayoutManager(view.context)
+            recyclerView.adapter = adapter.second
+            (recyclerView.adapter as MyFanfictionsAdapter).fanfictionList = adapter.first
         }
     }
 }

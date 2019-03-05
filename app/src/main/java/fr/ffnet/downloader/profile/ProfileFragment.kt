@@ -2,21 +2,16 @@ package fr.ffnet.downloader.profile
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
-import fr.ffnet.downloader.fanfiction.FanfictionActivity
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
-import fr.ffnet.downloader.utils.FanfictionAction
-import fr.ffnet.downloader.utils.OnActionsClickListener
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
-class ProfileFragment : DaggerFragment(), OnActionsClickListener {
+class ProfileFragment : DaggerFragment() {
 
     private lateinit var viewModel: ProfileViewModel
     @Inject lateinit var viewModelFactory: ViewModelFactory<ProfileViewModel>
@@ -52,14 +47,11 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViewPager()
+        initTabLayout()
         fetchInformationButton.setOnClickListener {
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }
-
         viewModel.loadIsProfileAssociated()
-        viewModel.loadFanfictionsFromProfile()
-
         viewModel.getIsAssociated().observe(this, Observer { isAssociated ->
             if (isAssociated) {
                 setHasOptionsMenu(true)
@@ -71,37 +63,6 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
                 noFanfictionFoundTextView.visibility = View.GONE
             }
         })
-        viewModel.getFanfictionList().observe(this, Observer {
-            when (it) {
-                is ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions -> {
-                    showFanfictions(it.myFanfictionList)
-                }
-                is ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions -> {
-                    profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
-                }
-            }
-        })
-
-        viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
-            liveEvent.getContentIfNotHandled()?.let {
-                if (context != null) {
-                    startActivity(FanfictionActivity.intent(context!!, it))
-                }
-            }
-        })
-    }
-
-    override fun onActionClicked(fanfictionId: String, action: FanfictionAction) {
-        when (action) {
-            FanfictionAction.GOTO_FANFICTION -> fetchFanfictionInformation(
-                fanfictionId
-            )
-            FanfictionAction.EXPORT_PDF -> Log.d("ACTION", "EXPORT_PDF")
-            FanfictionAction.EXPORT_EPUB -> Log.d("ACTION", "EXPORT_EPUB")
-            FanfictionAction.DELETE_FANFICTION -> {
-
-            }
-        }
     }
 
     private fun dissociateProfile() {
@@ -118,19 +79,15 @@ class ProfileFragment : DaggerFragment(), OnActionsClickListener {
         }
     }
 
-    private fun fetchFanfictionInformation(fanfictionId: String) {
-        viewModel.loadFanfictionInfo(fanfictionId)
-    }
-
-    private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (fanfictionsViewPager.adapter as FanfictionViewPagerAdapter).adapterList = listOf(
-            fanfictionList to MyFanfictionsAdapter(this),
-            fanfictionList to MyFanfictionsAdapter(this)
-        )
-        profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
-    }
-
-    private fun initViewPager() {
-        fanfictionsViewPager.adapter = FanfictionViewPagerAdapter()
+    private fun initTabLayout() {
+        fanfictionsViewPager.adapter = FanfictionsTabAdapter(
+            activity!!.supportFragmentManager
+        ).apply {
+            fragmentList = listOf(
+                resources.getString(R.string.profile_my_favorites) to ProfileFanfictionFragment.newInstance(true),
+                resources.getString(R.string.profile_my_stories) to ProfileFanfictionFragment.newInstance(false)
+            )
+        }
+        fanfictionsTabLayout.setupWithViewPager(fanfictionsViewPager)
     }
 }

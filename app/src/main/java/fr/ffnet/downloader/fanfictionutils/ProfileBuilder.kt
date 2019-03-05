@@ -1,6 +1,8 @@
 package fr.ffnet.downloader.fanfictionutils
 
 import fr.ffnet.downloader.profile.Profile
+import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
+import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.JsoupParser
 import org.joda.time.DateTime
@@ -20,12 +22,12 @@ class ProfileBuilder @Inject constructor(
         return Profile(
             profileId = profileId,
             name = name,
-            favoriteFanfictionList = extractFanfictionsFromList(favoriteStoriesSelector),
-            myFanfictionList = extractFanfictionsFromList(myStoriesSelector)
+            favoriteFanfictionList = extractFanfictionsFromList(favoriteStoriesSelector, PROFILE_TYPE_FAVORITE),
+            myFanfictionList = extractFanfictionsFromList(myStoriesSelector, PROFILE_TYPE_MY_STORY)
         )
     }
 
-    private fun extractFanfictionsFromList(selector: Elements): List<Fanfiction> {
+    private fun extractFanfictionsFromList(selector: Elements, profileType: Int): List<Fanfiction> {
         return selector.map {
             Fanfiction(
                 id = it.attr("data-storyId"),
@@ -35,6 +37,7 @@ class ProfileBuilder @Inject constructor(
                 publishedDate = DateTime(it.attr("data-datesubmit").toLong() * 1000).toDate(),
                 updatedDate = DateTime(it.attr("data-dateupdate").toLong() * 1000).toDate(),
                 syncedDate = null,
+                profileType = profileType,
                 nbChapters = it.attr("data-chapters").toInt(),
                 nbSyncedChapters = 0,
                 chapterList = emptyList()
