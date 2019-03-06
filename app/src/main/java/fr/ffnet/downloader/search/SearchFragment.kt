@@ -28,6 +28,7 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fetchInformationButton.setOnClickListener {
+            it.isEnabled = false
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
 
