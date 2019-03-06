@@ -29,13 +29,17 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
+            progressBar.visibility = View.VISIBLE
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
 
         viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
                 if (context != null) {
-                    startActivity(FanfictionActivity.intent(context!!, it))
+                    startActivity(FanfictionActivity.intent(context!!, it)).also {
+                        fetchInformationButton.isEnabled = true
+                        progressBar.visibility = View.GONE
+                    }
                 }
             }
         })
