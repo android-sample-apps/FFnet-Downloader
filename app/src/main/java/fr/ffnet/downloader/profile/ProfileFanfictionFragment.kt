@@ -16,6 +16,7 @@ import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.FanfictionAction
 import fr.ffnet.downloader.utils.OnActionsClickListener
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
 
@@ -68,6 +69,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
         viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
                 if (context != null) {
+                    progressBar.visibility = View.GONE
                     startActivity(FanfictionActivity.intent(context!!, it))
                 }
             }
@@ -105,6 +107,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
     }
 
     private fun fetchFanfictionInformation(fanfictionId: String) {
+        progressBar.visibility = View.VISIBLE
         viewModel.loadFanfictionInfo(fanfictionId)
     }
 }

@@ -49,11 +49,13 @@ class ProfileFragment : DaggerFragment() {
 
         initTabLayout()
         fetchInformationButton.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }
         viewModel.loadIsProfileAssociated()
         viewModel.getIsAssociated().observe(this, Observer { isAssociated ->
             if (isAssociated) {
+                progressBar.visibility = View.GONE
                 setHasOptionsMenu(true)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
                 noFanfictionFoundTextView.visibility = View.VISIBLE
@@ -84,8 +86,12 @@ class ProfileFragment : DaggerFragment() {
             activity!!.supportFragmentManager
         ).apply {
             fragmentList = listOf(
-                resources.getString(R.string.profile_my_favorites) to ProfileFanfictionFragment.newInstance(true),
-                resources.getString(R.string.profile_my_stories) to ProfileFanfictionFragment.newInstance(false)
+                resources.getString(
+                    R.string.profile_my_favorites
+                ) to ProfileFanfictionFragment.newInstance(true),
+                resources.getString(
+                    R.string.profile_my_stories
+                ) to ProfileFanfictionFragment.newInstance(false)
             )
         }
         fanfictionsTabLayout.setupWithViewPager(fanfictionsViewPager)

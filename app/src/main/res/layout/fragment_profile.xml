@@ -1,86 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/profileAssociationStatusViewFlipper"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminateOnly="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <ViewFlipper
+        android:id="@+id/profileAssociationStatusViewFlipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/noFanfictionFoundTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:text="@string/profile_associate_no_fanfiction_found"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/profileUrlEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:hint="@string/download_url_hint"
-            android:text="https://www.fanfiction.net/u/1588412/"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-            app:layout_constraintTop_toBottomOf="@id/noFanfictionFoundTextView" />
-
-        <Button
-            android:id="@+id/fetchInformationButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile_associate_profile_button"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/profileUrlEditText" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="16dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/fanfictionsTabLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabBackground="@color/primaryColor"
-            app:tabIndicatorColor="@android:color/white"
-            app:tabIndicatorHeight="3dp"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="@android:color/black" />
+            android:layout_height="match_parent">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/fanfictionsViewPager"
+            <TextView
+                android:id="@+id/noFanfictionFoundTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:text="@string/profile_associate_no_fanfiction_found"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+                app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/profileUrlEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:hint="@string/download_url_hint"
+                android:text="https://www.fanfiction.net/u/1588412/"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+                app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+                app:layout_constraintTop_toBottomOf="@id/noFanfictionFoundTextView" />
+
+            <Button
+                android:id="@+id/fetchInformationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/profile_associate_profile_button"
+                app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+                app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/profileUrlEditText" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/leftGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="16dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/rightGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="16dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    </LinearLayout>
-</ViewFlipper>
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/fanfictionsTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabBackground="@color/primaryColor"
+                app:tabIndicatorColor="@android:color/white"
+                app:tabIndicatorHeight="3dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@android:color/white"
+                app:tabTextColor="@android:color/black" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/fanfictionsViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </ViewFlipper>
+</LinearLayout>
