@@ -10,7 +10,7 @@ data class Fanfiction(
     var summary: String,
     val publishedDate: Date,
     val updatedDate: Date,
-    val syncedDate: LocalDateTime?,
+    val fetchedDate: LocalDateTime?,
     val profileType: Int,
     val nbChapters: Int,
     val nbSyncedChapters: Int,

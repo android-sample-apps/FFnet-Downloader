@@ -112,7 +112,7 @@ class ProfileViewModel(
                 title = fanfiction.title,
                 updatedDate = formatter.format(fanfiction.updatedDate),
                 publishedDate = formatter.format(fanfiction.publishedDate),
-                syncedDate = fanfiction.syncedDate?.toString("yyyy-MM-dd HH:mm")
+                fetchedDate = fanfiction.fetchedDate?.toString("yyyy-MM-dd HH:mm")
                     ?: resources.getString(R.string.download_info_chapter_status_not_synced),
                 chapters = resources.getString(
                     R.string.synced_fanfictions_chapters,

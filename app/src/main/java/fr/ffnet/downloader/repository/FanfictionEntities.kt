@@ -14,7 +14,7 @@ data class FanfictionEntity(
     var summary: String,
     var publishedDate: Date,
     var updatedDate: Date,
-    var syncedDate: LocalDateTime?,
+    var fetchedDate: LocalDateTime?,
     var profileType: Int = 0,
     var nbChapters: Int = 0,
     var nbSyncedChapters: Int = 0

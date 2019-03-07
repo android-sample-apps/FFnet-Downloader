@@ -19,10 +19,6 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         dao.getFanfictionsLiveData()
     )
 
-    fun unsyncFanfiction(fanfictionId: String) {
-        dao.unsyncFanfiction(fanfictionId)
-    }
-
     fun getMyFavoriteFanfictions(): LiveData<List<Fanfiction>> {
         return transformEntityLiveDataToModelLiveData(
             dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_FAVORITE)
@@ -35,7 +31,11 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         )
     }
 
-    fun transformEntityLiveDataToModelLiveData(
+    fun unsyncFanfiction(fanfictionId: String) {
+        dao.unsyncFanfiction(fanfictionId)
+    }
+
+    private fun transformEntityLiveDataToModelLiveData(
         liveData: LiveData<List<FanfictionEntity>>
     ): LiveData<List<Fanfiction>> = Transformations.map(liveData) { fanfictionList ->
         if (fanfictionList.isEmpty()) {
@@ -52,7 +52,7 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         summary = summary,
         publishedDate = publishedDate,
         updatedDate = updatedDate,
-        syncedDate = syncedDate,
+        fetchedDate = fetchedDate,
         profileType = profileType,
         nbChapters = nbChapters,
         nbSyncedChapters = nbSyncedChapters,

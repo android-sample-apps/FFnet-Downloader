@@ -60,7 +60,7 @@ class FanfictionViewModel(
                 summary = it.summary,
                 updatedDate = formatter.format(it.updatedDate),
                 publishedDate = formatter.format(it.publishedDate),
-                syncedDate = it.syncedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A",
+                syncedDate = it.fetchedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A",
                 chapterList = emptyList()
             )
         }

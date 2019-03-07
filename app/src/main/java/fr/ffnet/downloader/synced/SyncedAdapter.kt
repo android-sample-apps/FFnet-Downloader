@@ -56,7 +56,7 @@ class SyncedAdapter(
             chaptersTextView.text = fanfiction.chapters
             publishedDateValueTextView.text = fanfiction.publishedDate
             updatedDateValueTextView.text = fanfiction.updatedDate
-            syncedDateValueTextView.text = fanfiction.syncedDate
+            syncedDateValueTextView.text = fanfiction.fetchedDate
 
             actionsImageButton.setOnClickListener {
                 val popupMenu = PopupMenu(actionsImageButton.context, view)

@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:indeterminateOnly="true"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
     <ViewFlipper
@@ -90,7 +89,7 @@
                 app:tabIndicatorHeight="3dp"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@android:color/black" />
+                app:tabTextColor="@color/secondaryDarkColor" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/fanfictionsViewPager"

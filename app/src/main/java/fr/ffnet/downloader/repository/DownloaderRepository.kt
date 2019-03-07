@@ -35,6 +35,7 @@ class DownloaderRepository(
                 fanfictionDao.insertFanfiction(
                     fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
                 )
+
                 historyDao.insertInHistory(
                     HistoryEntity(
                         fanfictionInfo.id,
