@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.repository
 
-import androidx.lifecycle.LiveData
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
@@ -10,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
-import org.joda.time.DateTime
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,7 +17,6 @@ class DownloaderRepository(
     private val service: SearchService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
-    private val historyDao: HistoryDao,
     private val fanfictionTransformer: FanfictionTransformer
 ) {
 
@@ -36,39 +33,21 @@ class DownloaderRepository(
                     fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
                 )
 
-                historyDao.insertInHistory(
-                    HistoryEntity(
-                        fanfictionInfo.id,
-                        fanfictionInfo.title,
-                        DateTime.now().toDate()
-                    )
-                )
                 val chapterList = if (existingChapters.isNotEmpty()) {
-                    fanfictionInfo.chapterList[0].apply {
-                        if (!this.status) {
-                            content = firstChapter
-                            status = true
-                        }
-                    }
                     fanfictionInfo.chapterList.filter { it.id !in existingChapters }
                 } else {
-                    fanfictionInfo.chapterList[0].apply {
-                        content = firstChapter
-                        status = true
-                    }
                     fanfictionInfo.chapterList
                 }
                 fanfictionDao.insertChapterList(
                     fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
                 )
+                fanfictionDao.updateFirstChapter(fanfictionId, firstChapter)
                 FanfictionRepositoryResultSuccess(fanfictionInfo)
             } ?: FanfictionRepositoryResultFailure
         } else {
             FanfictionRepositoryResultFailure
         }
     }
-
-    fun loadHistory(): LiveData<List<HistoryEntity>> = historyDao.getHistory()
 
     fun loadAllChapters(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {

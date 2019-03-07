@@ -15,6 +15,9 @@ interface FanfictionDao {
     @Insert
     fun insertChapterList(chapterList: List<ChapterEntity>)
 
+    @Query("UPDATE ChapterEntity SET isSynced = 1, content = :content WHERE fanfictionId = :fanfictionId AND chapterId = 1")
+    fun updateFirstChapter(fanfictionId: String, content: String)
+
     @Query("UPDATE ChapterEntity SET content = :content, isSynced = :isSynced WHERE fanfictionId = :fanfictionId AND chapterId = :chapterId")
     fun updateChapter(content: String, isSynced: Boolean, fanfictionId: String, chapterId: String)
 
@@ -41,9 +44,18 @@ interface FanfictionDao {
         "SELECT " +
             "FanfictionEntity.*, " +
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
-            "FROM FanfictionEntity WHERE id IN (SELECT fanfictionId FROM ChapterEntity WHERE isSynced = 1)"
+            "FROM FanfictionEntity " +
+            "WHERE id IN (SELECT fanfictionId FROM ChapterEntity GROUP BY fanfictionId HAVING SUM(isSynced) > 1 OR COUNT(*) = 1)"
     )
-    fun getFanfictionsLiveData(): LiveData<List<FanfictionEntity>>
+    fun getSyncedFanfictions(): LiveData<List<FanfictionEntity>>
+
+    @Query(
+        "SELECT " +
+            "FanfictionEntity.*, " +
+            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "FROM FanfictionEntity WHERE fetchedDate IS NOT NULL"
+    )
+    fun getFanfictionHistory(): LiveData<List<FanfictionEntity>>
 
     @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
     fun getChaptersLivedata(fanfictionId: String): LiveData<List<ChapterEntity>>

@@ -15,8 +15,12 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         }
     }
 
-    fun getFanfictionsFromDbLiveData(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(
-        dao.getFanfictionsLiveData()
+    fun getSyncedFanfictions(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(
+        dao.getSyncedFanfictions()
+    )
+
+    fun loadHistory(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(
+        dao.getFanfictionHistory()
     )
 
     fun getMyFavoriteFanfictions(): LiveData<List<Fanfiction>> {

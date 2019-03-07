@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.common.FragmentScope
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
+import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.RepositoryModule
 
@@ -16,6 +17,7 @@ class SearchModule {
     fun provideSearchViewModel(
         urlTransformer: UrlTransformer,
         resources: Resources,
-        repository: DownloaderRepository
-    ): SearchViewModel = SearchViewModel(urlTransformer, resources, repository)
+        apiRepository: DownloaderRepository,
+        dbRepository: DatabaseRepository
+    ): SearchViewModel = SearchViewModel(urlTransformer, resources, apiRepository, dbRepository)
 }

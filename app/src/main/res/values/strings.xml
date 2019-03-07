@@ -11,6 +11,8 @@
     <string name="profile_title">My profile</string>
     <string name="synced_title">Synced Fanfictions</string>
 
+    <string name="search_fetched_date">Fetched on %s</string>
+
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
     <string name="download_info_published_date_label">Published date</string>

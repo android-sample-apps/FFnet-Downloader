@@ -10,15 +10,13 @@ import fr.ffnet.downloader.utils.Converters
     entities = [
         FanfictionEntity::class,
         ChapterEntity::class,
-        HistoryEntity::class,
         ProfileEntity::class,
         ProfileFanfictionEntity::class
     ],
-    version = 21
+    version = 22
 )
 @TypeConverters(Converters::class)
 abstract class FanfictionDownloaderDatabase : RoomDatabase() {
     abstract fun fanfictionDao(): FanfictionDao
-    abstract fun historyDao(): HistoryDao
     abstract fun profileDao(): ProfileDao
 }

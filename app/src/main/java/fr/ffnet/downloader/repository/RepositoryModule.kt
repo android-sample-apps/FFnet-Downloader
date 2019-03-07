@@ -15,9 +15,6 @@ class RepositoryModule {
     fun provideFanfictionDao(database: FanfictionDownloaderDatabase): FanfictionDao = database.fanfictionDao()
 
     @Provides
-    fun provideHistoryDao(database: FanfictionDownloaderDatabase): HistoryDao = database.historyDao()
-
-    @Provides
     fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao = database.profileDao()
 
     @Provides
@@ -29,7 +26,6 @@ class RepositoryModule {
     fun provideDownloaderRepository(
         service: SearchService,
         fanfictionDao: FanfictionDao,
-        historyDao: HistoryDao,
         fanfictionBuilder: FanfictionBuilder,
         fanfictionTransformer: FanfictionTransformer
     ): DownloaderRepository {
@@ -37,7 +33,6 @@ class RepositoryModule {
             service,
             fanfictionBuilder,
             fanfictionDao,
-            historyDao,
             fanfictionTransformer
         )
     }

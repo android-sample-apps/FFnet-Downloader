@@ -24,7 +24,7 @@ class SyncedViewModel(
     fun loadFanfictionsFromDb() {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         fanfictionResult = Transformations.map(
-            repository.getFanfictionsFromDbLiveData()
+            repository.getSyncedFanfictions()
         ) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 SyncedFanfictionsResult.SyncedFanfictions(fanfictionList.map { fanfiction ->

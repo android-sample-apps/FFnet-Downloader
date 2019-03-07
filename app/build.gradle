@@ -76,6 +76,7 @@ dependencies {
     implementation "com.readystatesoftware.chuck:library:1.1.0"
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    implementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     // JSON Parsing
     implementation "com.squareup.moshi:moshi:1.6.0"

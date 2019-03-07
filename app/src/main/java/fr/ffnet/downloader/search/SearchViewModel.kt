@@ -6,22 +6,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.BuildConfig
+import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
+import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 class SearchViewModel(
     private val urlTransformer: UrlTransformer,
     private val resources: Resources,
-    private val repository: DownloaderRepository
+    private val apiRepository: DownloaderRepository,
+    private val dbRepository: DatabaseRepository
 ) : ViewModel() {
 
     private val navigateToFanfictionActivity = MutableLiveData<LiveEvent<String>>()
@@ -43,14 +44,16 @@ class SearchViewModel(
     }
 
     fun loadHistory(): LiveData<List<HistoryUIModel>> {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        historyList = Transformations.map(repository.loadHistory()) { historyList ->
+        historyList = Transformations.map(dbRepository.loadHistory()) { historyList ->
             historyList.map {
                 HistoryUIModel(
                     fanfictionId = it.id,
                     url = "${BuildConfig.API_BASE_URL}s/${it.id}",
                     title = it.title,
-                    date = formatter.format(it.fetchedDate)
+                    date = resources.getString(
+                        R.string.search_fetched_date,
+                        it.fetchedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A"
+                    )
                 )
             }
         }
@@ -59,7 +62,7 @@ class SearchViewModel(
 
     private fun loadFanfictionInfo(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val fanfictionResult = repository.loadFanfictionInfo(fanfictionId)
+            val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
             if (fanfictionResult is FanfictionRepositoryResultSuccess) {
                 CoroutineScope(Dispatchers.Main).launch {
                     navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
