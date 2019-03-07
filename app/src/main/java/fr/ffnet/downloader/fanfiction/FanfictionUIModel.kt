@@ -7,6 +7,7 @@ data class FanfictionUIModel(
     val summary: String,
     val publishedDate: String,
     val updatedDate: String,
+    val syncedDate: String,
     val chapterList: List<ChapterUIModel> = emptyList()
 )
 

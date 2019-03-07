@@ -1,5 +1,6 @@
 package fr.ffnet.downloader.search
 
+import org.joda.time.LocalDateTime
 import java.util.*
 
 data class Fanfiction(
@@ -9,7 +10,7 @@ data class Fanfiction(
     var summary: String,
     val publishedDate: Date,
     val updatedDate: Date,
-    val syncedDate: Date?,
+    val syncedDate: LocalDateTime?,
     val profileType: Int,
     val nbChapters: Int,
     val nbSyncedChapters: Int,
@@ -19,6 +20,6 @@ data class Fanfiction(
 data class Chapter(
     val id: String,
     val title: String,
-    val content: String = "",
-    val status: Boolean = false
+    var content: String = "",
+    var status: Boolean = false
 )

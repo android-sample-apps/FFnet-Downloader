@@ -4,6 +4,7 @@ import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.JsoupParser
 import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 import org.jsoup.select.Elements
 import javax.inject.Inject
 
@@ -13,8 +14,7 @@ class FanfictionBuilder @Inject constructor(
 
     fun buildFanfiction(
         id: String,
-        html: String,
-        existingChapters: List<String>
+        html: String
     ): Pair<String, Fanfiction> {
 
         val document = jsoupParser.parseHtml(html)
@@ -27,10 +27,8 @@ class FanfictionBuilder @Inject constructor(
         val published = dates[if (dates.size > 1) 1 else 0]?.attr("data-xutime")?.toLong() ?: 0
         val updated = dates[0]?.attr("data-xutime")?.toLong() ?: 0
         val chapterList = extractChapterList(
-            document.select("#storytext").first().text(),
             document.select("#chap_select"),
-            title,
-            existingChapters
+            title
         )
 
         return document.select("#storytext").first().text() to Fanfiction(
@@ -40,7 +38,7 @@ class FanfictionBuilder @Inject constructor(
             summary = summary,
             publishedDate = DateTime(published * 1000).toDate(),
             updatedDate = DateTime(updated * 1000).toDate(),
-            syncedDate = DateTime.now().toDate(),
+            syncedDate = LocalDateTime.now(),
             profileType = 0,
             nbChapters = chapterList.size,
             nbSyncedChapters = 0,
@@ -54,30 +52,22 @@ class FanfictionBuilder @Inject constructor(
     }
 
     private fun extractChapterList(
-        firstChapter: String,
         select: Elements,
-        title: String,
-        existingChapters: List<String>
+        title: String
     ): List<Chapter> {
         return if (select.isNotEmpty()) {
             select.first().select("option").map {
                 val chapterId = it.attr("value")
-                val content = if (chapterId.toInt() == 1) firstChapter else ""
-                val status = chapterId.toInt() == 1 || chapterId in existingChapters
                 Chapter(
                     id = chapterId,
-                    title = it.text().replace("$chapterId. ", ""),
-                    content = content,
-                    status = status
+                    title = it.text().replace("$chapterId. ", "")
                 )
             }
         } else {
             listOf(
                 Chapter(
                     id = "1",
-                    title = title,
-                    content = firstChapter,
-                    status = "1" in existingChapters
+                    title = title
                 )
             )
         }

@@ -9,10 +9,10 @@ import fr.ffnet.downloader.search.Fanfiction
 
 class DatabaseRepository(private val dao: FanfictionDao) {
 
-    fun getFanfictionFromDb(fanfictionId: String): Fanfiction {
-        return dao.getFanfiction(fanfictionId)!!.toFanfiction(
-            dao.getChapters(fanfictionId)
-        )
+    fun getFanfictionInfo(fanfictionId: String): LiveData<Fanfiction> {
+        return Transformations.map(dao.getFanfictionLiveData(fanfictionId)) {
+            it.toFanfiction(emptyList())
+        }
     }
 
     fun getFanfictionsFromDbLiveData(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(

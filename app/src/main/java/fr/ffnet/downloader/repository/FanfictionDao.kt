@@ -33,6 +33,14 @@ interface FanfictionDao {
         "SELECT " +
             "FanfictionEntity.*, " +
             "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "FROM FanfictionEntity WHERE id = :fanfictionId"
+    )
+    fun getFanfictionLiveData(fanfictionId: String): LiveData<FanfictionEntity>
+
+    @Query(
+        "SELECT " +
+            "FanfictionEntity.*, " +
+            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE id IN (SELECT fanfictionId FROM ChapterEntity WHERE isSynced = 1)"
     )
     fun getFanfictionsLiveData(): LiveData<List<FanfictionEntity>>

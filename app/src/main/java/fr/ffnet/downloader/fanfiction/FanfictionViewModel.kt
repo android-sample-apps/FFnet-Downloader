@@ -9,7 +9,6 @@ import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
-import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
@@ -31,96 +30,66 @@ class FanfictionViewModel(
     val stopRefresh: LiveData<LiveEvent<String>>
         get() = stopRefreshing
 
-    private val fanfiction: MutableLiveData<FanfictionUIModel> by lazy {
-        MutableLiveData<FanfictionUIModel>()
-    }
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
     private val chapterProgression: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
-    fun getCurrentFanfiction(): LiveData<FanfictionUIModel> = fanfiction
+    private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
+    fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
+
     fun getChapterSyncingProgression(): LiveData<String> = chapterProgression
 
-    fun loadFanfictionInfoFromDatabase(fanfictionId: String) {
+    fun refreshFanfictionInfo(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val fanfictionInfo = dbRepository.getFanfictionFromDb(fanfictionId)
-            presentFanfictionInfo(fanfictionInfo)
+            apiRepository.loadFanfictionInfo(fanfictionId)
         }
     }
 
-    fun loadFanfictionInfos(fanfictionId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    stopRefreshing.value = LiveEvent(fanfictionId)
-                }
-            }
-        }
-    }
-
-    fun loadChapters() {
-        if (currentFanfiction.chapterList.size > 1) {
-            chapterList = Transformations.map(
-                dao.getChaptersLivedata(currentFanfiction.id)
-            ) { chapterList ->
-                chapterProgression.value = resources.getString(
-                    R.string.download_info_chapters_value,
-                    chapterList.filter { it.isSynced }.size,
-                    currentFanfiction.chapterList.size
-                )
-                chapterList.map {
-                    ChapterUIModel(
-                        id = it.chapterId,
-                        title = it.title,
-                        status = resources.getString(
-                            when (it.isSynced) {
-                                true -> R.string.download_info_chapter_status_synced
-                                false -> R.string.download_info_chapter_status_not_synced
-                            }
-                        )
-                    )
-                }
-            }
-            apiRepository.loadAllChapters(currentFanfiction.id, currentFanfiction.chapterList)
-        }
-    }
-
-    private fun presentFanfictionInfo(fanfictionInfo: Fanfiction) {
-        currentFanfiction = fanfictionInfo
-        with(fanfictionInfo) {
-            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val fanfictionUiModel = FanfictionUIModel(
-                id = id,
-                title = title,
-                words = words.toString(),
-                summary = summary,
-                updatedDate = formatter.format(updatedDate),
-                publishedDate = formatter.format(publishedDate),
-                chapterList = chapterList.map {
-                    ChapterUIModel(
-                        id = it.id,
-                        title = it.title,
-                        status = resources.getString(
-                            when (it.status) {
-                                true -> R.string.download_info_chapter_status_synced
-                                false -> R.string.download_info_chapter_status_not_synced
-                            }
-                        )
-                    )
-                }
+    fun loadFanfictionInfo(fanfictionId: String) {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
+            currentFanfiction = it
+            FanfictionUIModel(
+                id = it.id,
+                title = it.title,
+                words = it.words.toString(),
+                summary = it.summary,
+                updatedDate = formatter.format(it.updatedDate),
+                publishedDate = formatter.format(it.publishedDate),
+                syncedDate = it.syncedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A",
+                chapterList = emptyList()
             )
-            CoroutineScope(Dispatchers.Main).launch {
-                chapterProgression.value = resources.getString(
-                    R.string.download_info_chapters_value,
-                    fanfictionInfo.chapterList.filter(Chapter::status).size,
-                    fanfictionInfo.chapterList.size
+        }
+    }
+
+    fun syncChapters(fanfictionId: String) {
+        apiRepository.loadAllChapters(fanfictionId)
+    }
+
+    fun loadChapters(fanfictionId: String) {
+        chapterList = Transformations.map(
+            dao.getChaptersLivedata(fanfictionId)
+        ) { chapterList ->
+            chapterProgression.value = resources.getString(
+                R.string.download_info_chapters_value,
+                chapterList.filter { it.isSynced }.size,
+                chapterList.size
+            )
+            chapterList.map {
+                ChapterUIModel(
+                    id = it.chapterId,
+                    title = it.title,
+                    status = resources.getString(
+                        when (it.isSynced) {
+                            true -> R.string.download_info_chapter_status_synced
+                            false -> R.string.download_info_chapter_status_not_synced
+                        }
+                    )
                 )
-                fanfiction.value = fanfictionUiModel
             }
         }
     }

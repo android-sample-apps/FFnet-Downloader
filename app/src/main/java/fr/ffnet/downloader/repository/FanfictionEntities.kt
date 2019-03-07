@@ -3,6 +3,7 @@ package fr.ffnet.downloader.repository
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.joda.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -13,7 +14,7 @@ data class FanfictionEntity(
     var summary: String,
     var publishedDate: Date,
     var updatedDate: Date,
-    var syncedDate: Date?,
+    var syncedDate: LocalDateTime?,
     var profileType: Int = 0,
     var nbChapters: Int = 0,
     var nbSyncedChapters: Int = 0

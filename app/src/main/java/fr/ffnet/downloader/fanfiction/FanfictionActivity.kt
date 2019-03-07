@@ -31,38 +31,39 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_fanfiction)
+        initRecyclerView()
 
         intent.getStringExtra(EXTRA_ID)?.let {
-            viewModel.loadFanfictionInfoFromDatabase(it)
+            viewModel.loadFanfictionInfo(it)
+            viewModel.loadChapters(it)
         } ?: closeActivityNoExtra()
 
         swipeRefresh.setOnRefreshListener {
-            viewModel.loadFanfictionInfos(intent.getStringExtra(EXTRA_ID))
+            viewModel.refreshFanfictionInfo(intent.getStringExtra(EXTRA_ID))
+        }
+        downloadButton.setOnClickListener {
+            viewModel.syncChapters(intent.getStringExtra(EXTRA_ID))
         }
 
-        downloadButton.setOnClickListener {
-            viewModel.loadChapters()
-            viewModel.getChapterList().observe(this, Observer { chapterList ->
-                (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
-            })
-        }
-        initRecyclerView()
         viewModel.stopRefresh.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
                 swipeRefresh.isRefreshing = false
             }
         })
-        viewModel.getCurrentFanfiction().observe(this, Observer {
+        viewModel.getFanfictionInfo().observe(this, Observer {
+            swipeRefresh.isRefreshing = false
             widgetVisibilityGroup.visibility = View.VISIBLE
             titleValueTextView.text = it.title
             wordsValueTextView.text = it.words
             publishedDateValueTextView.text = it.publishedDate
             updatedDateValueTextView.text = it.updatedDate
-            (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = it.chapterList
-
-            viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->
-                chaptersValueTextView.text = chapterProgression
-            })
+            syncedDateValueTextView.text = it.syncedDate
+        })
+        viewModel.getChapterList().observe(this, Observer { chapterList ->
+            (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
+        })
+        viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->
+            chaptersValueTextView.text = chapterProgression
         })
     }
 
