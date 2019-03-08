@@ -44,6 +44,8 @@ class MyFanfictionsAdapter(
         private val chaptersTextView: TextView = view.chaptersTextView
         private val publishedDateValueTextView: TextView = view.publishedDateValueTextView
         private val updatedDateValueTextView: TextView = view.updatedDateValueTextView
+        private val fetchedDateValueTextView: TextView = view.fetchedDateValueTextView
+        private val fetchedDateLabelTextView: TextView = view.fetchedDateLabelTextView
         private val actionsImageButton: ImageButton = view.actionsImageButton
 
         fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnActionsClickListener) {
@@ -51,6 +53,11 @@ class MyFanfictionsAdapter(
             chaptersTextView.text = fanfiction.chapters
             publishedDateValueTextView.text = fanfiction.publishedDate
             updatedDateValueTextView.text = fanfiction.updatedDate
+
+            fanfiction.fetchedDate?.let { date ->
+                setFetchedDateVisibility(View.VISIBLE)
+                fetchedDateValueTextView.text = date
+            } ?: setFetchedDateVisibility(View.GONE)
 
             actionsImageButton.setOnClickListener {
                 val popupMenu = PopupMenu(actionsImageButton.context, view)
@@ -80,6 +87,11 @@ class MyFanfictionsAdapter(
                 popupMenu.gravity = Gravity.END
                 popupMenu.show()
             }
+        }
+
+        private fun setFetchedDateVisibility(visibility: Int) {
+            fetchedDateLabelTextView.visibility = visibility
+            fetchedDateValueTextView.visibility = visibility
         }
     }
 }

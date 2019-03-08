@@ -6,5 +6,5 @@ data class FanfictionSyncedUIModel(
     val chapters: String,
     val updatedDate: String,
     val publishedDate: String,
-    val fetchedDate: String
+    val fetchedDate: String?
 )

@@ -74,7 +74,8 @@ interface FanfictionDao {
             "LEFT JOIN ProfileFanfictionEntity ON (ProfileFanfictionEntity.fanfictionId = FanfictionEntity.id) " +
             "LEFT JOIN ProfileEntity ON (ProfileFanfictionEntity.profileId = ProfileEntity.profileId) " +
             "WHERE ProfileEntity.isAssociated = 1 " +
-            "AND ProfileFanfictionEntity.profileType = :profileType"
+            "AND ProfileFanfictionEntity.profileType = :profileType " +
+            "ORDER BY FanfictionEntity.fetchedDate DESC, FanfictionEntity.updatedDate DESC"
     )
     fun getFanfictionsFromAssociatedProfileLiveData(profileType: Int): LiveData<List<FanfictionEntity>>
 }

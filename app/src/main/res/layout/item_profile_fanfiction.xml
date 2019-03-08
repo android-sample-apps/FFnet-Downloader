@@ -67,6 +67,23 @@
         app:layout_constraintLeft_toRightOf="@+id/barrier"
         tools:text="2015/03/14" />
 
+    <TextView
+        android:id="@+id/fetchedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/download_info_fetched_date_label"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView" />
+
+    <TextView
+        android:id="@+id/fetchedDateValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/fetchedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        tools:text="2015/03/14" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
         android:layout_width="wrap_content"

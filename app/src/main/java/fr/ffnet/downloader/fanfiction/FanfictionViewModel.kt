@@ -2,7 +2,6 @@ package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.R
@@ -10,7 +9,6 @@ import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
-import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,22 +24,13 @@ class FanfictionViewModel(
 
     private lateinit var currentFanfiction: Fanfiction
 
-    private val stopRefreshing = MutableLiveData<LiveEvent<String>>()
-    val stopRefresh: LiveData<LiveEvent<String>>
-        get() = stopRefreshing
-
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
-    private val chapterProgression: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
 
     private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
-
-    fun getChapterSyncingProgression(): LiveData<String> = chapterProgression
 
     fun refreshFanfictionInfo(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -61,7 +50,11 @@ class FanfictionViewModel(
                 updatedDate = formatter.format(it.updatedDate),
                 publishedDate = formatter.format(it.publishedDate),
                 syncedDate = it.fetchedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A",
-                chapterList = emptyList()
+                progression = resources.getString(
+                    R.string.download_info_chapters_value,
+                    it.nbSyncedChapters,
+                    it.nbChapters
+                )
             )
         }
     }
@@ -74,11 +67,6 @@ class FanfictionViewModel(
         chapterList = Transformations.map(
             dao.getChaptersLivedata(fanfictionId)
         ) { chapterList ->
-            chapterProgression.value = resources.getString(
-                R.string.download_info_chapters_value,
-                chapterList.filter { it.isSynced }.size,
-                chapterList.size
-            )
             chapterList.map {
                 ChapterUIModel(
                     id = it.chapterId,

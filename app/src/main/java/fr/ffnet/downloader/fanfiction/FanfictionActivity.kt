@@ -33,23 +33,16 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         setContentView(R.layout.activity_fanfiction)
         initRecyclerView()
 
-        intent.getStringExtra(EXTRA_ID)?.let {
-            viewModel.loadFanfictionInfo(it)
-            viewModel.loadChapters(it)
+        intent.getStringExtra(EXTRA_ID)?.let { fanfictionId ->
+            viewModel.loadFanfictionInfo(fanfictionId)
+            viewModel.loadChapters(fanfictionId)
+            setListeners(fanfictionId)
         } ?: closeActivityNoExtra()
 
-        swipeRefresh.setOnRefreshListener {
-            viewModel.refreshFanfictionInfo(intent.getStringExtra(EXTRA_ID))
-        }
-        downloadButton.setOnClickListener {
-            viewModel.syncChapters(intent.getStringExtra(EXTRA_ID))
-        }
+        setObservers()
+    }
 
-        viewModel.stopRefresh.observe(this, Observer { liveEvent ->
-            liveEvent.getContentIfNotHandled()?.let {
-                swipeRefresh.isRefreshing = false
-            }
-        })
+    private fun setObservers() {
         viewModel.getFanfictionInfo().observe(this, Observer {
             swipeRefresh.isRefreshing = false
             widgetVisibilityGroup.visibility = View.VISIBLE
@@ -58,13 +51,20 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             publishedDateValueTextView.text = it.publishedDate
             updatedDateValueTextView.text = it.updatedDate
             syncedDateValueTextView.text = it.syncedDate
+            chaptersValueTextView.text = it.progression
         })
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-        viewModel.getChapterSyncingProgression().observe(this, Observer { chapterProgression ->
-            chaptersValueTextView.text = chapterProgression
-        })
+    }
+
+    private fun setListeners(fanfictionId: String) {
+        swipeRefresh.setOnRefreshListener {
+            viewModel.refreshFanfictionInfo(fanfictionId)
+        }
+        downloadButton.setOnClickListener {
+            viewModel.syncChapters(fanfictionId)
+        }
     }
 
     override fun onChapterSelected(chapter: ChapterUIModel) {
