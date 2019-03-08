@@ -11,7 +11,7 @@ import fr.ffnet.downloader.R
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
-class FanfictionActivity : DaggerAppCompatActivity() {
+class FanfictionActivity : DaggerAppCompatActivity(), FanfictionInfoAdapter.OnSyncListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
 
@@ -40,16 +40,14 @@ class FanfictionActivity : DaggerAppCompatActivity() {
             viewModel.refreshFanfictionInfo(intent.getStringExtra(EXTRA_ID))
         }
 
-        viewModel.stopRefresh.observe(this, Observer { liveEvent ->
-            liveEvent.getContentIfNotHandled()?.let {
-                swipeRefresh.isRefreshing = false
-            }
-        })
-
-        viewModel.getFanfictionMediatorLiveData().observe(this, Observer {
+        viewModel.getFanfictionInfo().observe(this, Observer {
             swipeRefresh.isRefreshing = false
             (chapterListRecyclerView.adapter as FanfictionInfoAdapter).fanfictionInfoList = it
         })
+    }
+
+    override fun onSyncClicked(fanfictionId: String) {
+        viewModel.syncChapters(fanfictionId)
     }
 
     private fun closeActivityNoExtra() {
@@ -59,7 +57,6 @@ class FanfictionActivity : DaggerAppCompatActivity() {
 
     private fun initRecyclerView() {
         chapterListRecyclerView.layoutManager = LinearLayoutManager(this)
-        chapterListRecyclerView.adapter = FanfictionInfoAdapter()
+        chapterListRecyclerView.adapter = FanfictionInfoAdapter(this)
     }
-
 }

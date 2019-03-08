@@ -4,6 +4,7 @@ import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.common.ActivityScope
+import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
@@ -17,7 +18,14 @@ class FanfictionModule {
     fun provideSearchViewModel(
         resources: Resources,
         dao: FanfictionDao,
+        fanfictionTransformer: FanfictionTransformer,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository
-    ): FanfictionViewModel = FanfictionViewModel(resources, dao, apiRepository, dbRepository)
+    ): FanfictionViewModel = FanfictionViewModel(
+        resources,
+        dao,
+        fanfictionTransformer,
+        apiRepository,
+        dbRepository
+    )
 }

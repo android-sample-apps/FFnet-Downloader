@@ -10,7 +10,7 @@ sealed class FanfictionInfoUIModel {
         val publishedDate: String,
         val updatedDate: String,
         val syncedDate: String,
-        val chapterList: List<ChapterUIModel> = emptyList()
+        val progression: String
     ) : FanfictionInfoUIModel()
 
     data class ChapterUIModel(

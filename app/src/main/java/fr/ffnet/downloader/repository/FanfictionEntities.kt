@@ -20,13 +20,6 @@ data class FanfictionEntity(
     var nbSyncedChapters: Int = 0
 )
 
-@Entity
-data class HistoryEntity(
-    @PrimaryKey val id: String,
-    var title: String,
-    var fetchedDate: Date
-)
-
 @Entity(
     foreignKeys = [ForeignKey(
         entity = FanfictionEntity::class,

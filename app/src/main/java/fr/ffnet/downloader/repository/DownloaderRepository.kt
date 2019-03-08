@@ -49,10 +49,10 @@ class DownloaderRepository(
         }
     }
 
-    fun loadAllChapters(fanfictionId: String) {
+    fun loadAllChapters(fanfictionId: String, listener: RetrofitIsDoneListener) {
         CoroutineScope(Dispatchers.IO).launch {
-            fanfictionDao.getChapters(fanfictionId).forEach { chapter ->
-                println("Adding request for chapter ${chapter.chapterId}")
+            val chapterList = fanfictionDao.getChapters(fanfictionId)
+            chapterList.forEach { chapter ->
                 service.getFanfiction(
                     fanfictionId, chapter.chapterId
                 ).enqueue(object : Callback<ResponseBody> {
@@ -75,6 +75,9 @@ class DownloaderRepository(
                                         fanfictionId = fanfictionId
                                     )
                                 }.start()
+                                if (chapter.chapterId == chapterList.last().chapterId) {
+                                    listener.onChapterDownloadState(ChapterDownloadState.DONE)
+                                }
                             } ?: println("onResponse Nope")
                         } else {
                             println("onResponse Nope")
@@ -88,5 +91,13 @@ class DownloaderRepository(
     sealed class FanfictionRepositoryResult {
         data class FanfictionRepositoryResultSuccess(val fanfictionInfo: Fanfiction) : FanfictionRepositoryResult()
         object FanfictionRepositoryResultFailure : FanfictionRepositoryResult()
+    }
+
+    enum class ChapterDownloadState {
+        PENDING, DOWNLOADING, FAILURE, DONE
+    }
+
+    interface RetrofitIsDoneListener {
+        fun onChapterDownloadState(state: ChapterDownloadState)
     }
 }

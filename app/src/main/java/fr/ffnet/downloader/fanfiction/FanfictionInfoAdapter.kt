@@ -3,6 +3,7 @@ package fr.ffnet.downloader.fanfiction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,9 @@ import fr.ffnet.downloader.R
 import kotlinx.android.synthetic.main.item_chapter.view.*
 import kotlinx.android.synthetic.main.item_fanfiction_header.view.*
 
-class FanfictionInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FanfictionInfoAdapter(
+    private val listener: OnSyncListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var fanfictionInfoList: List<FanfictionInfoUIModel> = emptyList()
         set(value) {
@@ -34,7 +37,8 @@ class FanfictionInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             HEADER_VIEW_TYPE -> FanfictionInfoHeader(
-                inflater.inflate(R.layout.item_fanfiction_header, parent, false)
+                inflater.inflate(R.layout.item_fanfiction_header, parent, false),
+                listener
             )
             CHAPTER_VIEW_TYPE -> FanfictionInfoChapter(
                 inflater.inflate(R.layout.item_chapter, parent, false)
@@ -56,7 +60,10 @@ class FanfictionInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class FanfictionInfoHeader(view: View) : RecyclerView.ViewHolder(view) {
+    inner class FanfictionInfoHeader(
+        view: View,
+        private val listener: OnSyncListener
+    ) : RecyclerView.ViewHolder(view) {
 
         private val widgetVisibilityGroup: Group = view.widgetVisibilityGroup
         private val titleValueTextView: TextView = view.titleValueTextView
@@ -64,6 +71,8 @@ class FanfictionInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val publishedDateValueTextView: TextView = view.publishedDateValueTextView
         private val updatedDateValueTextView: TextView = view.updatedDateValueTextView
         private val syncedDateValueTextView: TextView = view.syncedDateValueTextView
+        private val chaptersValueTextView: TextView = view.chaptersValueTextView
+        private val downloadButton: Button = view.downloadButton
 
         fun bind(fanfictionInfo: FanfictionInfoUIModel.FanfictionUIModel) {
             widgetVisibilityGroup.visibility = View.VISIBLE
@@ -72,6 +81,11 @@ class FanfictionInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             publishedDateValueTextView.text = fanfictionInfo.publishedDate
             updatedDateValueTextView.text = fanfictionInfo.updatedDate
             syncedDateValueTextView.text = fanfictionInfo.syncedDate
+            chaptersValueTextView.text = fanfictionInfo.progression
+            downloadButton.isEnabled = fanfictionInfo.isSyncButtonEnabled
+            downloadButton.setOnClickListener {
+                listener.onSyncClicked(fanfictionInfo.id)
+            }
         }
     }
 
@@ -88,4 +102,7 @@ class FanfictionInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    interface OnSyncListener {
+        fun onSyncClicked(fanfictionId: String)
+    }
 }
