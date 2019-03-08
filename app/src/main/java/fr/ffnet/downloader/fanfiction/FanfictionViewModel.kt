@@ -1,11 +1,10 @@
 package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.fanfiction.FanfictionInfoUIModel.ChapterUIModel
+import fr.ffnet.downloader.fanfiction.FanfictionInfoUIModel.FanfictionUIModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
@@ -35,11 +34,13 @@ class FanfictionViewModel(
         MutableLiveData<String>()
     }
 
+    private val fanfictionInfoMediator: MediatorLiveData<List<FanfictionInfoUIModel>> by lazy {
+        MediatorLiveData<List<FanfictionInfoUIModel>>()
+    }
+
     private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
 
-    fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
-
-    fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
+    fun getFanfictionMediatorLiveData(): MediatorLiveData<List<FanfictionInfoUIModel>> = fanfictionInfoMediator
 
     fun getChapterSyncingProgression(): LiveData<String> = chapterProgression
 
@@ -90,6 +91,34 @@ class FanfictionViewModel(
                         }
                     )
                 )
+            }
+        }
+    }
+
+    fun loadInfo(fanfictionId: String) {
+        loadChapters(fanfictionId)
+        loadFanfictionInfo(fanfictionId)
+        fanfictionInfoMediator.apply {
+            addSource(fanfictionInfo) { value ->
+                fanfictionInfoMediator.value = combineLatestData(chapterList, fanfictionInfo)
+            }
+            addSource(chapterList) { value ->
+                fanfictionInfoMediator.value = combineLatestData(chapterList, fanfictionInfo)
+            }
+        }
+    }
+
+    private fun combineLatestData(
+        chapterList: LiveData<List<ChapterUIModel>>,
+        fanfictionInfo: LiveData<FanfictionUIModel>
+    ): List<FanfictionInfoUIModel> {
+        return if (fanfictionInfo.value == null) {
+            emptyList()
+        } else {
+            if (chapterList.value == null) {
+                listOf(fanfictionInfo.value!!)
+            } else {
+                listOf(fanfictionInfo.value!!) + chapterList.value.orEmpty()
             }
         }
     }

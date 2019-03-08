@@ -13,7 +13,7 @@ class ChapterListAdapter(
     private val listener: ChapterClickListener
 ) : RecyclerView.Adapter<ChapterListAdapter.ChapterViewHolder>() {
 
-    var chapterList: List<ChapterUIModel> = emptyList()
+    var chapterList: List<FanfictionInfoUIModel.ChapterUIModel> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -39,7 +39,7 @@ class ChapterListAdapter(
         private val chapterTitleTextView: TextView = view.chapterTitleTextView
         private val chapterStatusTextView: TextView = view.chapterStatusTextView
 
-        fun bind(chapterUIModel: ChapterUIModel, listener: ChapterClickListener) {
+        fun bind(chapterUIModel: FanfictionInfoUIModel.ChapterUIModel, listener: ChapterClickListener) {
             chapterNbTextView.text = chapterUIModel.id
             chapterTitleTextView.text = chapterUIModel.title
             chapterStatusTextView.text = chapterUIModel.status
@@ -50,6 +50,6 @@ class ChapterListAdapter(
     }
 
     interface ChapterClickListener {
-        fun onChapterSelected(chapter: ChapterUIModel)
+        fun onChapterSelected(chapter: FanfictionInfoUIModel.ChapterUIModel)
     }
 }
