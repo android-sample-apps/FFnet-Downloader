@@ -6,6 +6,7 @@ import dagger.Component
 import dagger.Module
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
+import fr.ffnet.downloader.repository.RepositoryModule
 import javax.inject.Singleton
 
 @Singleton
@@ -15,7 +16,8 @@ import javax.inject.Singleton
         ApplicationModule::class,
         ApplicationMainModule::class,
         ApplicationNetworkModule::class,
-        ActivityBindingModule::class
+        ActivityBindingModule::class,
+        RepositoryModule::class
     ]
 )
 interface ApplicationComponent : AndroidInjector<MainApplication> {

@@ -7,9 +7,8 @@ import fr.ffnet.downloader.common.ActivityScope
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
-import fr.ffnet.downloader.repository.RepositoryModule
 
-@Module(includes = [RepositoryModule::class])
+@Module
 class FanfictionModule {
 
     @ActivityScope

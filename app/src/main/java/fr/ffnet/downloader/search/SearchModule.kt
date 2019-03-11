@@ -7,9 +7,8 @@ import fr.ffnet.downloader.common.FragmentScope
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.RepositoryModule
 
-@Module(includes = [RepositoryModule::class])
+@Module
 class SearchModule {
 
     @FragmentScope

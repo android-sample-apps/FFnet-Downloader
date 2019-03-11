@@ -31,7 +31,7 @@ class FanfictionBuilder @Inject constructor(
             title
         )
 
-        return document.select("#storytext").first().text() to Fanfiction(
+        return document.select("#storytext").first().html() to Fanfiction(
             id = id,
             title = title,
             words = words,
@@ -48,7 +48,7 @@ class FanfictionBuilder @Inject constructor(
 
     fun extractChapter(html: String): String {
         val document = jsoupParser.parseHtml(html)
-        return document.select("#storytext").first().text()
+        return document.select("#storytext").first().html()
     }
 
     private fun extractChapterList(

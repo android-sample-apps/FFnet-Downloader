@@ -95,4 +95,8 @@ dependencies {
 
     // Dates
     implementation 'joda-time:joda-time:2.10.1'
+
+    // SLF4J
+    implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.7'
+
 }

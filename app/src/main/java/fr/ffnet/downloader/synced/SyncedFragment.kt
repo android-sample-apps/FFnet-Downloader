@@ -14,6 +14,10 @@ import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.FanfictionAction
 import fr.ffnet.downloader.utils.OnActionsClickListener
 import kotlinx.android.synthetic.main.fragment_synced.*
+import nl.siegmann.epublib.domain.Author
+import nl.siegmann.epublib.domain.Book
+import nl.siegmann.epublib.epub.EpubWriter
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 class SyncedFragment : DaggerFragment(), OnActionsClickListener {
@@ -39,6 +43,10 @@ class SyncedFragment : DaggerFragment(), OnActionsClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+
+//        activity?.requestPermissions(context, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE))
+
+
         viewModel.getFanfictionList().observe(this, Observer { fanfictionResult ->
             when (fanfictionResult) {
                 is SyncedFanfictionsResult.NoSyncedFanfictions -> showNoSyncedFanfictions()
@@ -53,11 +61,23 @@ class SyncedFragment : DaggerFragment(), OnActionsClickListener {
         when (action) {
             FanfictionAction.GOTO_FANFICTION -> startFanfictionActivity(fanfictionId)
             FanfictionAction.EXPORT_PDF -> Log.d("ACTION", "EXPORT_PDF")
-            FanfictionAction.EXPORT_EPUB -> Log.d("ACTION", "EXPORT_EPUB")
+            FanfictionAction.EXPORT_EPUB -> exportPdf(fanfictionId)
             FanfictionAction.DELETE_FANFICTION -> {
                 viewModel.deleteFanfiction(fanfictionId)
             }
         }
+    }
+
+    private fun exportPdf(fanfictionId: String) {
+
+        val book = Book()
+        book.metadata.addTitle("A title")
+        book.metadata.addAuthor(Author("An author"))
+
+        val epubWriter = EpubWriter()
+        epubWriter.write(book, FileOutputStream("test_epub.epub"))
+
+
     }
 
     private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
