@@ -1,7 +1,6 @@
 package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import fr.ffnet.downloader.search.Fanfiction
@@ -71,10 +70,9 @@ class ProfileRepository(
         }
     }
 
-    fun hasAssociatedProfile(): LiveData<Boolean> = Transformations.map(profileDao.getProfile()) {
-        it?.let { true } ?: false
-    }
+    fun getAssociatedProfile(): LiveData<String?> = profileDao.getProfile()
 
+    // TODO() -> Don't do 1 request per fanfiction ?
     private fun insertListAndReturnIds(fanfictionList: List<Fanfiction>): List<String> {
         return fanfictionList.map { fanfiction ->
             val fanfictionInfo = fanfictionDao.getFanfiction(fanfiction.id)

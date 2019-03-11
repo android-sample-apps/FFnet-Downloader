@@ -15,8 +15,8 @@ interface ProfileDao {
     @Query("SELECT * FROM ProfileEntity WHERE profileId = :profileId")
     fun getProfile(profileId: String): ProfileEntity?
 
-    @Query("SELECT * FROM ProfileEntity WHERE isAssociated = 1")
-    fun getProfile(): LiveData<ProfileEntity>
+    @Query("SELECT profileId FROM ProfileEntity WHERE isAssociated = 1")
+    fun getProfile(): LiveData<String?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProfileFanfiction(favoriEntity: ProfileFanfictionEntity)

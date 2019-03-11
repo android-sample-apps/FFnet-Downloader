@@ -40,6 +40,10 @@ class ProfileFragment : DaggerFragment() {
                 dissociateProfile()
                 return true
             }
+            R.id.refreshProfile -> {
+                refreshProfile()
+                return true
+            }
         }
         return true
     }
@@ -48,7 +52,7 @@ class ProfileFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initTabLayout()
-        fetchInformationButton.setOnClickListener {
+        associateProfileButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }
@@ -79,6 +83,11 @@ class ProfileFragment : DaggerFragment() {
                 setMessage(R.string.profile_dissociate_confirmation)
             }.show()
         }
+    }
+
+    private fun refreshProfile() {
+        progressBar.visibility = View.VISIBLE
+        viewModel.refreshProfile()
     }
 
     private fun initTabLayout() {
