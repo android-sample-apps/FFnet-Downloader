@@ -23,6 +23,10 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         dao.getFanfictionHistory()
     )
 
+    fun getChapters(fanfictionId: String): LiveData<List<ChapterEntity>> = dao.getChaptersLivedata(
+        fanfictionId
+    )
+
     fun getMyFavoriteFanfictions(): LiveData<List<Fanfiction>> {
         return transformEntityLiveDataToModelLiveData(
             dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_FAVORITE)

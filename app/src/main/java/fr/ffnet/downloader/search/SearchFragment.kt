@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FragmentScope
@@ -36,6 +37,7 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
             progressBar.visibility = View.VISIBLE
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
+        initRecyclerView()
 
         viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
@@ -48,7 +50,12 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
             }
         })
 
-        initRecyclerView()
+        viewModel.displayError.observe(this, Observer {
+            Snackbar.make(
+                containerView, it.getContentIfNotHandled()!!, Snackbar.LENGTH_LONG
+            ).show()
+        })
+
         viewModel.loadHistory().observe(this, Observer { historyList ->
             (historyRecyclerView.adapter as HistoryAdapter).historyList = historyList
         })

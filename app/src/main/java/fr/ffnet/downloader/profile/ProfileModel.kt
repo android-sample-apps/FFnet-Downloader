@@ -8,3 +8,10 @@ data class Profile(
     val favoriteFanfictionList: List<Fanfiction>,
     val myFanfictionList: List<Fanfiction>
 )
+
+data class ProfileUIModel(
+    val profileId: String,
+    val name: String,
+    val fetchedDate: String,
+    val url: String
+)

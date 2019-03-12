@@ -6,7 +6,6 @@ import dagger.Provides
 import fr.ffnet.downloader.common.ActivityScope
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.utils.DateFormatter
 
 @Module
@@ -16,13 +15,11 @@ class FanfictionModule {
     @Provides
     fun provideSearchViewModel(
         resources: Resources,
-        dao: FanfictionDao,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
         dateFormatter: DateFormatter
     ): FanfictionViewModel = FanfictionViewModel(
         resources,
-        dao,
         apiRepository,
         dbRepository,
         dateFormatter

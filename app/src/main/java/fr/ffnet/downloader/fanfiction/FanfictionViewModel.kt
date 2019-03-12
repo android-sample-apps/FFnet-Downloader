@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class FanfictionViewModel(
     private val resources: Resources,
-    private val dao: FanfictionDao,
     private val apiRepository: DownloaderRepository,
     private val dbRepository: DatabaseRepository,
     private val dateFormatter: DateFormatter
@@ -66,7 +64,7 @@ class FanfictionViewModel(
 
     fun loadChapters(fanfictionId: String) {
         chapterList = Transformations.map(
-            dao.getChaptersLivedata(fanfictionId)
+            dbRepository.getChapters(fanfictionId)
         ) { chapterList ->
             chapterList.map {
                 ChapterUIModel(

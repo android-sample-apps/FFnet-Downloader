@@ -27,6 +27,10 @@ class SearchViewModel(
     val navigateToFanfiction: LiveData<LiveEvent<String>>
         get() = navigateToFanfictionActivity
 
+    private val presentError = MutableLiveData<LiveEvent<Int>>()
+    val displayError: LiveData<LiveEvent<Int>>
+        get() = presentError
+
     private lateinit var historyList: LiveData<List<HistoryUIModel>>
 
     fun loadFanfictionInfos(url: String?) {
@@ -36,7 +40,9 @@ class SearchViewModel(
                 is UrlTransformSuccess -> loadFanfictionInfo(
                     urlTransformationResult.id
                 )
-                is UrlTransformFailure -> TODO()
+                is UrlTransformFailure -> {
+                    presentError.value = LiveEvent(R.string.search_fanfiction_url_error)
+                }
             }
         }
     }

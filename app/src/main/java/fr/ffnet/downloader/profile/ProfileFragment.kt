@@ -95,7 +95,7 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
                 setPositiveButton(R.string.ok) { _, _ ->
                     viewModel.dissociateProfile()
                 }
-                setNegativeButton(R.string.cancel) { dialog, id ->
+                setNegativeButton(R.string.cancel) { dialog, _ ->
                     dialog.cancel()
                 }
                 setMessage(R.string.profile_dissociate_confirmation)

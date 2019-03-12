@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.ProfileRepository
-import fr.ffnet.downloader.search.ProfileUIModel
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers

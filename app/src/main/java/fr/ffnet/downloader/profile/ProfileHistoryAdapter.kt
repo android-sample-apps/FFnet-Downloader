@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.search.ProfileUIModel
 import kotlinx.android.synthetic.main.item_history.view.*
 
 class ProfileHistoryAdapter(

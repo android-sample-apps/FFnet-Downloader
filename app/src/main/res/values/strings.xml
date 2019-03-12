@@ -12,6 +12,7 @@
     <string name="synced_title">Synced Fanfictions</string>
 
     <string name="search_fetched_date">Fetched on %s</string>
+    <string name="search_fanfiction_url_error">The given url could not be fetched</string>
 
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
