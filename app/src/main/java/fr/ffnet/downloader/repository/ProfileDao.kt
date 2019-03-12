@@ -12,14 +12,17 @@ interface ProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProfile(profileEntity: ProfileEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertProfileFanfiction(favoriEntity: ProfileFanfictionEntity)
+
     @Query("SELECT * FROM ProfileEntity WHERE profileId = :profileId")
     fun getProfile(profileId: String): ProfileEntity?
 
     @Query("SELECT * FROM ProfileEntity WHERE isAssociated = 1")
     fun getProfile(): LiveData<ProfileEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertProfileFanfiction(favoriEntity: ProfileFanfictionEntity)
+    @Query("SELECT profileId FROM ProfileEntity WHERE isAssociated = 1")
+    fun getAssociatedProfile(): String?
 
     @Query("DELETE FROM ProfileFanfictionEntity WHERE profileId = :profileId")
     fun deleteProfileMapping(profileId: String)

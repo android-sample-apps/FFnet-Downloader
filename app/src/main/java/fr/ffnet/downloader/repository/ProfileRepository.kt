@@ -75,6 +75,16 @@ class ProfileRepository(
         it?.let { true } ?: false
     }
 
+    fun dissociateProfile() {
+        profileDao.dissociateProfile()
+    }
+
+    fun refreshProfile() {
+        profileDao.getAssociatedProfile()?.let { profileId ->
+            loadProfileInfo(profileId)
+        }
+    }
+
     private fun insertListAndReturnIds(fanfictionList: List<Fanfiction>): List<String> {
         return fanfictionList.map { fanfiction ->
             val fanfictionInfo = fanfictionDao.getFanfiction(fanfiction.id)
@@ -86,15 +96,8 @@ class ProfileRepository(
         }
     }
 
-    fun dissociateProfile() {
-        profileDao.dissociateProfile()
-    }
-
     sealed class ProfileRepositoryResult {
-        data class ProfileRepositoryResultSuccess(
-            val profileId: String
-        ) : ProfileRepositoryResult()
-
+        data class ProfileRepositoryResultSuccess(val profileId: String) : ProfileRepositoryResult()
         object ProfileRepositoryResultFailure : ProfileRepositoryResult()
     }
 }

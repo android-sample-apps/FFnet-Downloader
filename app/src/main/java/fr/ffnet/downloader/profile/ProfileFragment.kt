@@ -42,6 +42,10 @@ class ProfileFragment : DaggerFragment() {
                 dissociateProfile()
                 return true
             }
+            R.id.refreshProfile -> {
+                viewModel.refreshProfile()
+                return true
+            }
         }
         return true
     }

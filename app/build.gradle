@@ -39,18 +39,20 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0-alpha02"
     implementation "androidx.appcompat:appcompat:1.1.0-alpha02"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
     implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha01'
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-alpha02"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha02"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.1.0-alpha02"
 
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0-rc02"
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0-rc02"
 
     implementation "com.google.android.material:material:1.1.0-alpha04"
 
-
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
 
     // Room
     implementation "androidx.room:room-runtime:2.1.0-alpha04"
