@@ -10,6 +10,7 @@ import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResul
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.repository.ErrorRepository
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class SearchViewModel(
     private val resources: Resources,
     private val apiRepository: DownloaderRepository,
     private val dbRepository: DatabaseRepository,
+    private val errorRepository: ErrorRepository,
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
@@ -41,7 +43,11 @@ class SearchViewModel(
                     urlTransformationResult.id
                 )
                 is UrlTransformFailure -> {
-                    presentError.value = LiveEvent(R.string.search_fanfiction_url_error)
+                    errorRepository.addError(
+                        message = resources.getString(R.string.search_fanfiction_url_error),
+                        shouldDisplaySnackBar = true,
+                        shouldSendToAnalytics = true
+                    )
                 }
             }
         }

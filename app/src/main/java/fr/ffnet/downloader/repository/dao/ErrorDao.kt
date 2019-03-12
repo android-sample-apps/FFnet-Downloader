@@ -13,6 +13,9 @@ interface ErrorDao {
     fun insertError(error: ErrorEntity)
 
     @Query("SELECT * FROM ErrorEntity ORDER BY date ASC LIMIT 1")
-    fun getError(): LiveData<ErrorEntity>
+    fun getErrors(): LiveData<ErrorEntity>
+
+    @Query("DELETE FROM ErrorEntity WHERE id = :errorId")
+    fun deleteError(errorId: Int)
 
 }

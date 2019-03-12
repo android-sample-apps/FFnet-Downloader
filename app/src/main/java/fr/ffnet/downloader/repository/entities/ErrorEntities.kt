@@ -6,9 +6,9 @@ import org.joda.time.LocalDateTime
 
 @Entity
 data class ErrorEntity(
-    @PrimaryKey(autoGenerate = true) val id: String,
-    val message: String,
-    val date: LocalDateTime,
-    val shouldDisplaySnackbar: Boolean,
-    val shouldSendToAnalytics: Boolean
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
+    var message: String,
+    var date: LocalDateTime,
+    var shouldDisplaySnackbar: Boolean,
+    var shouldSendToAnalytics: Boolean
 )
