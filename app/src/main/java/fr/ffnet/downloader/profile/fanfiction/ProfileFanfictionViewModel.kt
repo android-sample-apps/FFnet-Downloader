@@ -1,10 +1,7 @@
 package fr.ffnet.downloader.profile.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -13,7 +10,6 @@ import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -63,10 +59,10 @@ class ProfileFanfictionViewModel(
     }
 
     fun loadFanfictionInfo(fanfictionId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
             if (fanfictionResult is DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess) {
-                CoroutineScope(Dispatchers.Main).launch {
+                viewModelScope.launch(Dispatchers.Main) {
                     navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
                 }
             }

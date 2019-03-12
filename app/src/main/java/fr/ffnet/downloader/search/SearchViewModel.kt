@@ -1,10 +1,7 @@
 package fr.ffnet.downloader.search
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
@@ -15,7 +12,6 @@ import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -63,10 +59,10 @@ class SearchViewModel(
     }
 
     private fun loadFanfictionInfo(fanfictionId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
             if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-                CoroutineScope(Dispatchers.Main).launch {
+                viewModelScope.launch(Dispatchers.Main) {
                     navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
                 }
             }

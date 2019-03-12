@@ -5,9 +5,6 @@ import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.search.Fanfiction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -50,38 +47,36 @@ class DownloaderRepository(
     }
 
     fun loadAllChapters(fanfictionId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            fanfictionDao.getChapters(fanfictionId).forEach { chapter ->
-                println("Adding request for chapter ${chapter.chapterId}")
-                service.getFanfiction(
-                    fanfictionId, chapter.chapterId
-                ).enqueue(object : Callback<ResponseBody> {
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        println("onFailure Nope")
-                    }
+        fanfictionDao.getChapters(fanfictionId).forEach { chapter ->
+            println("Adding request for chapter ${chapter.chapterId}")
+            service.getFanfiction(
+                fanfictionId, chapter.chapterId
+            ).enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    println("onFailure Nope")
+                }
 
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if (response.isSuccessful) {
-                            response.body()?.let {
-                                val chapterContent = fanfictionBuilder.extractChapter(it.string())
-                                Thread {
-                                    fanfictionDao.updateChapter(
-                                        content = chapterContent,
-                                        isSynced = true,
-                                        chapterId = chapter.chapterId,
-                                        fanfictionId = fanfictionId
-                                    )
-                                }.start()
-                            } ?: println("onResponse Nope")
-                        } else {
-                            println("onResponse Nope")
-                        }
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            val chapterContent = fanfictionBuilder.extractChapter(it.string())
+                            Thread {
+                                fanfictionDao.updateChapter(
+                                    content = chapterContent,
+                                    isSynced = true,
+                                    chapterId = chapter.chapterId,
+                                    fanfictionId = fanfictionId
+                                )
+                            }.start()
+                        } ?: println("onResponse Nope")
+                    } else {
+                        println("onResponse Nope")
                     }
-                })
-            }
+                }
+            })
         }
     }
 

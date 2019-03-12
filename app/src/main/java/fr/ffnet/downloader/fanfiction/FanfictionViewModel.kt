@@ -4,13 +4,13 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.DateFormatter
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -33,7 +33,7 @@ class FanfictionViewModel(
     fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
 
     fun refreshFanfictionInfo(fanfictionId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             apiRepository.loadFanfictionInfo(fanfictionId)
         }
     }
@@ -59,7 +59,9 @@ class FanfictionViewModel(
     }
 
     fun syncChapters(fanfictionId: String) {
-        apiRepository.loadAllChapters(fanfictionId)
+        viewModelScope.launch(Dispatchers.IO) {
+            apiRepository.loadAllChapters(fanfictionId)
+        }
     }
 
     fun loadChapters(fanfictionId: String) {
