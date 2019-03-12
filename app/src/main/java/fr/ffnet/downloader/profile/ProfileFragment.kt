@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
@@ -13,7 +14,7 @@ import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
-class ProfileFragment : DaggerFragment() {
+class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickListener {
 
     private lateinit var viewModel: ProfileViewModel
     @Inject lateinit var viewModelFactory: ViewModelFactory<ProfileViewModel>
@@ -54,10 +55,16 @@ class ProfileFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initTabLayout()
+        initHistoryAdapter()
         fetchInformationButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }
+
+        viewModel.loadProfileHistory().observe(this, Observer { historyList ->
+            (profileHistoryRecyclerView.adapter as ProfileHistoryAdapter).historyList = historyList
+        })
+
         viewModel.loadIsProfileAssociated()
         viewModel.getIsAssociated().observe(this, Observer { isAssociated ->
             if (isAssociated) {
@@ -71,6 +78,15 @@ class ProfileFragment : DaggerFragment() {
                 noFanfictionFoundTextView.visibility = View.GONE
             }
         })
+    }
+
+    override fun onHistoryClicked(profileId: String, profileUrl: String) {
+        profileUrlEditText.setText(profileUrl)
+    }
+
+    private fun initHistoryAdapter() {
+        profileHistoryRecyclerView.layoutManager = LinearLayoutManager(context)
+        profileHistoryRecyclerView.adapter = ProfileHistoryAdapter(this)
     }
 
     private fun dissociateProfile() {

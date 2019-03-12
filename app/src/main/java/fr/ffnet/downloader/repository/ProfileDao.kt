@@ -33,4 +33,7 @@ interface ProfileDao {
     @Query("UPDATE ProfileEntity SET isAssociated = 1 WHERE profileId = :profileId")
     fun associateProfile(profileId: String)
 
+    @Query("SELECT * FROM ProfileEntity")
+    fun getProfileHistory(): LiveData<List<ProfileEntity>>
+
 }

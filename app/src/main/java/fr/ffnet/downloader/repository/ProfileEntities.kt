@@ -2,11 +2,13 @@ package fr.ffnet.downloader.repository
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.joda.time.LocalDateTime
 
 @Entity
 data class ProfileEntity(
     @PrimaryKey val profileId: String,
     var name: String,
+    var fetchedDate: LocalDateTime,
     var isAssociated: Boolean
 )
 

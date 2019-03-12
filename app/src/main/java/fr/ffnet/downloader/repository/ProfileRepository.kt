@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import fr.ffnet.downloader.search.Fanfiction
+import org.joda.time.LocalDateTime
 
 class ProfileRepository(
     private val service: SearchService,
@@ -55,6 +56,7 @@ class ProfileRepository(
                         ProfileEntity(
                             profileId = profileInfo.profileId,
                             name = profileInfo.name,
+                            fetchedDate = LocalDateTime.now(),
                             isAssociated = true
                         )
                     )
@@ -95,6 +97,8 @@ class ProfileRepository(
             fanfiction.id
         }
     }
+
+    fun loadHistory(): LiveData<List<ProfileEntity>> = profileDao.getProfileHistory()
 
     sealed class ProfileRepositoryResult {
         data class ProfileRepositoryResultSuccess(val profileId: String) : ProfileRepositoryResult()
