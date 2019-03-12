@@ -8,6 +8,11 @@
             <set />
           </value>
         </entry>
+        <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../CodingChallenge/app/build.gradle">
           <value>
             <set />
@@ -518,26 +523,6 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/profile/ProfileFragment.kt">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/profile/ProfileViewModel.kt">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/repository/ProfileDao.kt">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/repository/ProfileRepository.kt">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/search/SearchFragment.kt">
           <value>
             <set />
@@ -578,11 +563,6 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/drawable/ic_more.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/drawable/ripple.xml">
           <value>
             <set />
@@ -618,17 +598,7 @@
             <set />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_profile.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/layout/item_profile_fanfiction.xml">
           <value>
             <set />
           </value>
@@ -639,11 +609,6 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/item_stoppoint.xml">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/menu/profile_menu.xml">
           <value>
             <set />
           </value>
@@ -664,11 +629,6 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/build.gradle">
-          <value>
-            <set />
-          </value>
-        </entry>
-        <entry key="/a.dummy">
           <value>
             <set />
           </value>

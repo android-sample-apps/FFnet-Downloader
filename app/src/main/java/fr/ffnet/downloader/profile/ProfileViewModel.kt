@@ -42,10 +42,7 @@ class ProfileViewModel(
         get() = navigateToFanfictionActivity
 
     fun loadIsProfileAssociated() {
-        isAssociatedLiveData = Transformations.map(profileRepository.getAssociatedProfile()) {
-            profileId = it
-            it?.let { true } ?: false
-        }
+        isAssociatedLiveData = profileRepository.hasAssociatedProfile()
     }
 
     fun loadFavoriteFanfictions() {
@@ -90,10 +87,6 @@ class ProfileViewModel(
         }
     }
 
-    fun refreshProfile() {
-//        loadProfileInfo()
-    }
-
     fun loadFanfictionInfo(fanfictionId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
@@ -130,6 +123,7 @@ class ProfileViewModel(
     }
 
     private fun loadProfileInfo(profileId: String) {
+        this.profileId = profileId
         CoroutineScope(Dispatchers.IO).launch {
             profileRepository.loadProfileInfo(profileId)
         }
