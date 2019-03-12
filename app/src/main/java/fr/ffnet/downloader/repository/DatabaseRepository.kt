@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
+import fr.ffnet.downloader.repository.dao.FanfictionDao
+import fr.ffnet.downloader.repository.entities.ChapterEntity
+import fr.ffnet.downloader.repository.entities.FanfictionEntity
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 

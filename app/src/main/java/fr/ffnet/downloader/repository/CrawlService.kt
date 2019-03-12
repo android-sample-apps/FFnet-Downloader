@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface SearchService {
+interface CrawlService {
     @GET("s/{storyId}/{chapterId}")
     fun getFanfiction(
         @Path("storyId") storyId: String,

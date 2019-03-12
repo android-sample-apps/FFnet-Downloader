@@ -1,7 +1,7 @@
 package fr.ffnet.downloader.fanfictionutils
 
-import fr.ffnet.downloader.repository.ChapterEntity
-import fr.ffnet.downloader.repository.FanfictionEntity
+import fr.ffnet.downloader.repository.entities.ChapterEntity
+import fr.ffnet.downloader.repository.entities.FanfictionEntity
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 import javax.inject.Inject

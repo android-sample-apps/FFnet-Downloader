@@ -4,6 +4,7 @@ import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -11,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DownloaderRepository(
-    private val service: SearchService,
+    private val service: CrawlService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
     private val fanfictionTransformer: FanfictionTransformer

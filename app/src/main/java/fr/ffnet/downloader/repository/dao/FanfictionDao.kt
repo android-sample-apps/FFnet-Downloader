@@ -1,10 +1,12 @@
-package fr.ffnet.downloader.repository
+package fr.ffnet.downloader.repository.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import fr.ffnet.downloader.repository.entities.ChapterEntity
+import fr.ffnet.downloader.repository.entities.FanfictionEntity
 
 @Dao
 interface FanfictionDao {

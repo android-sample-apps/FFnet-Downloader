@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.repository
+package fr.ffnet.downloader.repository.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

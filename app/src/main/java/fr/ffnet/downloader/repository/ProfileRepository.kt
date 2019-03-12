@@ -4,11 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
+import fr.ffnet.downloader.repository.dao.FanfictionDao
+import fr.ffnet.downloader.repository.dao.ProfileDao
+import fr.ffnet.downloader.repository.entities.ProfileEntity
+import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 import fr.ffnet.downloader.search.Fanfiction
 import org.joda.time.LocalDateTime
 
 class ProfileRepository(
-    private val service: SearchService,
+    private val service: CrawlService,
     private val profileDao: ProfileDao,
     private val fanfictionDao: FanfictionDao,
     private val profileBuilder: ProfileBuilder,

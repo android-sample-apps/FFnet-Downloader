@@ -6,6 +6,9 @@ import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
+import fr.ffnet.downloader.repository.dao.ErrorDao
+import fr.ffnet.downloader.repository.dao.FanfictionDao
+import fr.ffnet.downloader.repository.dao.ProfileDao
 import retrofit2.Retrofit
 
 @Module
@@ -18,28 +21,35 @@ class RepositoryModule {
     fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao = database.profileDao()
 
     @Provides
-    fun provideDownloaderService(retrofit: Retrofit): SearchService {
-        return retrofit.create(SearchService::class.java)
-    }
+    fun provideErrorDao(database: FanfictionDownloaderDatabase): ErrorDao = database.errorDao()
+
+    @Provides
+    fun provideCrawlService(retrofit: Retrofit): CrawlService = retrofit.create(
+        CrawlService::class.java
+    )
+
+    @Provides
+    fun provideErrorRepository(errorDao: ErrorDao): ErrorRepository = ErrorRepository(errorDao)
+
+    @Provides
+    fun provideDatabaseRepository(dao: FanfictionDao): DatabaseRepository = DatabaseRepository(dao)
 
     @Provides
     fun provideDownloaderRepository(
-        service: SearchService,
+        service: CrawlService,
         fanfictionDao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder,
         fanfictionTransformer: FanfictionTransformer
-    ): DownloaderRepository {
-        return DownloaderRepository(
-            service,
-            fanfictionBuilder,
-            fanfictionDao,
-            fanfictionTransformer
-        )
-    }
+    ): DownloaderRepository = DownloaderRepository(
+        service,
+        fanfictionBuilder,
+        fanfictionDao,
+        fanfictionTransformer
+    )
 
     @Provides
     fun provideProfileRepository(
-        service: SearchService,
+        service: CrawlService,
         profileDao: ProfileDao,
         profileBuilder: ProfileBuilder,
         fanfictionTransformer: FanfictionTransformer,
@@ -51,9 +61,4 @@ class RepositoryModule {
         profileBuilder,
         fanfictionTransformer
     )
-
-    @Provides
-    fun provideDatabaseRepository(
-        dao: FanfictionDao
-    ): DatabaseRepository = DatabaseRepository(dao)
 }
