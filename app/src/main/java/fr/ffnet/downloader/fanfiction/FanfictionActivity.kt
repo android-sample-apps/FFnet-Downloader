@@ -6,15 +6,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
 class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
-    @Inject lateinit var viewModel: FanfictionViewModel
+    private lateinit var viewModel: FanfictionViewModel
+    @Inject lateinit var viewModelFactory: ViewModelFactory<FanfictionViewModel>
 
     companion object {
 
@@ -29,6 +32,10 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(
+            FanfictionViewModel::class.java
+        )
 
         setContentView(R.layout.activity_fanfiction)
         initRecyclerView()

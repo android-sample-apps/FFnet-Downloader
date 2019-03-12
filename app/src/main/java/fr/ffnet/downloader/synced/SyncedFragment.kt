@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.FanfictionAction
@@ -22,7 +24,8 @@ import javax.inject.Inject
 
 class SyncedFragment : DaggerFragment(), OnActionsClickListener {
 
-    @Inject lateinit var viewModel: SyncedViewModel
+    private lateinit var viewModel: SyncedViewModel
+    @Inject lateinit var viewModelFactory: ViewModelFactory<SyncedViewModel>
 
     companion object {
         private const val DISPLAY_SYNCED_FANFICTIONS = 0
@@ -36,6 +39,9 @@ class SyncedFragment : DaggerFragment(), OnActionsClickListener {
     ): View? {
         return inflater.inflate(R.layout.fragment_synced, container, false).also {
             activity?.title = resources.getString(R.string.synced_title)
+            viewModel = ViewModelProviders.of(this, viewModelFactory).get(
+                SyncedViewModel::class.java
+            )
             viewModel.loadFanfictionsFromDb()
         }
     }

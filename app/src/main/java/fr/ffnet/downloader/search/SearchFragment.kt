@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FragmentScope
+import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
@@ -16,7 +18,8 @@ import javax.inject.Inject
 @FragmentScope
 class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
 
-    @Inject lateinit var viewModel: SearchViewModel
+    private lateinit var viewModel: SearchViewModel
+    @Inject lateinit var viewModelFactory: ViewModelFactory<SearchViewModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +27,7 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false).also {
         activity?.title = resources.getString(R.string.search_title)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
