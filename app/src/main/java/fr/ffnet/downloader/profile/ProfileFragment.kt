@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
+import fr.ffnet.downloader.profile.fanfiction.FanfictionsTabAdapter
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 

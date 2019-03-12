@@ -36,6 +36,7 @@
     <string name="profile_my_stories">My stories</string>
     <string name="profile_associate_profile_button">Associate profile</string>
     <string name="profile_dissociate_profile">Dissociate profile</string>
+    <string name="profile_refresh_profile">Refresh profile</string>
     <string name="profile_dissociate_confirmation">Do you really want to dissociate your profile?</string>
     <string name="profile_associate_no_fanfiction_found">No fanfiction found for the associated profile, do you wish to associate another profile ?</string>
 </resources>

@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.profile
+package fr.ffnet.downloader.profile.fanfiction
 
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,9 +14,9 @@ import fr.ffnet.downloader.utils.FanfictionAction
 import fr.ffnet.downloader.utils.OnActionsClickListener
 import kotlinx.android.synthetic.main.item_profile_fanfiction.view.*
 
-class MyFanfictionsAdapter(
+class FanfictionsAdapter(
     private val onMenuItemClickListener: OnActionsClickListener
-) : RecyclerView.Adapter<MyFanfictionsAdapter.MyFanfictionsViewHolder>() {
+) : RecyclerView.Adapter<FanfictionsAdapter.MyFanfictionsViewHolder>() {
 
     var fanfictionList: List<FanfictionSyncedUIModel> = emptyList()
         set(value) {

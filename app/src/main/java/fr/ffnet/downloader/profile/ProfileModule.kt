@@ -1,12 +1,9 @@
 package fr.ffnet.downloader.profile
 
-import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.common.FragmentScope
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
-import fr.ffnet.downloader.repository.DatabaseRepository
-import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.ProfileRepository
 
 @Module
@@ -15,15 +12,9 @@ class ProfileModule {
     @Provides
     fun provideProfileViewModel(
         urlTransformer: UrlTransformer,
-        resources: Resources,
-        databaseRepository: DatabaseRepository,
-        profileRepository: ProfileRepository,
-        downloaderRepository: DownloaderRepository
+        profileRepository: ProfileRepository
     ): ProfileViewModel = ProfileViewModel(
         urlTransformer,
-        resources,
-        databaseRepository,
-        profileRepository,
-        downloaderRepository
+        profileRepository
     )
 }

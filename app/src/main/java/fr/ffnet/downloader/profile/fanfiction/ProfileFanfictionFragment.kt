@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.profile
+package fr.ffnet.downloader.profile.fanfiction
 
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +12,7 @@ import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.FanfictionAction
@@ -35,15 +36,17 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
         }
     }
 
-    private lateinit var viewModel: ProfileViewModel
-    @Inject lateinit var viewModelFactory: ViewModelFactory<ProfileViewModel>
+    private lateinit var viewModel: ProfileFanfictionViewModel
+    @Inject lateinit var viewModelFactory: ViewModelFactory<ProfileFanfictionViewModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_profile_fanfictions, container, false).also {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(
+            ProfileFanfictionViewModel::class.java
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,13 +56,15 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
         viewModel.loadFavoriteFanfictions()
         viewModel.loadMyFanfictions()
 
-        arguments?.getBoolean(EXTRA_IS_FAVORITE, false)?.let { isFavorites ->
+        arguments?.getBoolean(
+            EXTRA_IS_FAVORITE, false
+        )?.let { isFavorites ->
             if (isFavorites) {
                 viewModel.getMyFavoritesList().observe(this, Observer {
                     onProfileFanfictionsResult(it)
                 })
             } else {
-                viewModel.getMyStoriesResult().observe(this, Observer {
+                viewModel.getMyStoriesList().observe(this, Observer {
                     onProfileFanfictionsResult(it)
                 })
             }
@@ -87,7 +92,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
     }
 
     private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (fanfictionRecyclerView.adapter as MyFanfictionsAdapter).fanfictionList = fanfictionList
+        (fanfictionRecyclerView.adapter as FanfictionsAdapter).fanfictionList = fanfictionList
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 
@@ -102,7 +107,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
 
     private fun initRecyclerView() {
         fanfictionRecyclerView.layoutManager = LinearLayoutManager(context)
-        fanfictionRecyclerView.adapter = MyFanfictionsAdapter(this)
+        fanfictionRecyclerView.adapter = FanfictionsAdapter(this)
     }
 
     private fun fetchFanfictionInformation(fanfictionId: String) {

@@ -54,9 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@color/primaryColor"
                 android:text="@string/profile_associate_profile_button"
-                android:textColor="@android:color/white"
                 app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
                 app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
                 app:layout_constraintTop_toBottomOf="@+id/profileUrlEditText" />
@@ -87,7 +85,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabBackground="@color/primaryColor"
-                app:tabIndicatorColor="@android:color/white"
                 app:tabIndicatorHeight="3dp"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@android:color/white"

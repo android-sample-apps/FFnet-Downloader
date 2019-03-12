@@ -1,22 +1,21 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryColor</item>
         <item name="colorAccent">@color/primaryColor</item>
         <item name="android:alertDialogTheme">@style/AlertDialogCustom</item>
-        <!--<item name="android:buttonStyle">@style/ButtonStyle</item>-->
+        <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <item name="tabStyle">@style/TabLayoutCustom</item>
+    </style>
+
+    <style name="TabLayoutCustom" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@android:color/white</item>
     </style>
 
     <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:colorPrimary">#FFF</item>
         <item name="android:colorAccent">#0AAEEF</item>
     </style>
-
-    <!--<style name="ButtonStyle" parent="Widget.AppCompat.Button.Colored">-->
-        <!--<item name="android:background">@drawable/ripple</item>-->
-    <!--</style>-->
 
 </resources>

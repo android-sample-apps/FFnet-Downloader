@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.profile
+package fr.ffnet.downloader.profile.fanfiction
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
