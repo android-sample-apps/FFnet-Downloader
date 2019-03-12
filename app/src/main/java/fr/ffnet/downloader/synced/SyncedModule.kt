@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.common.FragmentScope
 import fr.ffnet.downloader.repository.DatabaseRepository
+import fr.ffnet.downloader.utils.DateFormatter
 
 @Module
 class SyncedModule {
@@ -12,6 +13,7 @@ class SyncedModule {
     @Provides
     fun provideSearchViewModel(
         resources: Resources,
-        repository: DatabaseRepository
-    ): SyncedViewModel = SyncedViewModel(resources, repository)
+        repository: DatabaseRepository,
+        dateFormatter: DateFormatter
+    ): SyncedViewModel = SyncedViewModel(resources, repository, dateFormatter)
 }

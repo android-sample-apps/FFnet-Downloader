@@ -9,17 +9,17 @@ import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
+import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 class FanfictionViewModel(
     private val resources: Resources,
     private val dao: FanfictionDao,
     private val apiRepository: DownloaderRepository,
-    private val dbRepository: DatabaseRepository
+    private val dbRepository: DatabaseRepository,
+    private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
     private lateinit var currentFanfiction: Fanfiction
@@ -39,7 +39,6 @@ class FanfictionViewModel(
     }
 
     fun loadFanfictionInfo(fanfictionId: String) {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
             currentFanfiction = it
             FanfictionUIModel(
@@ -47,9 +46,9 @@ class FanfictionViewModel(
                 title = it.title,
                 words = it.words.toString(),
                 summary = it.summary,
-                updatedDate = formatter.format(it.updatedDate),
-                publishedDate = formatter.format(it.publishedDate),
-                syncedDate = it.fetchedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A",
+                updatedDate = dateFormatter.format(it.updatedDate),
+                publishedDate = dateFormatter.format(it.publishedDate),
+                syncedDate = dateFormatter.format(it.fetchedDate),
                 progression = resources.getString(
                     R.string.download_info_chapters_value,
                     it.nbSyncedChapters,

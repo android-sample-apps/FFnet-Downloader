@@ -6,6 +6,7 @@ import dagger.Provides
 import fr.ffnet.downloader.common.FragmentScope
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.utils.DateFormatter
 
 @Module
 class ProfileFanfictionModule {
@@ -14,11 +15,13 @@ class ProfileFanfictionModule {
     fun provideProfileFanfictionViewModel(
         resources: Resources,
         databaseRepository: DatabaseRepository,
-        downloaderRepository: DownloaderRepository
+        downloaderRepository: DownloaderRepository,
+        dateFormatter: DateFormatter
     ): ProfileFanfictionViewModel = ProfileFanfictionViewModel(
         resources,
         databaseRepository,
-        downloaderRepository
+        downloaderRepository,
+        dateFormatter
     )
 
 }

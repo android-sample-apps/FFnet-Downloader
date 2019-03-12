@@ -13,6 +13,7 @@ import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResul
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,8 @@ class SearchViewModel(
     private val urlTransformer: UrlTransformer,
     private val resources: Resources,
     private val apiRepository: DownloaderRepository,
-    private val dbRepository: DatabaseRepository
+    private val dbRepository: DatabaseRepository,
+    private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
     private val navigateToFanfictionActivity = MutableLiveData<LiveEvent<String>>()
@@ -52,7 +54,7 @@ class SearchViewModel(
                     title = it.title,
                     date = resources.getString(
                         R.string.search_fetched_date,
-                        it.fetchedDate?.toString("yyyy-MM-dd HH:mm") ?: "N/A"
+                        dateFormatter.format(it.fetchedDate)
                     )
                 )
             }
