@@ -51,9 +51,9 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         })
 
         viewModel.displayError.observe(this, Observer {
-            Snackbar.make(
-                containerView, it.getContentIfNotHandled()!!, Snackbar.LENGTH_LONG
-            ).show()
+            it.getContentIfNotHandled()?.let { resourceId ->
+                Snackbar.make(containerView, resourceId, Snackbar.LENGTH_LONG).show()
+            }
         })
 
         viewModel.loadHistory().observe(this, Observer { historyList ->
