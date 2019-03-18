@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/containerView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,6 +16,30 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/searchTestEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@null"
+            android:drawableLeft="@drawable/ic_dehaze"
+            android:drawablePadding="8dp"
+            android:elevation="2dp"
+            android:hint="Search fanfiction.net"
+            android:textColorHint="#DE000000"
+            android:textSize="16sp" />
+    </androidx.cardview.widget.CardView>
+
     <EditText
         android:id="@+id/downloadUrlEditText"
         android:layout_width="0dp"
@@ -27,7 +50,7 @@
         android:textSize="16sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/searchTestEditText" />
 
     <Button
         android:id="@+id/fetchInformationButton"
