@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/containerView"
@@ -17,27 +18,41 @@
         tools:visibility="visible" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/searchTestEditText"
+        android:id="@+id/searchTestCardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:background="@null"
-            android:drawableLeft="@drawable/ic_dehaze"
-            android:drawablePadding="8dp"
-            android:elevation="2dp"
-            android:hint="Search fanfiction.net"
-            android:textColorHint="#DE000000"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/menuSearchBarImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_dehaze" />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:elevation="2dp"
+                android:hint="Search fanfiction.net"
+                android:textColorHint="@color/bottomNavigationGrey"
+                android:textSize="16sp" />
+
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <EditText
@@ -50,7 +65,7 @@
         android:textSize="16sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/searchTestEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/searchTestCardView" />
 
     <Button
         android:id="@+id/fetchInformationButton"

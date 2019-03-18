@@ -1,12 +1,13 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/backgroundColor</item>
         <item name="colorAccent">@color/primaryColor</item>
         <item name="android:alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
         <item name="tabStyle">@style/TabLayoutCustom</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="TabLayoutCustom" parent="Widget.Design.TabLayout">

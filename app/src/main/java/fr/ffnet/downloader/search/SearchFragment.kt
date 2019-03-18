@@ -1,5 +1,6 @@
 package fr.ffnet.downloader.search
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,28 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
+        menuSearchBarImageView.setOnClickListener {
+            // Rotation
+
+            // Expand CardView
+
+            val animator = ValueAnimator.ofInt(
+                searchTestCardView.layoutParams.height,
+                containerView.layoutParams.height
+            ).setDuration(2000)
+
+            animator
+
+        }
+
+
+
+
+
+
+
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE
