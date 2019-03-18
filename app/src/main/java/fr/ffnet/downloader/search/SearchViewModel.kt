@@ -10,7 +10,6 @@ import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResul
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
-import fr.ffnet.downloader.repository.ErrorRepository
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,6 @@ class SearchViewModel(
     private val resources: Resources,
     private val apiRepository: DownloaderRepository,
     private val dbRepository: DatabaseRepository,
-    private val errorRepository: ErrorRepository,
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
@@ -29,27 +27,23 @@ class SearchViewModel(
     val navigateToFanfiction: LiveData<LiveEvent<String>>
         get() = navigateToFanfictionActivity
 
-    private val presentError = MutableLiveData<LiveEvent<Int>>()
-    val displayError: LiveData<LiveEvent<Int>>
-        get() = presentError
+    private val errorPresent = MutableLiveData<LiveEvent<SearchError>>()
+    val sendError: LiveData<LiveEvent<SearchError>>
+        get() = errorPresent
 
     private lateinit var historyList: LiveData<List<HistoryUIModel>>
 
     fun loadFanfictionInfos(url: String?) {
-        if (!url.isNullOrEmpty()) {
-            val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(url)
-            when (urlTransformationResult) {
-                is UrlTransformSuccess -> loadFanfictionInfo(
-                    urlTransformationResult.id
+        val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(url)
+        when (urlTransformationResult) {
+            is UrlTransformSuccess -> loadFanfictionInfo(
+                urlTransformationResult.id
+            )
+            is UrlTransformFailure -> errorPresent.value = LiveEvent(
+                SearchError.UrlNotValid(
+                    resources.getString(R.string.search_fanfiction_url_error)
                 )
-                is UrlTransformFailure -> {
-                    errorRepository.addError(
-                        message = resources.getString(R.string.search_fanfiction_url_error),
-                        shouldDisplaySnackBar = true,
-                        shouldSendToAnalytics = true
-                    )
-                }
-            }
+            )
         }
     }
 
@@ -79,5 +73,9 @@ class SearchViewModel(
                 }
             }
         }
+    }
+
+    sealed class SearchError {
+        data class UrlNotValid(val message: String) : SearchError()
     }
 }

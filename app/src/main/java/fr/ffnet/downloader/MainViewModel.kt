@@ -2,8 +2,11 @@ package fr.ffnet.downloader
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.repository.ErrorRepository
 import fr.ffnet.downloader.repository.entities.ErrorEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainViewModel(private val errorRepository: ErrorRepository) : ViewModel() {
 
@@ -15,6 +18,8 @@ class MainViewModel(private val errorRepository: ErrorRepository) : ViewModel() 
     }
 
     fun consumeError(errorId: Int) {
-        errorRepository.deleteError(errorId)
+        viewModelScope.launch(Dispatchers.IO) {
+            errorRepository.deleteError(errorId)
+        }
     }
 }

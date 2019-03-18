@@ -7,7 +7,6 @@ import fr.ffnet.downloader.common.FragmentScope
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.ErrorRepository
 import fr.ffnet.downloader.utils.DateFormatter
 
 @Module
@@ -20,14 +19,12 @@ class SearchModule {
         resources: Resources,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
-        errorRepository: ErrorRepository,
         dateFormatter: DateFormatter
     ): SearchViewModel = SearchViewModel(
         urlTransformer,
         resources,
         apiRepository,
         dbRepository,
-        errorRepository,
         dateFormatter
     )
 }

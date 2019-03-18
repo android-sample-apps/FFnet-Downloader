@@ -11,7 +11,10 @@ class UrlTransformer @Inject constructor() {
         private const val PROFILE_ID_MATCHER = "\\/u\\/(\\d+)"
     }
 
-    fun getFanfictionIdFromUrl(url: String): UrlTransformationResult {
+    fun getFanfictionIdFromUrl(url: String?): UrlTransformationResult {
+        if (url.isNullOrEmpty()) {
+            return UrlTransformFailure
+        }
         val result = FANFICTION_ID_MATCHER.toRegex().find(url)
         return result?.value?.let {
             UrlTransformSuccess(it.replace("/s/", ""))

@@ -31,9 +31,11 @@ class MainActivity : DaggerAppCompatActivity() {
             error?.let {
                 Snackbar.make(
                     containerFrameLayout, error.message, Snackbar.LENGTH_LONG
-                ).show().also {
-                    viewModel.consumeError(error.id)
-                }
+                ).addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        viewModel.consumeError(error.id)
+                    }
+                })
             }
         })
     }
