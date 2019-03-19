@@ -9,8 +9,9 @@ android {
         buildConfigField 'String', 'API_BASE_URL', '"https://www.fanfiction.net/"'
 
         applicationId "fr.ffnet.downloader"
-        minSdkVersion 24
+        minSdkVersion 19
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -34,6 +35,8 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support:multidex:1.0.3'
+
 
     implementation "androidx.legacy:legacy-support-v13:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.1.0-alpha02"

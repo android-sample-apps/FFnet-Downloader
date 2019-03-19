@@ -71,11 +71,18 @@ class SearchViewModel(
                 viewModelScope.launch(Dispatchers.Main) {
                     navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
                 }
+            } else {
+                errorPresent.value = LiveEvent(
+                    SearchError.InfoFetchingFailed(
+                        resources.getString(R.string.search_fanfiction_info_fetching_error)
+                    )
+                )
             }
         }
     }
 
-    sealed class SearchError {
-        data class UrlNotValid(val message: String) : SearchError()
+    sealed class SearchError(val message: String) {
+        data class UrlNotValid(val msg: String) : SearchError(msg)
+        data class InfoFetchingFailed(val msg: String) : SearchError(msg)
     }
 }

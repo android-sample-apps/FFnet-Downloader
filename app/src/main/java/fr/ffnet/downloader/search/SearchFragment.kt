@@ -1,9 +1,11 @@
 package fr.ffnet.downloader.search
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,10 +36,14 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE
+
+            (activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                .hideSoftInputFromWindow(view.windowToken, 0)
+
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
         initRecyclerView()
-        errorListener()
+        setErrorListener()
 
         viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
@@ -55,11 +61,12 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         })
     }
 
-    fun errorListener() {
+    private fun setErrorListener() {
         viewModel.sendError.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let { searchError ->
                 when (searchError) {
-                    is SearchViewModel.SearchError.UrlNotValid -> {
+                    is SearchViewModel.SearchError.UrlNotValid,
+                    is SearchViewModel.SearchError.InfoFetchingFailed -> {
                         Snackbar.make(
                             containerView, searchError.message, Snackbar.LENGTH_LONG
                         ).show()
