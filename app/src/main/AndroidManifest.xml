@@ -17,7 +17,8 @@
 
         <activity
             android:name="fr.ffnet.downloader.MainActivity"
-            android:label="@string/title_activity_ffnet">
+            android:label="@string/title_activity_ffnet"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
