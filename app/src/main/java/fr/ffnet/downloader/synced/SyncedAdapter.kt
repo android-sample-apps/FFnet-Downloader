@@ -1,21 +1,18 @@
 package fr.ffnet.downloader.synced
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.utils.FanfictionAction
-import fr.ffnet.downloader.utils.OnActionsClickListener
+import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
 
 class SyncedAdapter(
-    private val onMenuItemClickListener: OnActionsClickListener
+    private val onMenuItemClickListener: OnFanfictionOptionsListener
 ) : RecyclerView.Adapter<SyncedAdapter.SyncedViewHolder>() {
 
     var syncedList: List<FanfictionSyncedUIModel> = emptyList()
@@ -48,7 +45,7 @@ class SyncedAdapter(
         private val actionsImageButton: ImageButton = view.actionsImageButton
         private val widgetVisibilityGroup: Group = view.widgetVisibilityGroup
 
-        fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnActionsClickListener) {
+        fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnFanfictionOptionsListener) {
             view.setOnClickListener {
                 widgetVisibilityGroup.visibility = if (widgetVisibilityGroup.visibility == View.GONE) View.VISIBLE else View.GONE
             }
@@ -59,32 +56,33 @@ class SyncedAdapter(
             syncedDateValueTextView.text = fanfiction.fetchedDate
 
             actionsImageButton.setOnClickListener {
-                val popupMenu = PopupMenu(actionsImageButton.context, view)
-                popupMenu.setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.gotoFanfiction -> listener.onActionClicked(
-                            fanfiction.id,
-                            FanfictionAction.GOTO_FANFICTION
-                        )
-                        R.id.exportPdf -> listener.onActionClicked(
-                            fanfiction.id,
-                            FanfictionAction.EXPORT_PDF
-                        )
-                        R.id.exportEpub -> listener.onActionClicked(
-                            fanfiction.id,
-                            FanfictionAction.EXPORT_EPUB
-                        )
-                        R.id.deleteFanfiction -> listener.onActionClicked(
-                            fanfiction.id,
-                            FanfictionAction.DELETE_FANFICTION
-                        )
-                        else -> TODO()
-                    }
-                    true
-                }
-                popupMenu.inflate(R.menu.synced_fanfictions_menu)
-                popupMenu.gravity = Gravity.END
-                popupMenu.show()
+                listener.onOptionsClicked(fanfiction.id)
+//                val popupMenu = PopupMenu(actionsImageButton.context, view)
+//                popupMenu.setOnMenuItemClickListener { item ->
+//                    when (item.itemId) {
+//                        R.id.gotoFanfiction -> listener.onActionClicked(
+//                            fanfiction.id,
+//                            FanfictionAction.GOTO_FANFICTION
+//                        )
+//                        R.id.exportPdf -> listener.onActionClicked(
+//                            fanfiction.id,
+//                            FanfictionAction.EXPORT_PDF
+//                        )
+//                        R.id.exportEpub -> listener.onActionClicked(
+//                            fanfiction.id,
+//                            FanfictionAction.EXPORT_EPUB
+//                        )
+//                        R.id.deleteFanfiction -> listener.onActionClicked(
+//                            fanfiction.id,
+//                            FanfictionAction.DELETE_FANFICTION
+//                        )
+//                        else -> TODO()
+//                    }
+//                    true
+//                }
+//                popupMenu.inflate(R.menu.synced_fanfictions_menu)
+//                popupMenu.gravity = Gravity.END
+//                popupMenu.show()
             }
         }
     }

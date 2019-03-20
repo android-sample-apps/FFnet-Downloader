@@ -7,3 +7,7 @@ enum class FanfictionAction {
 interface OnActionsClickListener {
     fun onActionClicked(fanfictionId: String, action: FanfictionAction)
 }
+
+interface OnFanfictionOptionsListener {
+    fun onOptionsClicked(fanfictionId: String)
+}

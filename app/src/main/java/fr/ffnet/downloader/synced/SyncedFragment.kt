@@ -1,7 +1,6 @@
 package fr.ffnet.downloader.synced
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,20 +8,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
-import fr.ffnet.downloader.utils.FanfictionAction
-import fr.ffnet.downloader.utils.OnActionsClickListener
+import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_synced.*
-import nl.siegmann.epublib.domain.Author
-import nl.siegmann.epublib.domain.Book
-import nl.siegmann.epublib.epub.EpubWriter
-import java.io.FileOutputStream
 import javax.inject.Inject
 
-class SyncedFragment : DaggerFragment(), OnActionsClickListener {
+class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
     private lateinit var viewModel: SyncedViewModel
     @Inject lateinit var viewModelFactory: ViewModelFactory<SyncedViewModel>
@@ -49,10 +44,6 @@ class SyncedFragment : DaggerFragment(), OnActionsClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-
-//        activity?.requestPermissions(context, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE))
-
-
         viewModel.getFanfictionList().observe(this, Observer { fanfictionResult ->
             when (fanfictionResult) {
                 is SyncedFanfictionsResult.NoSyncedFanfictions -> showNoSyncedFanfictions()
@@ -63,25 +54,14 @@ class SyncedFragment : DaggerFragment(), OnActionsClickListener {
         })
     }
 
-    override fun onActionClicked(fanfictionId: String, action: FanfictionAction) {
-        when (action) {
-            FanfictionAction.GOTO_FANFICTION -> startFanfictionActivity(fanfictionId)
-            FanfictionAction.EXPORT_PDF -> Log.d("ACTION", "EXPORT_PDF")
-            FanfictionAction.EXPORT_EPUB -> exportPdf(fanfictionId)
-            FanfictionAction.DELETE_FANFICTION -> {
-                viewModel.deleteFanfiction(fanfictionId)
-            }
+    override fun onOptionsClicked(fanfictionId: String) {
+        val optionsFragment = FanfictionOptionsDialogFragment.newInstance()
+        fragmentManager?.let {
+            optionsFragment.show(it, "fanfiction_options")
         }
     }
 
     private fun exportPdf(fanfictionId: String) {
-
-        val book = Book()
-        book.metadata.addTitle("A title")
-        book.metadata.addAuthor(Author("An author"))
-
-        val epubWriter = EpubWriter()
-        epubWriter.write(book, FileOutputStream("test_epub.epub"))
 
 
     }

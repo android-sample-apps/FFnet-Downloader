@@ -84,6 +84,15 @@
         app:layout_constraintLeft_toRightOf="@+id/barrier"
         tools:text="2019/03/03" />
 
+    <ImageButton
+        android:id="@+id/actionsImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_more"
+        android:tint="@color/bottomNavigationGrey"
+        app:layout_constraintBaseline_toBaselineOf="@+id/titleTextView"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline" />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/widgetVisibilityGroup"
         android:layout_width="wrap_content"
@@ -97,15 +106,6 @@
         android:layout_height="wrap_content"
         app:barrierDirection="right"
         app:constraint_referenced_ids="publishedDateLabelTextView, updatedDateLabelTextView, syncedDateLabelTextView" />
-
-    <ImageButton
-        android:id="@+id/actionsImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@drawable/ic_more"
-        app:layout_constraintBottom_toBottomOf="@id/chaptersTextView"
-        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"
