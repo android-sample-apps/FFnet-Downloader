@@ -56,33 +56,7 @@ class SyncedAdapter(
             syncedDateValueTextView.text = fanfiction.fetchedDate
 
             actionsImageButton.setOnClickListener {
-                listener.onOptionsClicked(fanfiction.id)
-//                val popupMenu = PopupMenu(actionsImageButton.context, view)
-//                popupMenu.setOnMenuItemClickListener { item ->
-//                    when (item.itemId) {
-//                        R.id.gotoFanfiction -> listener.onActionClicked(
-//                            fanfiction.id,
-//                            FanfictionAction.GOTO_FANFICTION
-//                        )
-//                        R.id.exportPdf -> listener.onActionClicked(
-//                            fanfiction.id,
-//                            FanfictionAction.EXPORT_PDF
-//                        )
-//                        R.id.exportEpub -> listener.onActionClicked(
-//                            fanfiction.id,
-//                            FanfictionAction.EXPORT_EPUB
-//                        )
-//                        R.id.deleteFanfiction -> listener.onActionClicked(
-//                            fanfiction.id,
-//                            FanfictionAction.DELETE_FANFICTION
-//                        )
-//                        else -> TODO()
-//                    }
-//                    true
-//                }
-//                popupMenu.inflate(R.menu.synced_fanfictions_menu)
-//                popupMenu.gravity = Gravity.END
-//                popupMenu.show()
+                listener.onOptionsClicked(fanfiction.id, fanfiction.title)
             }
         }
     }

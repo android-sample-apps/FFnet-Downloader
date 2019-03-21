@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/gotoFanfiction"
-        android:title="@string/synced_fanfictions_menu_goto" />
+        android:title="@string/fanfiction_options_menu_goto" />
     <item
         android:id="@+id/exportPdf"
-        android:title="@string/synced_fanfictions_menu_exportPdf" />
+        android:title="@string/fanfiction_options_menu_export_pdf" />
     <item
         android:id="@+id/exportEpub"
-        android:title="@string/synced_fanfictions_menu_exportEpub" />
+        android:title="@string/fanfiction_options_menu_export_epub" />
     <item
         android:id="@+id/deleteFanfiction"
-        android:title="@string/synced_fanfictions_menu_delete" />
+        android:title="@string/fanfiction_options_menu_delete" />
 </menu>

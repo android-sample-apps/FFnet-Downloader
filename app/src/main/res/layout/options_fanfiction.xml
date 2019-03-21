@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
@@ -12,79 +13,91 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <TextView
+        android:id="@+id/fanfictionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:padding="16dp"
-        android:text="Super fanfiction title"
-        android:textSize="18sp" />
+        android:textColor="@color/mediumTextColor"
+        android:textSize="20sp"
+        tools:text="Super loooooooooooooooooooong fanfiction title" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bottomNavigationGrey" />
+        android:background="@color/reallyLowTextColor" />
 
     <TextView
+        android:id="@+id/optionSeeDetailsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:drawableStart="true"
-        android:drawableLeft="@drawable/ic_file_download"
-        android:drawablePadding="8dp"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_download"
+        android:drawablePadding="16dp"
         android:drawableTint="@color/bottomNavigationGrey"
         android:focusable="true"
         android:paddingLeft="16dp"
         android:paddingTop="24dp"
         android:paddingRight="16dp"
         android:paddingBottom="12dp"
-        android:text="View details"
+        android:text="@string/fanfiction_options_menu_goto"
+        android:textColor="@color/highTextColor"
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/optionExportPDFTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:drawableStart="@drawable/ic_file_download"
-        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_pdf"
+        android:drawablePadding="16dp"
         android:drawableTint="@color/bottomNavigationGrey"
         android:focusable="true"
         android:paddingLeft="16dp"
         android:paddingTop="12dp"
         android:paddingRight="16dp"
         android:paddingBottom="12dp"
-        android:text="Export PDF"
+        android:text="@string/fanfiction_options_menu_export_pdf"
+        android:textColor="@color/highTextColor"
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/optionExportEPUBTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:drawableStart="@drawable/ic_file_download"
-        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_epub"
+        android:drawablePadding="16dp"
         android:drawableTint="@color/bottomNavigationGrey"
         android:focusable="true"
         android:paddingLeft="16dp"
         android:paddingTop="12dp"
         android:paddingRight="16dp"
         android:paddingBottom="12dp"
-        android:text="Export EPUB"
+        android:text="@string/fanfiction_options_menu_export_epub"
+        android:textColor="@color/highTextColor"
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/optionDeleteTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:drawableStart="@drawable/ic_file_download"
-        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_trash"
+        android:drawablePadding="16dp"
         android:drawableTint="@color/bottomNavigationGrey"
         android:focusable="true"
         android:paddingLeft="16dp"
         android:paddingTop="12dp"
         android:paddingRight="16dp"
         android:paddingBottom="24dp"
-        android:text="Delete from device"
+        android:text="@string/fanfiction_options_menu_delete"
+        android:textColor="@color/highTextColor"
         android:textSize="16sp" />
 
 </LinearLayout>

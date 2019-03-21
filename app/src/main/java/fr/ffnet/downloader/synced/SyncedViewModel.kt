@@ -46,7 +46,7 @@ class SyncedViewModel(
         }
     }
 
-    fun deleteFanfiction(fanfictionId: String) {
+    fun unsyncFanfiction(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.unsyncFanfiction(fanfictionId)
         }

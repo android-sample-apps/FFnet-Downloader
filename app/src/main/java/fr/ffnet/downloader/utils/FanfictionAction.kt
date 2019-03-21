@@ -9,5 +9,5 @@ interface OnActionsClickListener {
 }
 
 interface OnFanfictionOptionsListener {
-    fun onOptionsClicked(fanfictionId: String)
+    fun onOptionsClicked(fanfictionId: String, title: String)
 }

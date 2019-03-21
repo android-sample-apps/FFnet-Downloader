@@ -28,10 +28,11 @@
     <string name="synced_fanfictions_no_fanfictions">No fanfictions synced</string>
     <string name="synced_fanfictions_synced_date_label">Synced</string>
     <string name="synced_fanfictions_chapters">%d/%d synced chapters</string>
-    <string name="synced_fanfictions_menu_goto">See details</string>
-    <string name="synced_fanfictions_menu_exportPdf">Export PDF</string>
-    <string name="synced_fanfictions_menu_exportEpub">Export EPUB</string>
-    <string name="synced_fanfictions_menu_delete">Delete</string>
+
+    <string name="fanfiction_options_menu_goto">See details</string>
+    <string name="fanfiction_options_menu_export_pdf">Export PDF</string>
+    <string name="fanfiction_options_menu_export_epub">Export EPUB</string>
+    <string name="fanfiction_options_menu_delete">Delete</string>
 
     <string name="profile_list_no_fanfictions">No stories in this category</string>
     <string name="profile_my_favorites">My favorites</string>

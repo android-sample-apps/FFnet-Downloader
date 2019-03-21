@@ -1,5 +1,7 @@
 package fr.ffnet.downloader.synced
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.FanfictionOptionsDialogFragment
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_DELETE
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_DETAILS
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_EPUB
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_PDF
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_FANFICTION_ID
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
@@ -54,15 +61,29 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         })
     }
 
-    override fun onOptionsClicked(fanfictionId: String) {
-        val optionsFragment = FanfictionOptionsDialogFragment.newInstance()
+    override fun onOptionsClicked(fanfictionId: String, title: String) {
+        val optionsFragment = FanfictionOptionsDialogFragment.newInstance(fanfictionId, title)
+        optionsFragment.setTargetFragment(this, 1000)
         fragmentManager?.let {
             optionsFragment.show(it, "fanfiction_options")
         }
     }
 
-    private fun exportPdf(fanfictionId: String) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            data?.let { intent ->
+                val fanfictionId = intent.getStringExtra(EXTRA_FANFICTION_ID)
+                when (intent.getStringExtra(FanfictionOptionsDialogFragment.EXTRA_ACTION)) {
+                    EXTRA_ACTION_DETAILS -> startFanfictionActivity(fanfictionId)
+                    EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
+                    EXTRA_ACTION_EPUB -> println("EXTRA_ACTION_EPUB")
+                    EXTRA_ACTION_DELETE -> viewModel.unsyncFanfiction(fanfictionId)
+                }
+            }
+        }
+    }
 
+    private fun exportPdf(fanfictionId: String) {
 
     }
 
