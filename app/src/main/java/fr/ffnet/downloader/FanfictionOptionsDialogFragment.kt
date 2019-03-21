@@ -12,17 +12,23 @@ import kotlinx.android.synthetic.main.options_fanfiction.*
 class FanfictionOptionsDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
-        fun newInstance(fanfictionId: String, title: String): FanfictionOptionsDialogFragment {
+        fun newInstance(
+            fanfictionId: String,
+            title: String,
+            shouldShowDeleteOption: Boolean = true
+        ): FanfictionOptionsDialogFragment {
             return FanfictionOptionsDialogFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_FANFICTION_ID, fanfictionId)
                     putString(EXTRA_FANFICTION_TITLE, title)
+                    putBoolean(EXTRA_SHOW_DELETE, shouldShowDeleteOption)
                 }
             }
         }
 
         const val EXTRA_FANFICTION_ID = "EXTRA_FANFICTION_ID"
         const val EXTRA_FANFICTION_TITLE = "EXTRA_FANFICTION_TITLE"
+        const val EXTRA_SHOW_DELETE = "EXTRA_SHOW_DELETE"
         const val EXTRA_ACTION = "EXTRA_ACTION"
         const val EXTRA_ACTION_DETAILS = "ACTION_SEE_DETAILS"
         const val EXTRA_ACTION_PDF = "ACTION_EXPORT_PDF"
@@ -40,6 +46,11 @@ class FanfictionOptionsDialogFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         fanfictionTitle.text = arguments?.getString(EXTRA_FANFICTION_TITLE) ?: "N/A"
+        arguments?.getBoolean(EXTRA_SHOW_DELETE)?.let { shouldShowDeleteOption ->
+            if (!shouldShowDeleteOption) {
+                optionDeleteTextView.visibility = View.GONE
+            }
+        }
 
         optionSeeDetailsTextView.setOnClickListener {
             setResultAndFinish(Intent().apply {

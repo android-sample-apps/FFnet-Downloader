@@ -1,7 +1,8 @@
 package fr.ffnet.downloader.profile.fanfiction
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +10,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
+import fr.ffnet.downloader.FanfictionOptionsDialogFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
-import fr.ffnet.downloader.utils.FanfictionAction
-import fr.ffnet.downloader.utils.OnActionsClickListener
+import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
 
-class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
+class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
     companion object {
         private const val DISPLAY_NO_FANFICTIONS = 0
@@ -96,12 +97,35 @@ class ProfileFanfictionFragment : DaggerFragment(), OnActionsClickListener {
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 
-    override fun onActionClicked(fanfictionId: String, action: FanfictionAction) {
-        when (action) {
-            FanfictionAction.GOTO_FANFICTION -> fetchFanfictionInformation(fanfictionId)
-            FanfictionAction.EXPORT_PDF -> Log.d("ACTION", "EXPORT_PDF")
-            FanfictionAction.EXPORT_EPUB -> Log.d("ACTION", "EXPORT_EPUB")
-            FanfictionAction.DELETE_FANFICTION -> TODO()
+    override fun onOptionsClicked(fanfictionId: String, title: String) {
+        val optionsFragment = FanfictionOptionsDialogFragment.newInstance(
+            fanfictionId = fanfictionId,
+            title = title,
+            shouldShowDeleteOption = false
+        )
+        optionsFragment.setTargetFragment(this, 1000)
+        fragmentManager?.let {
+            optionsFragment.show(it, "fanfiction_options")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            data?.let { intent ->
+                val fanfictionId = intent.getStringExtra(
+                    FanfictionOptionsDialogFragment.EXTRA_FANFICTION_ID
+                )
+                when (intent.getStringExtra(FanfictionOptionsDialogFragment.EXTRA_ACTION)) {
+                    FanfictionOptionsDialogFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
+                        fanfictionId
+                    )
+                    FanfictionOptionsDialogFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
+                    FanfictionOptionsDialogFragment.EXTRA_ACTION_EPUB -> println(
+                        "EXTRA_ACTION_EPUB"
+                    )
+                    FanfictionOptionsDialogFragment.EXTRA_ACTION_DELETE -> println("Nope")
+                }
+            }
         }
     }
 
