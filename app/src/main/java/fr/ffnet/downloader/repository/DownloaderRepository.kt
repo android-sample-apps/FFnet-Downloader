@@ -54,40 +54,48 @@ class DownloaderRepository(
     }
 
     fun downloadChapters(fanfictionId: String) {
-        chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadOngoing)
-        val chapterList = fanfictionDao.getChapters(fanfictionId)
-        chapterList.forEach { chapter ->
-            service.getFanfiction(
-                fanfictionId, chapter.chapterId
-            ).enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    chaptersDownloadState.postValue(ChaptersDownloadResult.RepositoryException)
-                }
-
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            val chapterContent = fanfictionBuilder.extractChapter(it.string())
-                            Thread {
-                                fanfictionDao.updateChapter(
-                                    content = chapterContent,
-                                    isSynced = true,
-                                    chapterId = chapter.chapterId,
-                                    fanfictionId = fanfictionId
-                                )
-                            }.start()
-                            if (chapter.chapterId.toInt() == chapterList.size) {
-                                chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadSuccessful)
-                            }
-                        } ?: setDownloadStateChapterEmpty()
-                    } else {
-                        chaptersDownloadState.postValue(ChaptersDownloadResult.ResponseNotSuccessful)
+        val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
+        if (chapterList.isNotEmpty()) {
+            chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadOngoing)
+            chapterList.forEach { chapter ->
+                service.getFanfiction(
+                    fanfictionId, chapter.chapterId
+                ).enqueue(object : Callback<ResponseBody> {
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        chaptersDownloadState.postValue(ChaptersDownloadResult.RepositoryException)
                     }
-                }
-            })
+
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.isSuccessful) {
+                            response.body()?.let {
+                                val chapterContent = fanfictionBuilder.extractChapter(it.string())
+                                Thread {
+                                    fanfictionDao.updateChapter(
+                                        content = chapterContent,
+                                        isSynced = true,
+                                        chapterId = chapter.chapterId,
+                                        fanfictionId = fanfictionId
+                                    )
+                                }.start()
+                                if (chapter.chapterId.toInt() == chapterList.size) {
+                                    chaptersDownloadState.postValue(
+                                        ChaptersDownloadResult.DownloadSuccessful
+                                    )
+                                }
+                            } ?: setDownloadStateChapterEmpty()
+                        } else {
+                            chaptersDownloadState.postValue(
+                                ChaptersDownloadResult.ResponseNotSuccessful
+                            )
+                        }
+                    }
+                })
+            }
+        } else {
+            chaptersDownloadState.postValue(ChaptersDownloadResult.NothingToDownload)
         }
     }
 
@@ -98,6 +106,7 @@ class DownloaderRepository(
     sealed class ChaptersDownloadResult {
         object DownloadOngoing : ChaptersDownloadResult()
         object DownloadSuccessful : ChaptersDownloadResult()
+        object NothingToDownload : ChaptersDownloadResult()
         object ChapterEmpty : ChaptersDownloadResult()
         object RepositoryException : ChaptersDownloadResult()
         object ResponseNotSuccessful : ChaptersDownloadResult()

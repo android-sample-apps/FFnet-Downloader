@@ -13,7 +13,6 @@ import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_fanfiction.*
-import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
 class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
@@ -70,15 +69,19 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             when (chapterDownloadResult) {
                 FanfictionViewModel.ChapterStatusState.ChapterSynced -> downloadButton.isEnabled = true
                 FanfictionViewModel.ChapterStatusState.ChapterSyncing -> downloadButton.isEnabled = false
-                is FanfictionViewModel.ChapterStatusState.ChapterSyncError -> {
-                    downloadButton.isEnabled = true
-                    Snackbar.make(
-                        containerView, chapterDownloadResult.message, Snackbar.LENGTH_LONG
-                    ).show()
-                }
+                is FanfictionViewModel.ChapterStatusState.ChapterSyncError -> enableDownloadButtonAndDisplayErrorMessage(
+                    chapterDownloadResult.message
+                )
+                is FanfictionViewModel.ChapterStatusState.ChaptersAlreadySynced -> enableDownloadButtonAndDisplayErrorMessage(
+                    chapterDownloadResult.message
+                )
             }
-
         })
+    }
+
+    private fun enableDownloadButtonAndDisplayErrorMessage(message: String) {
+        downloadButton.isEnabled = true
+        Snackbar.make(swipeRefresh, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setListeners(fanfictionId: String) {

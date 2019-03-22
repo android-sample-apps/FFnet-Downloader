@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult
 import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult.DownloadOngoing
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
@@ -90,11 +91,14 @@ class FanfictionViewModel(
         ) { downloadStatus ->
             when (downloadStatus) {
                 DownloadOngoing -> ChapterStatusState.ChapterSyncing
-                DownloaderRepository.ChaptersDownloadResult.DownloadSuccessful -> ChapterStatusState.ChapterSynced
-                DownloaderRepository.ChaptersDownloadResult.ChapterEmpty,
-                DownloaderRepository.ChaptersDownloadResult.RepositoryException,
-                DownloaderRepository.ChaptersDownloadResult.ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
+                ChaptersDownloadResult.DownloadSuccessful -> ChapterStatusState.ChapterSynced
+                ChaptersDownloadResult.ChapterEmpty,
+                ChaptersDownloadResult.RepositoryException,
+                ChaptersDownloadResult.ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
                     resources.getString(R.string.download_chapter_error)
+                )
+                ChaptersDownloadResult.NothingToDownload -> ChapterStatusState.ChaptersAlreadySynced(
+                    resources.getString(R.string.download_chapter_already_done)
                 )
             }
         }
@@ -104,5 +108,6 @@ class FanfictionViewModel(
         object ChapterSynced : ChapterStatusState()
         object ChapterSyncing : ChapterStatusState()
         data class ChapterSyncError(val message: String) : ChapterStatusState()
+        data class ChaptersAlreadySynced(val message: String) : ChapterStatusState()
     }
 }
