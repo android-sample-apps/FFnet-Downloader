@@ -37,17 +37,35 @@
                 app:layout_constraintRight_toLeftOf="@id/rightGuideline"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/profileUrlEditText"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/searchCardView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:hint="@string/download_url_hint"
-                android:text="https://www.fanfiction.net/u/1588412/"
-                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FAFAFA"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
                 app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
                 app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-                app:layout_constraintTop_toBottomOf="@id/noFanfictionFoundTextView" />
+                app:layout_constraintTop_toBottomOf="@id/noFanfictionFoundTextView">
+
+                <EditText
+                    android:id="@+id/profileUrlEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:background="@null"
+                    android:elevation="2dp"
+                    android:ellipsize="end"
+                    android:hint="@string/download_url_hint"
+                    android:imeOptions="actionSearch"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:text="https://www.fanfiction.net/u/1588412/"
+                    android:textColorHint="@color/bottomNavigationGrey"
+                    android:textSize="16sp" />
+
+            </androidx.cardview.widget.CardView>
 
             <Button
                 android:id="@+id/fetchInformationButton"
@@ -57,7 +75,7 @@
                 android:text="@string/profile_associate_profile_button"
                 app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
                 app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-                app:layout_constraintTop_toBottomOf="@+id/profileUrlEditText" />
+                app:layout_constraintTop_toBottomOf="@+id/searchCardView" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/profileHistoryRecyclerView"
