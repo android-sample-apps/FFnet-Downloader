@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class DownloaderRepository(
     private val service: CrawlService,
@@ -25,31 +25,35 @@ class DownloaderRepository(
     fun getDownloadState(): LiveData<ChaptersDownloadResult> = chaptersDownloadState
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
-        val response = service.getFanfiction(fanfictionId).execute()
-        return if (response.isSuccessful) {
-            response.body()?.let { responseBody ->
-                val existingChapters = fanfictionDao.getChaptersIds(fanfictionId)
-                val (firstChapter, fanfictionInfo) = fanfictionBuilder.buildFanfiction(
-                    fanfictionId, responseBody.string()
-                )
+        return try {
+            val response = service.getFanfiction(fanfictionId).execute()
+            if (response.isSuccessful) {
+                response.body()?.let { responseBody ->
+                    val existingChapters = fanfictionDao.getChaptersIds(fanfictionId)
+                    val (firstChapter, fanfictionInfo) = fanfictionBuilder.buildFanfiction(
+                        fanfictionId, responseBody.string()
+                    )
 
-                fanfictionDao.insertFanfiction(
-                    fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
-                )
+                    fanfictionDao.insertFanfiction(
+                        fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
+                    )
 
-                val chapterList = if (existingChapters.isNotEmpty()) {
-                    fanfictionInfo.chapterList.filter { it.id !in existingChapters }
-                } else {
-                    fanfictionInfo.chapterList
-                }
-                fanfictionDao.insertChapterList(
-                    fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
-                )
-                fanfictionDao.updateFirstChapter(fanfictionId, firstChapter)
-                FanfictionRepositoryResultSuccess(fanfictionInfo)
-            } ?: FanfictionRepositoryResultFailure
-        } else {
-            FanfictionRepositoryResultFailure
+                    val chapterList = if (existingChapters.isNotEmpty()) {
+                        fanfictionInfo.chapterList.filter { it.id !in existingChapters }
+                    } else {
+                        fanfictionInfo.chapterList
+                    }
+                    fanfictionDao.insertChapterList(
+                        fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
+                    )
+                    fanfictionDao.updateFirstChapter(fanfictionId, firstChapter)
+                    FanfictionRepositoryResultSuccess(fanfictionInfo)
+                } ?: FanfictionRepositoryResultFailure
+            } else {
+                FanfictionRepositoryResultServerFailure
+            }
+        } catch (exception: IOException) {
+            FanfictionRepositoryResultInternetFailure
         }
     }
 
@@ -115,5 +119,7 @@ class DownloaderRepository(
     sealed class FanfictionRepositoryResult {
         data class FanfictionRepositoryResultSuccess(val fanfictionInfo: Fanfiction) : FanfictionRepositoryResult()
         object FanfictionRepositoryResultFailure : FanfictionRepositoryResult()
+        object FanfictionRepositoryResultServerFailure : FanfictionRepositoryResult()
+        object FanfictionRepositoryResultInternetFailure : FanfictionRepositoryResult()
     }
 }

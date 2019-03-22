@@ -39,9 +39,11 @@ class SearchViewModel(
             is UrlTransformSuccess -> loadFanfictionInfo(
                 urlTransformationResult.id
             )
-            is UrlTransformFailure -> errorPresent.value = LiveEvent(
-                SearchError.UrlNotValid(
-                    resources.getString(R.string.search_fanfiction_url_error)
+            is UrlTransformFailure -> errorPresent.postValue(
+                LiveEvent(
+                    SearchError.UrlNotValid(
+                        resources.getString(R.string.search_fanfiction_url_error)
+                    )
                 )
             )
         }
@@ -67,16 +69,23 @@ class SearchViewModel(
     private fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-                navigateToFanfictionActivity.postValue(LiveEvent(fanfictionId))
-            } else {
-                errorPresent.value = LiveEvent(
-                    SearchError.InfoFetchingFailed(
-                        resources.getString(R.string.search_fanfiction_info_fetching_error)
-                    )
+            when (fanfictionResult) {
+                is FanfictionRepositoryResultSuccess -> navigateToFanfictionActivity.postValue(
+                    LiveEvent(fanfictionId)
+                )
+                DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure,
+                DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure -> displayErrorMessage(
+                    resources.getString(R.string.search_fanfiction_info_fetching_error)
+                )
+                DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure -> displayErrorMessage(
+                    resources.getString(R.string.search_fanfiction_info_server_error)
                 )
             }
         }
+    }
+
+    private fun displayErrorMessage(message: String) {
+        errorPresent.postValue(LiveEvent(SearchError.InfoFetchingFailed(message)))
     }
 
     sealed class SearchError(val message: String) {
