@@ -3,6 +3,7 @@ package fr.ffnet.downloader.fanfiction
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -39,6 +40,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         )
 
         setContentView(R.layout.activity_fanfiction)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initRecyclerView()
 
         intent.getStringExtra(EXTRA_ID)?.let { fanfictionId ->
@@ -49,6 +51,16 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         } ?: closeActivityNoExtra()
 
         setObservers()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setObservers() {
