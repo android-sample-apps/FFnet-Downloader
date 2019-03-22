@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.search.Fanfiction
+import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult.DownloadOngoing
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,15 +20,17 @@ class FanfictionViewModel(
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    private lateinit var currentFanfiction: Fanfiction
-
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
 
     private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
 
+    private lateinit var downloadButtonState: LiveData<Boolean>
+
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
+
+    fun getDownloadButtonState(): LiveData<Boolean> = downloadButtonState
 
     fun refreshFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,7 +40,6 @@ class FanfictionViewModel(
 
     fun loadFanfictionInfo(fanfictionId: String) {
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
-            currentFanfiction = it
             FanfictionUIModel(
                 id = it.id,
                 title = it.title,
@@ -58,7 +59,7 @@ class FanfictionViewModel(
 
     fun syncChapters(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            apiRepository.loadAllChapters(fanfictionId)
+            apiRepository.downloadChapters(fanfictionId)
         }
     }
 
@@ -78,6 +79,14 @@ class FanfictionViewModel(
                     )
                 )
             }
+        }
+    }
+
+    fun loadChapterDownloadingState() {
+        downloadButtonState = Transformations.map(
+            apiRepository.getDownloadState()
+        ) { downloadStatus ->
+            downloadStatus !is DownloadOngoing
         }
     }
 }

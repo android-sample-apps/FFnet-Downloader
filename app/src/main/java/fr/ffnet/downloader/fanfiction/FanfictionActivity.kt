@@ -43,6 +43,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         intent.getStringExtra(EXTRA_ID)?.let { fanfictionId ->
             viewModel.loadFanfictionInfo(fanfictionId)
             viewModel.loadChapters(fanfictionId)
+            viewModel.loadChapterDownloadingState()
             setListeners(fanfictionId)
         } ?: closeActivityNoExtra()
 
@@ -62,6 +63,9 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         })
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
+        })
+        viewModel.getDownloadButtonState().observe(this, Observer { isEnabled ->
+            downloadButton.isEnabled = isEnabled
         })
     }
 

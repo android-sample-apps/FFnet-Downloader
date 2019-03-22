@@ -1,5 +1,7 @@
 package fr.ffnet.downloader.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
@@ -17,6 +19,10 @@ class DownloaderRepository(
     private val fanfictionDao: FanfictionDao,
     private val fanfictionTransformer: FanfictionTransformer
 ) {
+
+    private val chaptersDownloadState = MutableLiveData<ChaptersDownloadResult>()
+
+    fun getDownloadState(): LiveData<ChaptersDownloadResult> = chaptersDownloadState
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
         val response = service.getFanfiction(fanfictionId).execute()
@@ -47,14 +53,15 @@ class DownloaderRepository(
         }
     }
 
-    fun loadAllChapters(fanfictionId: String) {
-        fanfictionDao.getChapters(fanfictionId).forEach { chapter ->
-            println("Adding request for chapter ${chapter.chapterId}")
+    fun downloadChapters(fanfictionId: String) {
+        chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadOngoing)
+        val chapterList = fanfictionDao.getChapters(fanfictionId)
+        chapterList.forEach { chapter ->
             service.getFanfiction(
                 fanfictionId, chapter.chapterId
             ).enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    println("onFailure Nope")
+                    chaptersDownloadState.postValue(ChaptersDownloadResult.RepositoryException)
                 }
 
                 override fun onResponse(
@@ -72,13 +79,28 @@ class DownloaderRepository(
                                     fanfictionId = fanfictionId
                                 )
                             }.start()
-                        } ?: println("onResponse Nope")
+                            if (chapter.chapterId.toInt() == chapterList.size) {
+                                chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadSuccessful)
+                            }
+                        } ?: setDownloadStateChapterEmpty()
                     } else {
-                        println("onResponse Nope")
+                        chaptersDownloadState.postValue(ChaptersDownloadResult.ResponseNotSuccessful)
                     }
                 }
             })
         }
+    }
+
+    private fun setDownloadStateChapterEmpty() {
+        chaptersDownloadState.postValue(ChaptersDownloadResult.ChapterEmpty)
+    }
+
+    sealed class ChaptersDownloadResult {
+        object DownloadOngoing : ChaptersDownloadResult()
+        object DownloadSuccessful : ChaptersDownloadResult()
+        object ChapterEmpty : ChaptersDownloadResult()
+        object RepositoryException : ChaptersDownloadResult()
+        object ResponseNotSuccessful : ChaptersDownloadResult()
     }
 
     sealed class FanfictionRepositoryResult {
