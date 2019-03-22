@@ -8,10 +8,12 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_fanfiction.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
 class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
@@ -64,8 +66,18 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-        viewModel.getDownloadButtonState().observe(this, Observer { isEnabled ->
-            downloadButton.isEnabled = isEnabled
+        viewModel.getDownloadButtonState().observe(this, Observer { chapterDownloadResult ->
+            when (chapterDownloadResult) {
+                FanfictionViewModel.ChapterStatusState.ChapterSynced -> downloadButton.isEnabled = true
+                FanfictionViewModel.ChapterStatusState.ChapterSyncing -> downloadButton.isEnabled = false
+                is FanfictionViewModel.ChapterStatusState.ChapterSyncError -> {
+                    downloadButton.isEnabled = true
+                    Snackbar.make(
+                        containerView, chapterDownloadResult.message, Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+
         })
     }
 

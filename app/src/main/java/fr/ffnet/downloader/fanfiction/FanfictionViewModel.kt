@@ -1,15 +1,13 @@
 package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult.DownloadOngoing
 import fr.ffnet.downloader.utils.DateFormatter
+import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,13 +22,17 @@ class FanfictionViewModel(
 
     private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
 
-    private lateinit var downloadButtonState: LiveData<Boolean>
+    private lateinit var downloadButtonState: LiveData<ChapterStatusState>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
 
-    fun getDownloadButtonState(): LiveData<Boolean> = downloadButtonState
+    fun getDownloadButtonState(): LiveData<ChapterStatusState> = downloadButtonState
+
+    private val errorPresent = MutableLiveData<LiveEvent<String>>()
+    val sendError: LiveData<LiveEvent<String>>
+        get() = errorPresent
 
     fun refreshFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -86,7 +88,21 @@ class FanfictionViewModel(
         downloadButtonState = Transformations.map(
             apiRepository.getDownloadState()
         ) { downloadStatus ->
-            downloadStatus !is DownloadOngoing
+            when (downloadStatus) {
+                DownloadOngoing -> ChapterStatusState.ChapterSyncing
+                DownloaderRepository.ChaptersDownloadResult.DownloadSuccessful -> ChapterStatusState.ChapterSynced
+                DownloaderRepository.ChaptersDownloadResult.ChapterEmpty,
+                DownloaderRepository.ChaptersDownloadResult.RepositoryException,
+                DownloaderRepository.ChaptersDownloadResult.ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
+                    resources.getString(R.string.download_chapter_error)
+                )
+            }
         }
+    }
+
+    sealed class ChapterStatusState {
+        object ChapterSynced : ChapterStatusState()
+        object ChapterSyncing : ChapterStatusState()
+        data class ChapterSyncError(val message: String) : ChapterStatusState()
     }
 }

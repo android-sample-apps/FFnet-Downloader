@@ -62,9 +62,7 @@ class ProfileFanfictionViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
             if (fanfictionResult is DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess) {
-                viewModelScope.launch(Dispatchers.Main) {
-                    navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
-                }
+                navigateToFanfictionActivity.postValue(LiveEvent(fanfictionId))
             }
         }
     }

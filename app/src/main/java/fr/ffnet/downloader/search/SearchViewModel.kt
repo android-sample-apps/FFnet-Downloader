@@ -68,9 +68,7 @@ class SearchViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
             if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-                viewModelScope.launch(Dispatchers.Main) {
-                    navigateToFanfictionActivity.value = LiveEvent(fanfictionId)
-                }
+                navigateToFanfictionActivity.postValue(LiveEvent(fanfictionId))
             } else {
                 errorPresent.value = LiveEvent(
                     SearchError.InfoFetchingFailed(

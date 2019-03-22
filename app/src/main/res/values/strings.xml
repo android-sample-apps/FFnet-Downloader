@@ -24,6 +24,7 @@
     <string name="download_info_chapters_value">%d/%d</string>
     <string name="download_info_chapter_status_not_synced">Not synced</string>
     <string name="download_info_chapter_status_synced">Synced</string>
+    <string name="download_chapter_error">An error occurred while downloading</string>
 
     <string name="synced_fanfictions_no_fanfictions">No fanfictions synced</string>
     <string name="synced_fanfictions_synced_date_label">Synced</string>
