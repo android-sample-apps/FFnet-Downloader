@@ -105,5 +105,5 @@ dependencies {
 
     // SLF4J
     implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.7'
-
+    implementation 'com.itextpdf:itextg:5.5.10'
 }
