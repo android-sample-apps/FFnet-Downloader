@@ -1,11 +1,15 @@
 package fr.ffnet.downloader.synced
 
+import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,14 +28,19 @@ import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_synced.*
 import javax.inject.Inject
 
+
 class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
+    private lateinit var fanfictionId: String
     private lateinit var viewModel: SyncedViewModel
     @Inject lateinit var viewModelFactory: ViewModelFactory<SyncedViewModel>
 
     companion object {
         private const val DISPLAY_SYNCED_FANFICTIONS = 0
         private const val DISPLAY_NO_SYNCED_FANFICTIONS = 1
+        private const val STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        private const val EXPORT_EPUB_REQUEST = 2000
+        private const val EXPORT_PDF_REQUEST = 2001
     }
 
     override fun onCreateView(
@@ -39,13 +48,12 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_synced, container, false).also {
-            activity?.title = resources.getString(R.string.synced_title)
-            viewModel = ViewModelProviders.of(this, viewModelFactory).get(
-                SyncedViewModel::class.java
-            )
-            viewModel.loadFanfictionsFromDb()
-        }
+        activity?.title = resources.getString(R.string.synced_title)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(
+            SyncedViewModel::class.java
+        )
+        viewModel.loadFanfictionsFromDb()
+        return inflater.inflate(R.layout.fragment_synced, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,19 +80,64 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let { intent ->
-                val fanfictionId = intent.getStringExtra(EXTRA_FANFICTION_ID)
+                this.fanfictionId = intent.getStringExtra(EXTRA_FANFICTION_ID)
                 when (intent.getStringExtra(FanfictionOptionsDialogFragment.EXTRA_ACTION)) {
-                    EXTRA_ACTION_DETAILS -> startFanfictionActivity(fanfictionId)
-                    EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
-                    EXTRA_ACTION_EPUB -> println("EXTRA_ACTION_EPUB")
+                    EXTRA_ACTION_DETAILS -> startFanfictionActivity()
+                    EXTRA_ACTION_PDF -> exportPdf()
+                    EXTRA_ACTION_EPUB -> exportEpub()
                     EXTRA_ACTION_DELETE -> viewModel.unsyncFanfiction(fanfictionId)
                 }
             }
         }
     }
 
-    private fun exportPdf(fanfictionId: String) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            when (requestCode) {
+                EXPORT_EPUB_REQUEST -> exportEpub()
+                EXPORT_PDF_REQUEST -> exportPdf()
+            }
+        } else {
+            AlertDialog
+                .Builder(context)
+                .setTitle(R.string.export_permission_title)
+                .setMessage(R.string.export_permission_content)
+                .setPositiveButton(R.string.export_permission_grant) { _, _ ->
+                    checkPermission(requestCode)
+                }
+                .setNegativeButton(R.string.export_permission_deny) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+    }
 
+    private fun checkPermission(requestCode: Int): Boolean {
+        return if (ActivityCompat.checkSelfPermission(
+                context!!, STORAGE
+            ) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(STORAGE), requestCode)
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun exportEpub() {
+        if (checkPermission(EXPORT_EPUB_REQUEST)) {
+
+        }
+    }
+
+    private fun exportPdf() {
+        if (checkPermission(EXPORT_PDF_REQUEST)) {
+
+        }
     }
 
     private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
@@ -96,7 +149,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         fanfictionResultViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
     }
 
-    private fun startFanfictionActivity(fanfictionId: String) {
+    private fun startFanfictionActivity() {
         context?.let { context ->
             startActivity(FanfictionActivity.intent(context, fanfictionId))
         }

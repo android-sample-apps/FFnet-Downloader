@@ -45,4 +45,9 @@
     <string name="profile_refresh_profile">Refresh profile</string>
     <string name="profile_dissociate_confirmation">Do you really want to dissociate your profile?</string>
     <string name="profile_associate_no_fanfiction_found">No fanfiction found for the associated profile, do you wish to associate another profile ?</string>
+
+    <string name="export_permission_title">Write permission needed</string>
+    <string name="export_permission_content">The document cannot be generated without write permission</string>
+    <string name="export_permission_grant">Grant</string>
+    <string name="export_permission_deny">Deny</string>
 </resources>

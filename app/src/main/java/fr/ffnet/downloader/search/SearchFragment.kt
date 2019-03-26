@@ -44,7 +44,14 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         }
         initRecyclerView()
         setErrorListener()
+        initObservers()
+    }
 
+    override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
+        downloadUrlEditText.setText(fanfictionUrl)
+    }
+
+    private fun initObservers() {
         viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
                 if (context != null) {
@@ -76,10 +83,6 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
                 }
             }
         })
-    }
-
-    override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
-        downloadUrlEditText.setText(fanfictionUrl)
     }
 
     private fun initRecyclerView() {
