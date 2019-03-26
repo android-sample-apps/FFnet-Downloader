@@ -89,7 +89,9 @@ class DownloaderRepository(
                                         ChaptersDownloadResult.DownloadSuccessful
                                     )
                                 }
-                            } ?: setDownloadStateChapterEmpty()
+                            } ?: chaptersDownloadState.postValue(
+                                ChaptersDownloadResult.ChapterEmpty
+                            )
                         } else {
                             chaptersDownloadState.postValue(
                                 ChaptersDownloadResult.ResponseNotSuccessful
@@ -101,10 +103,6 @@ class DownloaderRepository(
         } else {
             chaptersDownloadState.postValue(ChaptersDownloadResult.NothingToDownload)
         }
-    }
-
-    private fun setDownloadStateChapterEmpty() {
-        chaptersDownloadState.postValue(ChaptersDownloadResult.ChapterEmpty)
     }
 
     sealed class ChaptersDownloadResult {

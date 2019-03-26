@@ -1,192 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/containerConstraintLayout"
+    android:paddingTop="16dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="16dp">
+    <TextView
+        android:id="@+id/titleLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/download_info_title_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/fetchInformationButton" />
 
-        <TextView
-            android:id="@+id/titleLabelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/download_info_title_label"
-            android:textSize="14sp"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@id/fetchInformationButton" />
+    <TextView
+        android:id="@+id/titleValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="Harry Potter and the Methods of Rationality" />
 
-        <TextView
-            android:id="@+id/titleValueTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
-            app:layout_constraintLeft_toRightOf="@+id/barrier"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            tools:text="Harry Potter and the Methods of Rationality" />
+    <TextView
+        android:id="@+id/wordsLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_words_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/titleValueTextView" />
 
-        <TextView
-            android:id="@+id/wordsLabelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/download_info_words_label"
-            android:textSize="14sp"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@id/titleValueTextView" />
+    <TextView
+        android:id="@+id/wordsValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/wordsLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="661,619" />
 
-        <TextView
-            android:id="@+id/wordsValueTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/wordsLabelTextView"
-            app:layout_constraintLeft_toRightOf="@+id/barrier"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            tools:text="661,619" />
+    <TextView
+        android:id="@+id/publishedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_published_date_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/wordsLabelTextView" />
 
-        <TextView
-            android:id="@+id/publishedDateLabelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/download_info_published_date_label"
-            android:textSize="14sp"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@id/wordsLabelTextView" />
+    <TextView
+        android:id="@+id/publishedDateValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/publishedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="2010-02-28" />
 
-        <TextView
-            android:id="@+id/publishedDateValueTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/publishedDateLabelTextView"
-            app:layout_constraintLeft_toRightOf="@+id/barrier"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            tools:text="2010-02-28" />
+    <TextView
+        android:id="@+id/updatedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_updated_date_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/publishedDateLabelTextView" />
 
-        <TextView
-            android:id="@+id/updatedDateLabelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/download_info_updated_date_label"
-            android:textSize="14sp"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@id/publishedDateLabelTextView" />
+    <TextView
+        android:id="@+id/updatedDateValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/updatedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="2015-03-14" />
 
-        <TextView
-            android:id="@+id/updatedDateValueTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/updatedDateLabelTextView"
-            app:layout_constraintLeft_toRightOf="@+id/barrier"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            tools:text="2015-03-14" />
+    <TextView
+        android:id="@+id/syncedDateLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/synced_fanfictions_synced_date_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/updatedDateLabelTextView" />
 
-        <TextView
-            android:id="@+id/syncedDateLabelTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/synced_fanfictions_synced_date_label"
-            android:textSize="14sp"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@id/updatedDateLabelTextView" />
+    <TextView
+        android:id="@+id/syncedDateValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/syncedDateLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="2019-03-06" />
 
-        <TextView
-            android:id="@+id/syncedDateValueTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/syncedDateLabelTextView"
-            app:layout_constraintLeft_toRightOf="@+id/barrier"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            tools:text="2019-03-06" />
+    <TextView
+        android:id="@+id/chaptersLabelTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_info_chapters_label"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="@+id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/syncedDateLabelTextView" />
 
-        <TextView
-            android:id="@+id/chaptersLabelTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/download_info_chapters_label"
-            android:textSize="14sp"
-            app:layout_constraintLeft_toLeftOf="@+id/leftGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/syncedDateLabelTextView" />
+    <TextView
+        android:id="@+id/chaptersValueTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/chaptersLabelTextView"
+        app:layout_constraintLeft_toRightOf="@+id/barrier"
+        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
+        tools:text="12/122" />
 
-        <TextView
-            android:id="@+id/chaptersValueTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/chaptersLabelTextView"
-            app:layout_constraintLeft_toRightOf="@+id/barrier"
-            app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-            tools:text="12/122" />
+    <Button
+        android:id="@+id/downloadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/download_button_title"
+        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/chaptersValueTextView" />
 
-        <Button
-            android:id="@+id/downloadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/download_button_title"
-            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-            app:layout_constraintTop_toBottomOf="@+id/chaptersValueTextView" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chapterListRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/downloadButton" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chapterListRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/downloadButton" />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView, chaptersLabelTextView, publishedDateLabelTextView, updatedDateLabelTextView" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="right"
-            app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView, chaptersLabelTextView, publishedDateLabelTextView, updatedDateLabelTextView" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="16dp" />
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/widgetVisibilityGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="titleLabelTextView, titleValueTextView, wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton, publishedDateLabelTextView, publishedDateValueTextView, updatedDateLabelTextView, updatedDateValueTextView"
+        tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/widgetVisibilityGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="titleLabelTextView, titleValueTextView, wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton, publishedDateLabelTextView, publishedDateValueTextView, updatedDateLabelTextView, updatedDateValueTextView"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

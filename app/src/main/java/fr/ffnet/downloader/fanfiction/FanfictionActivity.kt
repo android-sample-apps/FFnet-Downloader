@@ -65,7 +65,6 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     private fun setObservers() {
         viewModel.getFanfictionInfo().observe(this, Observer {
-            swipeRefresh.isRefreshing = false
             widgetVisibilityGroup.visibility = View.VISIBLE
             titleValueTextView.text = it.title
             wordsValueTextView.text = it.words
@@ -93,13 +92,10 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     private fun enableDownloadButtonAndDisplayErrorMessage(message: String) {
         downloadButton.isEnabled = true
-        Snackbar.make(swipeRefresh, message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(containerConstraintLayout, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setListeners(fanfictionId: String) {
-        swipeRefresh.setOnRefreshListener {
-            viewModel.refreshFanfictionInfo(fanfictionId)
-        }
         downloadButton.setOnClickListener {
             viewModel.syncChapters(fanfictionId)
         }

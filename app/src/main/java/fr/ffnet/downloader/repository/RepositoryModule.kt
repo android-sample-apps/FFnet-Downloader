@@ -10,6 +10,7 @@ import fr.ffnet.downloader.repository.dao.ErrorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
@@ -35,6 +36,7 @@ class RepositoryModule {
     fun provideDatabaseRepository(dao: FanfictionDao): DatabaseRepository = DatabaseRepository(dao)
 
     @Provides
+    @Singleton
     fun provideDownloaderRepository(
         service: CrawlService,
         fanfictionDao: FanfictionDao,

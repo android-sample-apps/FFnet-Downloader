@@ -62,7 +62,7 @@ interface FanfictionDao {
     @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
     fun getChaptersLivedata(fanfictionId: String): LiveData<List<ChapterEntity>>
 
-    @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId AND content IS NULL")
+    @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId AND content = ''")
     fun getChaptersToSync(fanfictionId: String): List<ChapterEntity>
 
     @Query("SELECT chapterId FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
