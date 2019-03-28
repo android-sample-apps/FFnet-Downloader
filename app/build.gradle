@@ -105,5 +105,9 @@ dependencies {
 
     // SLF4J
     implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.7'
+
+    // PDF Creation
     implementation 'com.itextpdf:itextg:5.5.10'
+    implementation group: 'com.itextpdf.tool', name: 'xmlworker', version: '5.5.10'
+
 }

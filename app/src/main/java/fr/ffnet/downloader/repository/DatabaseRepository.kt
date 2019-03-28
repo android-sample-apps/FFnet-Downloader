@@ -46,6 +46,14 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         dao.unsyncFanfiction(fanfictionId)
     }
 
+    fun getCompleteFanfiction(fanfictionId: String): Fanfiction? {
+        val fanfiction = dao.getFanfiction(fanfictionId)
+        val chapterList = dao.getSyncedChapters(fanfictionId)
+        return if (chapterList.isNotEmpty() && fanfiction != null) {
+            fanfiction.toFanfiction(chapterList)
+        } else null
+    }
+
     private fun transformEntityLiveDataToModelLiveData(
         liveData: LiveData<List<FanfictionEntity>>
     ): LiveData<List<Fanfiction>> = Transformations.map(liveData) { fanfictionList ->
@@ -73,6 +81,7 @@ class DatabaseRepository(private val dao: FanfictionDao) {
     private fun ChapterEntity.toChapter(): Chapter = Chapter(
         id = chapterId,
         title = title,
+        content = content,
         status = content.isNotEmpty()
     )
 }

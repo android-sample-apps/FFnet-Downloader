@@ -8,11 +8,6 @@
             <set />
           </value>
         </entry>
-        <entry key="/a.dummy">
-          <value>
-            <set />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/../CodingChallenge/app/build.gradle">
           <value>
             <set />
@@ -423,6 +418,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/common/ApplicationNetworkModule.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/common/DecimalFormatter.kt">
           <value>
             <set />
@@ -523,6 +523,51 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/fanfiction/FanfictionViewModel.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/fanfictionutils/EpubBuilder.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/fanfictionutils/PdfBuilder.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/profile/ProfileFragment.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/profile/fanfiction/ProfileFanfictionViewModel.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/repository/DatabaseRepository.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/repository/DownloaderRepository.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/repository/RepositoryModule.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/repository/dao/FanfictionDao.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/search/SearchFragment.kt">
           <value>
             <set />
@@ -534,6 +579,21 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/search/SearchViewModel.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/synced/SyncedFragment.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/synced/SyncedModule.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/fr/ffnet/downloader/synced/SyncedViewModel.kt">
           <value>
             <set />
           </value>
@@ -578,6 +638,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_fanfiction.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_line.xml">
           <value>
             <set />
@@ -594,6 +659,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_stations.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_profile.xml">
           <value>
             <set />
           </value>
@@ -618,6 +688,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/values/provider_paths.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/values/strings.xml">
           <value>
             <set />
@@ -628,7 +703,17 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/xml/paths.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/a.dummy">
           <value>
             <set />
           </value>

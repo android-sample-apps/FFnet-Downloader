@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +13,6 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.itextpdf.text.Document
-import com.itextpdf.text.Paragraph
-import com.itextpdf.text.pdf.PdfWriter
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.FanfictionOptionsDialogFragment
 import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_DELETE
@@ -30,8 +26,6 @@ import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_synced.*
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 
@@ -71,6 +65,11 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
                 is SyncedFanfictionsResult.SyncedFanfictions -> showSyncedFanfictions(
                     fanfictionResult.fanfictionList
                 )
+            }
+        })
+        viewModel.getFile.observe(this, Observer {
+            it.getContentIfNotHandled()?.let { file ->
+
             }
         })
     }
@@ -136,25 +135,13 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
     private fun exportEpub() {
         if (checkPermission(EXPORT_EPUB_REQUEST)) {
-
+            viewModel.buildEpub(fanfictionId)
         }
     }
 
     private fun exportPdf() {
         if (checkPermission(EXPORT_PDF_REQUEST)) {
-            val file = File(
-                File(
-                    Environment.getExternalStorageDirectory(),
-                    Environment.DIRECTORY_DOWNLOADS
-                ),
-                "test.pdf"
-            )
-            val document = Document()
-            PdfWriter.getInstance(document, FileOutputStream(file))
-
-            document.open()
-            document.add(Paragraph("TESTTEST"))
-            document.close()
+            viewModel.buildPdf(fanfictionId)
         }
     }
 

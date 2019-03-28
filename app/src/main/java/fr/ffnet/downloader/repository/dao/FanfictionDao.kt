@@ -65,6 +65,9 @@ interface FanfictionDao {
     @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId AND content = ''")
     fun getChaptersToSync(fanfictionId: String): List<ChapterEntity>
 
+    @Query("SELECT * FROM ChapterEntity WHERE fanfictionId = :fanfictionId AND content != ''")
+    fun getSyncedChapters(fanfictionId: String): List<ChapterEntity>
+
     @Query("SELECT chapterId FROM ChapterEntity WHERE fanfictionId = :fanfictionId")
     fun getChaptersIds(fanfictionId: String): List<String>
 
