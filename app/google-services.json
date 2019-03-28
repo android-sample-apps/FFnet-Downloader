@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "815694186244",
+    "firebase_url": "https://ffnet-22b2e.firebaseio.com",
+    "project_id": "ffnet-22b2e",
+    "storage_bucket": "ffnet-22b2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815694186244:android:7e2d32c31f589d4c",
+        "android_client_info": {
+          "package_name": "fr.ffnet.downloader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "815694186244-fsnmaf956f1k5ommj5rgpd0qk2v0d9jd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkI3ky9PH3FCGGw3muk5uRniFO8bmS1Us"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
