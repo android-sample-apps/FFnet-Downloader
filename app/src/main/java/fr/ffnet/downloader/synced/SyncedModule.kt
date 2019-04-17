@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.synced
 
-import android.content.Context
 import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
@@ -15,14 +14,12 @@ class SyncedModule {
     @FragmentScope
     @Provides
     fun provideSearchViewModel(
-        context: Context,
         resources: Resources,
         repository: DatabaseRepository,
         dateFormatter: DateFormatter,
         pdfBuilder: PdfBuilder,
         epubBuilder: EpubBuilder
     ): SyncedViewModel = SyncedViewModel(
-        context,
         resources,
         repository,
         dateFormatter,

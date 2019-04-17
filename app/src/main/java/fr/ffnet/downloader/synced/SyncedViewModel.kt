@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.synced
 
-import android.content.Context
 import android.content.res.Resources
 import androidx.lifecycle.*
 import fr.ffnet.downloader.R
@@ -14,7 +13,6 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class SyncedViewModel(
-    private val context: Context,
     private val resources: Resources,
     private val repository: DatabaseRepository,
     private val dateFormatter: DateFormatter,
@@ -64,14 +62,19 @@ class SyncedViewModel(
     fun buildPdf(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
-                val file = pdfBuilder.buildPdf(context, fanfiction)
+                val file = pdfBuilder.buildPdf(fanfiction)
                 openFile.postValue(LiveEvent(file))
             }
         }
     }
 
     fun buildEpub(fanfictionId: String) {
-
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
+                val file = epubBuilder.buildEpub(fanfiction)
+                openFile.postValue(LiveEvent(file))
+            }
+        }
     }
 
     sealed class SyncedFanfictionsResult {
