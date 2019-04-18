@@ -10,10 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
@@ -97,10 +97,19 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 
-    override fun onOptionsClicked(fanfictionId: String, title: String) {
-        val optionsFragment = FanfictionOptionsDialogFragment.newInstance(
+    override fun onOptionsClicked(
+        fanfictionId: String,
+        title: String,
+        publishedDate: String,
+        updatedDate: String,
+        fetchedDate: String
+    ) {
+        val optionsFragment = OptionsBottomSheetDialogFragment.newInstance(
             fanfictionId = fanfictionId,
             title = title,
+            publishedDate = publishedDate,
+            updatedDate = updatedDate,
+            fetchedDate = fetchedDate,
             shouldShowDeleteOption = false
         )
         optionsFragment.setTargetFragment(this, 1000)
@@ -113,17 +122,19 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         if (resultCode == Activity.RESULT_OK) {
             data?.let { intent ->
                 val fanfictionId = intent.getStringExtra(
-                    FanfictionOptionsDialogFragment.EXTRA_FANFICTION_ID
+                    OptionsBottomSheetDialogFragment.EXTRA_FANFICTION_ID
                 )
-                when (intent.getStringExtra(FanfictionOptionsDialogFragment.EXTRA_ACTION)) {
-                    FanfictionOptionsDialogFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
+                when (intent.getStringExtra(
+                    OptionsBottomSheetDialogFragment.EXTRA_ACTION
+                )) {
+                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
                         fanfictionId
                     )
-                    FanfictionOptionsDialogFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
-                    FanfictionOptionsDialogFragment.EXTRA_ACTION_EPUB -> println(
+                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
+                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_EPUB -> println(
                         "EXTRA_ACTION_EPUB"
                     )
-                    FanfictionOptionsDialogFragment.EXTRA_ACTION_DELETE -> println("Nope")
+                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_DELETE -> println("Nope")
                 }
             }
         }

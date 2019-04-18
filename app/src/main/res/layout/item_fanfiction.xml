@@ -33,79 +33,13 @@
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
         tools:text="120/122 synced chapters" />
 
-    <TextView
-        android:id="@+id/publishedDateLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/download_info_published_date_label"
-        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/chaptersTextView" />
-
-    <TextView
-        android:id="@+id/publishedDateValueTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/publishedDateLabelTextView"
-        app:layout_constraintLeft_toRightOf="@+id/barrier"
-        tools:text="2010/02/28" />
-
-    <TextView
-        android:id="@+id/updatedDateLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/download_info_updated_date_label"
-        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/publishedDateLabelTextView" />
-
-    <TextView
-        android:id="@+id/updatedDateValueTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/updatedDateLabelTextView"
-        app:layout_constraintLeft_toRightOf="@+id/barrier"
-        tools:text="2015/03/14" />
-
-    <TextView
-        android:id="@+id/syncedDateLabelTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/synced_fanfictions_synced_date_label"
-        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView" />
-
-    <TextView
-        android:id="@+id/syncedDateValueTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/syncedDateLabelTextView"
-        app:layout_constraintLeft_toRightOf="@+id/barrier"
-        tools:text="2019/03/03" />
-
     <ImageButton
-        android:id="@+id/actionsImageButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/ic_more"
         android:tint="@color/bottomNavigationGrey"
         app:layout_constraintBaseline_toBaselineOf="@+id/titleTextView"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/widgetVisibilityGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="publishedDateLabelTextView, publishedDateValueTextView, updatedDateLabelTextView, updatedDateValueTextView, syncedDateLabelTextView, syncedDateValueTextView" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="right"
-        app:constraint_referenced_ids="publishedDateLabelTextView, updatedDateLabelTextView, syncedDateLabelTextView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"

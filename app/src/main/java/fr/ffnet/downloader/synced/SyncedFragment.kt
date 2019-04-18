@@ -17,15 +17,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_DELETE
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_DETAILS
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_EPUB
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_ACTION_PDF
-import fr.ffnet.downloader.FanfictionOptionsDialogFragment.Companion.EXTRA_FANFICTION_ID
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DELETE
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DETAILS
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_EPUB
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_PDF
+import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_FANFICTION_ID
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_synced.*
@@ -80,7 +80,6 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
                 // Open file with user selected app
                 val uri = Uri.fromFile(file).normalizeScheme()
-//                val mimeValue = activity?.contentResolver?.getType(uri)
                 val mimeValue = getMimeType(uri.toString())
                 val intent = Intent().apply {
                     action = Intent.ACTION_VIEW
@@ -102,8 +101,20 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         return mime
     }
 
-    override fun onOptionsClicked(fanfictionId: String, title: String) {
-        val optionsFragment = FanfictionOptionsDialogFragment.newInstance(fanfictionId, title)
+    override fun onOptionsClicked(
+        fanfictionId: String,
+        title: String,
+        publishedDate: String,
+        updatedDate: String,
+        fetchedDate: String
+    ) {
+        val optionsFragment = OptionsBottomSheetDialogFragment.newInstance(
+            fanfictionId,
+            title,
+            publishedDate,
+            updatedDate,
+            fetchedDate
+        )
         optionsFragment.setTargetFragment(this, 1000)
         fragmentManager?.let {
             optionsFragment.show(it, "fanfiction_options")
@@ -114,7 +125,9 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         if (resultCode == Activity.RESULT_OK) {
             data?.let { intent ->
                 this.fanfictionId = intent.getStringExtra(EXTRA_FANFICTION_ID)
-                when (intent.getStringExtra(FanfictionOptionsDialogFragment.EXTRA_ACTION)) {
+                when (intent.getStringExtra(
+                    OptionsBottomSheetDialogFragment.EXTRA_ACTION
+                )) {
                     EXTRA_ACTION_DETAILS -> startFanfictionActivity()
                     EXTRA_ACTION_PDF -> exportPdf()
                     EXTRA_ACTION_EPUB -> exportEpub()
@@ -136,29 +149,25 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
             }
         } else {
             AlertDialog
-                .Builder(context)
-                .setTitle(R.string.export_permission_title)
-                .setMessage(R.string.export_permission_content)
-                .setPositiveButton(R.string.export_permission_grant) { _, _ ->
-                    checkPermission(requestCode)
-                }
-                .setNegativeButton(R.string.export_permission_deny) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-                .show()
+                    .Builder(context)
+                    .setTitle(R.string.export_permission_title)
+                    .setMessage(R.string.export_permission_content)
+                    .setPositiveButton(R.string.export_permission_grant) { _, _ ->
+                        checkPermission(requestCode)
+                    }
+                    .setNegativeButton(R.string.export_permission_deny) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
         }
     }
 
     private fun checkPermission(requestCode: Int): Boolean {
-        return if (ActivityCompat.checkSelfPermission(
-                context!!, STORAGE
-            ) != PackageManager.PERMISSION_GRANTED) {
+        return if (ActivityCompat.checkSelfPermission(context!!, STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(STORAGE), requestCode)
             false
-        } else {
-            true
-        }
+        } else true
     }
 
     private fun exportEpub() {

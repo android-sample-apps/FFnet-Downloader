@@ -5,5 +5,11 @@ enum class FanfictionAction {
 }
 
 interface OnFanfictionOptionsListener {
-    fun onOptionsClicked(fanfictionId: String, title: String)
+    fun onOptionsClicked(
+        fanfictionId: String,
+        title: String,
+        publishedDate: String,
+        updatedDate: String,
+        fetchedDate: String
+    )
 }

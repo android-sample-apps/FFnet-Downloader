@@ -6,27 +6,117 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:elevation="8dp"
     android:orientation="vertical"
+    android:paddingTop="12dp"
     android:paddingBottom="12dp"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="80dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <TextView
         android:id="@+id/fanfictionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:padding="16dp"
         android:textColor="@color/mediumTextColor"
         android:textSize="20sp"
-        tools:text="Super loooooooooooooooooooong fanfiction title" />
+        tools:text="Super looooooooooooooong fanfiction title" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/publishedDateLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_info_published_date_label"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/chaptersTextView"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/publishedDateValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@+id/publishedDateLabelTextView"
+            app:layout_constraintLeft_toRightOf="@+id/barrier"
+            tools:text="2010/02/28"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/updatedDateLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_info_updated_date_label"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/publishedDateLabelTextView"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/updatedDateValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@+id/updatedDateLabelTextView"
+            app:layout_constraintLeft_toRightOf="@+id/barrier"
+            tools:text="2015/03/14"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/syncedDateLabelTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/synced_fanfictions_synced_date_label"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/syncedDateValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@+id/syncedDateLabelTextView"
+            app:layout_constraintLeft_toRightOf="@+id/barrier"
+            tools:text="2019/03/03"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="publishedDateLabelTextView, updatedDateLabelTextView, syncedDateLabelTextView" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:background="@color/reallyLowTextColor" />
 

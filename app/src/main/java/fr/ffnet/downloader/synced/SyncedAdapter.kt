@@ -3,9 +3,7 @@ package fr.ffnet.downloader.synced
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
-import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
@@ -39,25 +37,19 @@ class SyncedAdapter(
 
         private val titleTextView: TextView = view.titleTextView
         private val chaptersTextView: TextView = view.chaptersTextView
-        private val publishedDateValueTextView: TextView = view.publishedDateValueTextView
-        private val updatedDateValueTextView: TextView = view.updatedDateValueTextView
-        private val syncedDateValueTextView: TextView = view.syncedDateValueTextView
-        private val actionsImageButton: ImageButton = view.actionsImageButton
-        private val widgetVisibilityGroup: Group = view.widgetVisibilityGroup
 
         fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnFanfictionOptionsListener) {
             view.setOnClickListener {
-                widgetVisibilityGroup.visibility = if (widgetVisibilityGroup.visibility == View.GONE) View.VISIBLE else View.GONE
+                listener.onOptionsClicked(
+                    fanfiction.id,
+                    fanfiction.title,
+                    fanfiction.publishedDate,
+                    fanfiction.updatedDate,
+                    fanfiction.fetchedDate
+                )
             }
             titleTextView.text = fanfiction.title
             chaptersTextView.text = fanfiction.chapters
-            publishedDateValueTextView.text = fanfiction.publishedDate
-            updatedDateValueTextView.text = fanfiction.updatedDate
-            syncedDateValueTextView.text = fanfiction.fetchedDate
-
-            actionsImageButton.setOnClickListener {
-                listener.onOptionsClicked(fanfiction.id, fanfiction.title)
-            }
         }
     }
 }
