@@ -24,6 +24,12 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url 'https://github.com/psiegman/mvn-repo/raw/master/releases'
+    }
+}
+
 dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -68,7 +74,6 @@ dependencies {
 
     // Network
     implementation "com.squareup.retrofit2:retrofit:2.5.0"
-    implementation "com.squareup.retrofit2:converter-simplexml:2.5.0"
     implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
     implementation "com.squareup.okhttp3:okhttp:3.12.0"
     implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"

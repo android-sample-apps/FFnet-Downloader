@@ -5,10 +5,13 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -26,8 +29,8 @@ import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_synced.*
+import java.io.File
 import javax.inject.Inject
-
 
 class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
@@ -68,10 +71,35 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
             }
         })
         viewModel.getFile.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { file ->
+            it.getContentIfNotHandled()?.let { fileName ->
+                val file = File(
+                    Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                    ), fileName
+                )
 
+                // Open file with user selected app
+                val uri = Uri.fromFile(file).normalizeScheme()
+//                val mimeValue = activity?.contentResolver?.getType(uri)
+                val mimeValue = getMimeType(uri.toString())
+                val intent = Intent().apply {
+                    action = Intent.ACTION_VIEW
+                    data = uri
+                    type = mimeValue
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                context?.startActivity(Intent.createChooser(intent, "Open file with"))
             }
         })
+    }
+
+    fun getMimeType(url: String): String? {
+        val ext = MimeTypeMap.getFileExtensionFromUrl(url)
+        var mime: String? = null
+        if (ext != null) {
+            mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
+        }
+        return mime
     }
 
     override fun onOptionsClicked(fanfictionId: String, title: String) {

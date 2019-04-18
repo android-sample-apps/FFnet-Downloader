@@ -10,7 +10,6 @@ import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.LiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 
 class SyncedViewModel(
     private val resources: Resources,
@@ -20,8 +19,8 @@ class SyncedViewModel(
     private val epubBuilder: EpubBuilder
 ) : ViewModel() {
 
-    private val openFile = MutableLiveData<LiveEvent<File>>()
-    val getFile: LiveData<LiveEvent<File>>
+    private val openFile = MutableLiveData<LiveEvent<String>>()
+    val getFile: LiveData<LiveEvent<String>>
         get() = openFile
 
     private lateinit var fanfictionResult: LiveData<SyncedFanfictionsResult>
@@ -71,8 +70,8 @@ class SyncedViewModel(
     fun buildEpub(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
-                val file = epubBuilder.buildEpub(fanfiction)
-                openFile.postValue(LiveEvent(file))
+                val fileName = epubBuilder.buildEpub(fanfiction)
+                openFile.postValue(LiveEvent(fileName))
             }
         }
     }

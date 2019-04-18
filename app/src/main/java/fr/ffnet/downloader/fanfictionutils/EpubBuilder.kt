@@ -22,9 +22,9 @@ class EpubBuilder @Inject constructor() {
         private val HTML_FOOTER = "</body>\n</html>"
     }
 
-    fun buildEpub(fanfiction: Fanfiction): File {
+    fun buildEpub(fanfiction: Fanfiction): String {
 
-        val fileTitle = "${fanfiction.title}.pdf"
+        val fileTitle = "${fanfiction.title}.epub"
         val file = File(
             File(
                 Environment.getExternalStorageDirectory(),
@@ -52,7 +52,7 @@ class EpubBuilder @Inject constructor() {
         inputStream.use { input ->
             file.outputStream().use { input.copyTo(it) }
         }
-        return file
+        return fileTitle
     }
 
     private fun generateHtmlPageFromChapter(chapter: Chapter): String {

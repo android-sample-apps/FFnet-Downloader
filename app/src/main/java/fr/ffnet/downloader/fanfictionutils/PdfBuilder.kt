@@ -24,11 +24,7 @@ class PdfBuilder @Inject constructor() {
         private val HTML_FOOTER = "</body>\n</html>"
     }
 
-    fun buildPdf(fanfiction: Fanfiction): File {
-        return createFile(fanfiction)
-    }
-
-    private fun createFile(fanfiction: Fanfiction): File {
+    fun buildPdf(fanfiction: Fanfiction): String {
         val fileTitle = "${fanfiction.title}.pdf"
         val file = File(
             File(
@@ -56,7 +52,7 @@ class PdfBuilder @Inject constructor() {
         inputStream.use { input ->
             file.outputStream().use { input.copyTo(it) }
         }
-        return file
+        return fileTitle
     }
 
     private fun generateHtmlPageFromChapter(chapter: Chapter): String {
