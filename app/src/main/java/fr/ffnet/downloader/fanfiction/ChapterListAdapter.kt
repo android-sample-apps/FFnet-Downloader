@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import kotlinx.android.synthetic.main.item_chapter.view.*
 
-
 class ChapterListAdapter(
     private val listener: ChapterClickListener
 ) : RecyclerView.Adapter<ChapterListAdapter.ChapterViewHolder>() {

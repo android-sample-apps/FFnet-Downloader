@@ -17,15 +17,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DELETE
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DETAILS
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_EPUB
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_PDF
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_FANFICTION_ID
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DELETE
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DETAILS
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_EPUB
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_PDF
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment.Companion.EXTRA_FANFICTION_ID
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_synced.*
@@ -101,19 +101,13 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         return mime
     }
 
-    override fun onOptionsClicked(
-        fanfictionId: String,
-        title: String,
-        publishedDate: String,
-        updatedDate: String,
-        fetchedDate: String
-    ) {
+    override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
         val optionsFragment = OptionsBottomSheetDialogFragment.newInstance(
-            fanfictionId,
-            title,
-            publishedDate,
-            updatedDate,
-            fetchedDate
+            fanfiction.id,
+            fanfiction.title,
+            fanfiction.publishedDate,
+            fanfiction.updatedDate,
+            fanfiction.fetchedDate
         )
         optionsFragment.setTargetFragment(this, 1000)
         fragmentManager?.let {

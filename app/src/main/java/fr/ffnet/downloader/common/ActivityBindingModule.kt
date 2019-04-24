@@ -2,7 +2,6 @@ package fr.ffnet.downloader.common
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment
 import fr.ffnet.downloader.MainActivity
 import fr.ffnet.downloader.MainActivityModule
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
@@ -34,10 +33,6 @@ abstract class ActivityBindingModule {
     @ContributesAndroidInjector(modules = [SyncedModule::class])
     @FragmentScope
     abstract fun contributeSyncedFragmentInjector(): SyncedFragment
-
-    @ContributesAndroidInjector(modules = [SyncedModule::class])
-    @FragmentScope
-    abstract fun contributeFanfictionOptionsDialogFragmentInjector(): OptionsBottomSheetDialogFragment
 
     @ContributesAndroidInjector(modules = [ProfileModule::class])
     @FragmentScope

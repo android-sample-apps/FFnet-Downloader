@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.fanfictionoptions
+package fr.ffnet.downloader
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import fr.ffnet.downloader.R
 import kotlinx.android.synthetic.main.options_fanfiction.*
 
 class OptionsBottomSheetDialogFragment : BottomSheetDialogFragment() {
@@ -115,7 +114,10 @@ class OptionsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setResultAndFinish(intent: Intent) {
-        intent.putExtra(EXTRA_FANFICTION_ID, arguments?.getString(EXTRA_FANFICTION_ID))
+        intent.putExtra(
+            EXTRA_FANFICTION_ID, arguments?.getString(
+                EXTRA_FANFICTION_ID
+            ))
         targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
         dismiss()
     }

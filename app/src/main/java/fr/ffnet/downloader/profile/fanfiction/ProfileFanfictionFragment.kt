@@ -10,10 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
+import fr.ffnet.downloader.OptionsBottomSheetDialogFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
-import fr.ffnet.downloader.fanfictionoptions.OptionsBottomSheetDialogFragment
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
@@ -97,19 +97,13 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 
-    override fun onOptionsClicked(
-        fanfictionId: String,
-        title: String,
-        publishedDate: String,
-        updatedDate: String,
-        fetchedDate: String
-    ) {
+    override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
         val optionsFragment = OptionsBottomSheetDialogFragment.newInstance(
-            fanfictionId = fanfictionId,
-            title = title,
-            publishedDate = publishedDate,
-            updatedDate = updatedDate,
-            fetchedDate = fetchedDate,
+            fanfiction.id,
+            fanfiction.title,
+            fanfiction.publishedDate,
+            fanfiction.updatedDate,
+            fanfiction.fetchedDate,
             shouldShowDeleteOption = false
         )
         optionsFragment.setTargetFragment(this, 1000)

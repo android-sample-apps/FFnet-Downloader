@@ -40,13 +40,7 @@ class SyncedAdapter(
 
         fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnFanfictionOptionsListener) {
             view.setOnClickListener {
-                listener.onOptionsClicked(
-                    fanfiction.id,
-                    fanfiction.title,
-                    fanfiction.publishedDate,
-                    fanfiction.updatedDate,
-                    fanfiction.fetchedDate
-                )
+                listener.onOptionsClicked(fanfiction)
             }
             titleTextView.text = fanfiction.title
             chaptersTextView.text = fanfiction.chapters

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
-import kotlinx.android.synthetic.main.item_profile_fanfiction.view.*
+import kotlinx.android.synthetic.main.item_fanfiction.view.*
 
 class FanfictionsAdapter(
     private val onMenuItemClickListener: OnFanfictionOptionsListener
@@ -23,7 +23,7 @@ class FanfictionsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyFanfictionsViewHolder {
         return MyFanfictionsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_profile_fanfiction, parent, false
+                R.layout.item_fanfiction, parent, false
             )
         )
     }
@@ -44,13 +44,7 @@ class FanfictionsAdapter(
             chaptersTextView.text = fanfiction.chapters
 
             view.setOnClickListener {
-                listener.onOptionsClicked(
-                    fanfiction.id,
-                    fanfiction.title,
-                    fanfiction.publishedDate,
-                    fanfiction.updatedDate,
-                    fanfiction.fetchedDate
-                )
+                listener.onOptionsClicked(fanfiction)
             }
         }
     }
