@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/containerConstraintLayout"
     android:paddingTop="16dp">
 
     <TextView
@@ -16,13 +16,13 @@
         android:text="@string/download_info_title_label"
         android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@id/fetchInformationButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titleValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
@@ -43,7 +43,7 @@
         android:id="@+id/wordsValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/wordsLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
@@ -64,7 +64,7 @@
         android:id="@+id/publishedDateValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/publishedDateLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
@@ -85,7 +85,7 @@
         android:id="@+id/updatedDateValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/updatedDateLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
@@ -106,7 +106,7 @@
         android:id="@+id/syncedDateValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/syncedDateLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
@@ -127,7 +127,7 @@
         android:id="@+id/chaptersValueTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@id/chaptersLabelTextView"
         app:layout_constraintLeft_toRightOf="@+id/barrier"
