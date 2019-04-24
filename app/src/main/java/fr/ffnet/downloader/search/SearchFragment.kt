@@ -27,7 +27,7 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false).also {
-        activity?.title = resources.getString(R.string.search_title)
+        requireActivity().title = resources.getString(R.string.search_title)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java)
     }
 
@@ -37,8 +37,8 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE
 
-            (activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                .hideSoftInputFromWindow(view.windowToken, 0)
+            (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                    .hideSoftInputFromWindow(view.windowToken, 0)
 
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
@@ -55,7 +55,7 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
             liveEvent.getContentIfNotHandled()?.let {
                 if (context != null) {
-                    startActivity(FanfictionActivity.intent(context!!, it)).also {
+                    startActivity(FanfictionActivity.intent(requireContext(), it)).also {
                         fetchInformationButton.isEnabled = true
                         progressBar.visibility = View.GONE
                     }

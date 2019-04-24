@@ -2,7 +2,12 @@ package fr.ffnet.downloader.profile
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +34,7 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_profile, container, false).also {
-        activity?.title = resources.getString(R.string.profile_title)
+        requireActivity().title = resources.getString(R.string.profile_title)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
     }
 
@@ -90,22 +95,20 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
     }
 
     private fun dissociateProfile() {
-        activity?.let {
-            AlertDialog.Builder(it).apply {
-                setPositiveButton(R.string.ok) { _, _ ->
-                    viewModel.dissociateProfile()
-                }
-                setNegativeButton(R.string.cancel) { dialog, _ ->
-                    dialog.cancel()
-                }
-                setMessage(R.string.profile_dissociate_confirmation)
-            }.show()
-        }
+        AlertDialog.Builder(requireContext()).apply {
+            setPositiveButton(R.string.ok) { _, _ ->
+                viewModel.dissociateProfile()
+            }
+            setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.cancel()
+            }
+            setMessage(R.string.profile_dissociate_confirmation)
+        }.show()
     }
 
     private fun initTabLayout() {
         fanfictionsViewPager.adapter = FanfictionsTabAdapter(
-            activity!!.supportFragmentManager
+            requireActivity().supportFragmentManager
         ).apply {
             fragmentList = listOf(
                 resources.getString(
@@ -116,6 +119,6 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
                 ) to ProfileFanfictionFragment.newInstance(false)
             )
         }
-        fanfictionsTabLayout.setupWithViewPager(fanfictionsViewPager)
+        profileFanfictionsTabLayout.setupWithViewPager(fanfictionsViewPager)
     }
 }

@@ -3,7 +3,6 @@ package fr.ffnet.downloader.fanfiction
 import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.common.ActivityScope
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.utils.DateFormatter
@@ -11,7 +10,6 @@ import fr.ffnet.downloader.utils.DateFormatter
 @Module
 class FanfictionModule {
 
-    @ActivityScope
     @Provides
     fun provideSearchViewModel(
         resources: Resources,

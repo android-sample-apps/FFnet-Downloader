@@ -7,6 +7,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="@string/search_title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -14,7 +32,7 @@
         android:layout_height="wrap_content"
         android:indeterminateOnly="true"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar"
         tools:visibility="visible" />
 
     <androidx.cardview.widget.CardView
@@ -27,7 +45,7 @@
         app:cardElevation="4dp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/progressBar">
 
         <EditText
             android:id="@+id/downloadUrlEditText"
@@ -35,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:background="@null"
-            android:elevation="2dp"
             android:ellipsize="end"
             android:hint="@string/download_url_hint"
             android:imeOptions="actionSearch"

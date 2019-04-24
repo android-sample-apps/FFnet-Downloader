@@ -51,7 +51,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        activity?.title = resources.getString(R.string.synced_title)
+        requireActivity().title = resources.getString(R.string.synced_title)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(
             SyncedViewModel::class.java
         )
@@ -87,7 +87,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
                     type = mimeValue
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
-                context?.startActivity(Intent.createChooser(intent, "Open file with"))
+                requireContext().startActivity(Intent.createChooser(intent, "Open file with"))
             }
         })
     }

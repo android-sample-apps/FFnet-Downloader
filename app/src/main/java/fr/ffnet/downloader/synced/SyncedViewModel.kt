@@ -1,7 +1,11 @@
 package fr.ffnet.downloader.synced
 
 import android.content.res.Resources
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfictionutils.EpubBuilder
 import fr.ffnet.downloader.fanfictionutils.PdfBuilder
@@ -19,9 +23,8 @@ class SyncedViewModel(
     private val epubBuilder: EpubBuilder
 ) : ViewModel() {
 
-    private val openFile = MutableLiveData<LiveEvent<String>>()
-    val getFile: LiveData<LiveEvent<String>>
-        get() = openFile
+    private val _getFile = MutableLiveData<LiveEvent<String>>()
+    val getFile: LiveData<LiveEvent<String>> get() = _getFile
 
     private lateinit var fanfictionResult: LiveData<SyncedFanfictionsResult>
 
@@ -62,7 +65,7 @@ class SyncedViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
                 val file = pdfBuilder.buildPdf(fanfiction)
-                openFile.postValue(LiveEvent(file))
+                _getFile.postValue(LiveEvent(file))
             }
         }
     }
@@ -71,7 +74,7 @@ class SyncedViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
                 val fileName = epubBuilder.buildEpub(fanfiction)
-                openFile.postValue(LiveEvent(fileName))
+                _getFile.postValue(LiveEvent(fileName))
             }
         }
     }
