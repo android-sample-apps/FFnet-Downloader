@@ -38,29 +38,12 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.profile_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.dissociateProfile -> {
-                dissociateProfile()
-                return true
-            }
-            R.id.refreshProfile -> {
-                viewModel.refreshProfile()
-                return true
-            }
-        }
-        return true
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initTabLayout()
         initHistoryAdapter()
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected)
         fetchInformationButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             viewModel.associateProfile(profileUrlEditText.text.toString())
@@ -76,13 +59,33 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
                 progressBar.visibility = View.GONE
                 setHasOptionsMenu(true)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
+                profileFanfictionsTabLayout.visibility = View.VISIBLE
                 noFanfictionFoundTextView.visibility = View.VISIBLE
             } else {
                 setHasOptionsMenu(false)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
+                profileFanfictionsTabLayout.visibility = View.GONE
                 noFanfictionFoundTextView.visibility = View.GONE
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.dissociateProfile -> {
+                dissociateProfile()
+                return true
+            }
+            R.id.refreshProfile -> {
+                viewModel.refreshProfile()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onHistoryClicked(profileId: String, profileUrl: String) {

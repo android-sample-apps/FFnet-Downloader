@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
         tools:text="120/122 synced chapters" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/actionsImageButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

@@ -13,9 +13,8 @@
         <item name="tabIndicatorColor">@android:color/white</item>
     </style>
 
-    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:colorPrimary">#FFF</item>
-        <item name="android:colorAccent">#0AAEEF</item>
+    <style name="AlertDialogCustom" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/highTextColor</item>
+        <item name="colorPrimary">#FFF</item>
     </style>
-
 </resources>
