@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:menu="@menu/profile_menu"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="@string/profile_title" />
 

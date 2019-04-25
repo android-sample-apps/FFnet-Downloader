@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,9 +42,9 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         initTabLayout()
         initHistoryAdapter()
-        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected)
         fetchInformationButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             viewModel.associateProfile(profileUrlEditText.text.toString())
@@ -57,13 +58,12 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         viewModel.getIsAssociated().observe(this, Observer { isAssociated ->
             if (isAssociated) {
                 progressBar.visibility = View.GONE
-                setMenuItemsVisibility(true)
+                setHasOptionsMenu(true)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
                 profileFanfictionsTabLayout.visibility = View.VISIBLE
                 noFanfictionFoundTextView.visibility = View.VISIBLE
             } else {
-                setMenuItemsVisibility(false)
-                toolbar.hideOverflowMenu()
+                setHasOptionsMenu(false)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
                 profileFanfictionsTabLayout.visibility = View.GONE
                 noFanfictionFoundTextView.visibility = View.GONE
@@ -124,10 +124,5 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
             )
         }
         profileFanfictionsTabLayout.setupWithViewPager(fanfictionsViewPager)
-    }
-
-    private fun setMenuItemsVisibility(isVisible: Boolean) {
-        toolbar.menu.findItem(R.id.dissociateProfile).isVisible = isVisible
-        toolbar.menu.findItem(R.id.refreshProfile).isVisible = isVisible
     }
 }

@@ -40,6 +40,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         )
 
         setContentView(R.layout.activity_fanfiction)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initRecyclerView()
 
