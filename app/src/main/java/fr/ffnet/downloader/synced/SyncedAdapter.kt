@@ -13,7 +13,7 @@ class SyncedAdapter(
     private val onMenuItemClickListener: OnFanfictionOptionsListener
 ) : RecyclerView.Adapter<SyncedAdapter.SyncedViewHolder>() {
 
-    var syncedList: List<FanfictionSyncedUIModel> = emptyList()
+    var fanfictionList: List<FanfictionSyncedUIModel> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -27,10 +27,10 @@ class SyncedAdapter(
         )
     }
 
-    override fun getItemCount(): Int = syncedList.size
+    override fun getItemCount(): Int = fanfictionList.size
 
     override fun onBindViewHolder(holder: SyncedViewHolder, position: Int) {
-        holder.bind(syncedList[position], onMenuItemClickListener)
+        holder.bind(fanfictionList[position], onMenuItemClickListener)
     }
 
     inner class SyncedViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

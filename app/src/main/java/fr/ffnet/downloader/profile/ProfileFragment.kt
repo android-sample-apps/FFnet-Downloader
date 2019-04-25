@@ -57,12 +57,13 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         viewModel.getIsAssociated().observe(this, Observer { isAssociated ->
             if (isAssociated) {
                 progressBar.visibility = View.GONE
-                setHasOptionsMenu(true)
+                setMenuItemsVisibility(true)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
                 profileFanfictionsTabLayout.visibility = View.VISIBLE
                 noFanfictionFoundTextView.visibility = View.VISIBLE
             } else {
-                setHasOptionsMenu(false)
+                setMenuItemsVisibility(false)
+                toolbar.hideOverflowMenu()
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
                 profileFanfictionsTabLayout.visibility = View.GONE
                 noFanfictionFoundTextView.visibility = View.GONE
@@ -123,5 +124,10 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
             )
         }
         profileFanfictionsTabLayout.setupWithViewPager(fanfictionsViewPager)
+    }
+
+    private fun setMenuItemsVisibility(isVisible: Boolean) {
+        toolbar.menu.findItem(R.id.dissociateProfile).isVisible = isVisible
+        toolbar.menu.findItem(R.id.refreshProfile).isVisible = isVisible
     }
 }

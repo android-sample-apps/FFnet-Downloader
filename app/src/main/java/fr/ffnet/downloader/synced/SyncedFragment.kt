@@ -177,7 +177,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
     }
 
     private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).syncedList = fanfictionList
+        (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).fanfictionList = fanfictionList
         fanfictionResultViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
     }
 

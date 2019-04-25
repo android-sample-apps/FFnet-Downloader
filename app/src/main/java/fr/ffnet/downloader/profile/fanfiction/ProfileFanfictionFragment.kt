@@ -17,6 +17,7 @@ import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.synced.SyncedAdapter
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
@@ -93,7 +94,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
     }
 
     private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (fanfictionRecyclerView.adapter as FanfictionsAdapter).fanfictionList = fanfictionList
+        (fanfictionRecyclerView.adapter as SyncedAdapter).fanfictionList = fanfictionList
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 
@@ -136,7 +137,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
 
     private fun initRecyclerView() {
         fanfictionRecyclerView.layoutManager = LinearLayoutManager(context)
-        fanfictionRecyclerView.adapter = FanfictionsAdapter(this)
+        fanfictionRecyclerView.adapter = SyncedAdapter(this)
     }
 
     private fun fetchFanfictionInformation(fanfictionId: String) {

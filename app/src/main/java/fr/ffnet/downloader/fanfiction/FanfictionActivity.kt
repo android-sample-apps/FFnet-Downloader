@@ -23,7 +23,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     companion object {
 
-        private const val EXTRA_ID = "extraId"
+        private const val EXTRA_ID = "EXTRA_ID"
 
         fun intent(context: Context, id: String): Intent = Intent(
             context, FanfictionActivity::class.java
@@ -63,6 +63,10 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         }
     }
 
+    override fun onChapterSelected(chapter: ChapterUIModel) {
+        // No feature right now
+    }
+
     private fun setObservers() {
         viewModel.getFanfictionInfo().observe(this, Observer {
             widgetVisibilityGroup.visibility = View.VISIBLE
@@ -99,10 +103,6 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         downloadButton.setOnClickListener {
             viewModel.syncChapters(fanfictionId)
         }
-    }
-
-    override fun onChapterSelected(chapter: ChapterUIModel) {
-        Toast.makeText(this, "Chapter selected ${chapter.title}", Toast.LENGTH_LONG).show()
     }
 
     private fun closeActivityNoExtra() {
