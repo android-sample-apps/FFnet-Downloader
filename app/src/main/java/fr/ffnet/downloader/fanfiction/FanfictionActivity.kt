@@ -9,10 +9,13 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.ViewModelFactory
+import fr.ffnet.downloader.repository.DownloaderWorkerFactory
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
@@ -20,6 +23,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     private lateinit var viewModel: FanfictionViewModel
     @Inject lateinit var viewModelFactory: ViewModelFactory<FanfictionViewModel>
+//    @Inject lateinit var workerFactory: DownloaderWorkerFactory
 
     companion object {
 
@@ -38,6 +42,9 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(
             FanfictionViewModel::class.java
         )
+
+//        val configuration = Configuration.Builder().setWorkerFactory(workerFactory).build()
+//        WorkManager.initialize(this, configuration)
 
         setContentView(R.layout.activity_fanfiction)
         setSupportActionBar(toolbar)

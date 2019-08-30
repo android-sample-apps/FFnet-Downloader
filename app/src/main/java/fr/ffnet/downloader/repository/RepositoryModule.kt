@@ -1,5 +1,8 @@
 package fr.ffnet.downloader.repository
 
+import android.content.Context
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
@@ -41,13 +44,30 @@ class RepositoryModule {
         service: CrawlService,
         fanfictionDao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder,
-        fanfictionTransformer: FanfictionTransformer
-    ): DownloaderRepository = DownloaderRepository(
-        service,
-        fanfictionBuilder,
-        fanfictionDao,
-        fanfictionTransformer
-    )
+        fanfictionTransformer: FanfictionTransformer,
+        context: Context,
+        workerFactory: DownloaderWorkerFactory
+    ): DownloaderRepository {
+        val configuration = Configuration.Builder().setWorkerFactory(workerFactory).build()
+        WorkManager.initialize(context, configuration)
+        return DownloaderRepository(
+            service,
+            fanfictionBuilder,
+            fanfictionDao,
+            fanfictionTransformer,
+            WorkManager.getInstance(context)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkerFactory(
+        service: CrawlService,
+        fanfictionBuilder: FanfictionBuilder,
+        fanfictionDao: FanfictionDao
+    ): DownloaderWorkerFactory {
+        return DownloaderWorkerFactory(service, fanfictionBuilder, fanfictionDao)
+    }
 
     @Provides
     fun provideProfileRepository(
