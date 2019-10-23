@@ -10,11 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.profile.fanfiction.FanfictionsTabAdapter
 import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -22,8 +19,7 @@ import javax.inject.Inject
 
 class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickListener {
 
-    private lateinit var viewModel: ProfileViewModel
-    @Inject lateinit var viewModelFactory: ViewModelFactory<ProfileViewModel>
+    @Inject lateinit var viewModel: ProfileViewModel
 
     companion object {
         private const val DISPLAY_ASSOCIATE = 0
@@ -36,7 +32,6 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_profile, container, false).also {
         requireActivity().title = resources.getString(R.string.profile_title)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,7 +39,7 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         initTabLayout()
-        initHistoryAdapter()
+        profileHistoryRecyclerView.adapter = ProfileHistoryAdapter(this)
         fetchInformationButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             viewModel.associateProfile(profileUrlEditText.text.toString())
@@ -91,11 +86,6 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
 
     override fun onHistoryClicked(profileId: String, profileUrl: String) {
         profileUrlEditText.setText(profileUrl)
-    }
-
-    private fun initHistoryAdapter() {
-        profileHistoryRecyclerView.layoutManager = LinearLayoutManager(context)
-        profileHistoryRecyclerView.adapter = ProfileHistoryAdapter(this)
     }
 
     private fun dissociateProfile() {

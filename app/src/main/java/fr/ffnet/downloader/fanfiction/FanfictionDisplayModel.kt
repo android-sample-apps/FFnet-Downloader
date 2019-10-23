@@ -1,6 +1,6 @@
 package fr.ffnet.downloader.fanfiction
 
-data class FanfictionUIModel(
+data class FanfictionDisplayModel(
     val id: String,
     val title: String,
     val words: String,

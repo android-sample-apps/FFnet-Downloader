@@ -7,6 +7,7 @@
     <string name="download_url_hint">Url</string>
     <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Sync chapters</string>
+    <string name="download_button_downloading">Downloading</string>
     <string name="search_title">Search Fanfiction</string>
     <string name="profile_title">My profile</string>
     <string name="synced_title">Synced Fanfictions</string>

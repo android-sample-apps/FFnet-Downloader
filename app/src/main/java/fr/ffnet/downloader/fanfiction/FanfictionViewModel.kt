@@ -1,10 +1,7 @@
 package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -22,32 +19,29 @@ class FanfictionViewModel(
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
 
-    private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
+    private lateinit var fanfictionInfo: LiveData<FanfictionDisplayModel>
 
-    private lateinit var downloadButtonState: LiveData<String>
+    private lateinit var downloadButtonState: LiveData<Pair<String, Boolean>>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
-    fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
+    fun getFanfictionInfo(): LiveData<FanfictionDisplayModel> = fanfictionInfo
 
-    fun getDownloadButtonState(): LiveData<String> = downloadButtonState
+    fun getDownloadButtonState(): LiveData<Pair<String, Boolean>> = downloadButtonState
 
     fun loadFanfictionInfo(fanfictionId: String) {
-        downloadButtonState = Transformations.map(apiRepository.getWorkManagerStateForFanfiction(fanfictionId)) {
+        downloadButtonState = Transformations.map(apiRepository.getDownloadState(fanfictionId)) {
             it.firstOrNull()?.let { workInfo ->
                 when (workInfo.state) {
-                    WorkInfo.State.ENQUEUED -> "ENQUEUED"
-                    WorkInfo.State.RUNNING  -> "RUNNING "
-                    WorkInfo.State.SUCCEEDED -> "SUCCEEDED"
-                    WorkInfo.State.FAILED -> "FAILED"
-                    WorkInfo.State.BLOCKED -> "BLOCKED"
-                    WorkInfo.State.CANCELLED -> "CANCELLED"
+                    WorkInfo.State.ENQUEUED,
+                    WorkInfo.State.RUNNING -> resources.getString(R.string.download_button_downloading) to false
+                    else -> resources.getString(R.string.download_button_title) to true
                 }
-            } ?: "Not found"
+            } ?: resources.getString(R.string.download_button_title) to true
         }
 
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
-            FanfictionUIModel(
+            FanfictionDisplayModel(
                 id = it.id,
                 title = it.title,
                 words = it.words.toString(),
@@ -88,30 +82,13 @@ class FanfictionViewModel(
             }
         }
     }
+}
 
-//    fun loadChapterDownloadingState() {
-//        downloadButtonState = Transformations.map(
-//            apiRepository.getDownloadState()
-//        ) { downloadStatus ->
-//            when (downloadStatus) {
-//                DownloadOngoing -> ChapterStatusState.ChapterSyncing
-//                ChaptersDownloadResult.DownloadSuccessful -> ChapterStatusState.ChapterSynced
-//                ChaptersDownloadResult.ChapterEmpty,
-//                ChaptersDownloadResult.RepositoryException,
-//                ChaptersDownloadResult.ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
-//                    resources.getString(R.string.download_chapter_error)
-//                )
-//                ChaptersDownloadResult.NothingToDownload -> ChapterStatusState.ChaptersAlreadySynced(
-//                    resources.getString(R.string.download_chapter_already_done)
-//                )
-//            }
-//        }
-//    }
-
-    sealed class ChapterStatusState {
-        object ChapterSynced : ChapterStatusState()
-        object ChapterSyncing : ChapterStatusState()
-        data class ChapterSyncError(val message: String) : ChapterStatusState()
-        data class ChaptersAlreadySynced(val message: String) : ChapterStatusState()
+class FanfictionViewModelFactory(
+    private val creator: () -> FanfictionViewModel
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return creator() as T
     }
 }

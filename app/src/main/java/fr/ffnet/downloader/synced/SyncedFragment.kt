@@ -14,8 +14,6 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.OptionsBottomSheetDialogFragment
 import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_DELETE
@@ -24,7 +22,6 @@ import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTI
 import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_ACTION_PDF
 import fr.ffnet.downloader.OptionsBottomSheetDialogFragment.Companion.EXTRA_FANFICTION_ID
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
@@ -35,8 +32,7 @@ import javax.inject.Inject
 class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
     private lateinit var fanfictionId: String
-    private lateinit var viewModel: SyncedViewModel
-    @Inject lateinit var viewModelFactory: ViewModelFactory<SyncedViewModel>
+    @Inject lateinit var viewModel: SyncedViewModel
 
     companion object {
         private const val DISPLAY_SYNCED_FANFICTIONS = 0
@@ -52,16 +48,13 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().title = resources.getString(R.string.synced_title)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(
-            SyncedViewModel::class.java
-        )
         viewModel.loadFanfictionsFromDb()
         return inflater.inflate(R.layout.fragment_synced, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
+        syncedFanfictionsRecyclerView.adapter = SyncedAdapter(this)
         viewModel.getFanfictionList().observe(this, Observer { fanfictionResult ->
             when (fanfictionResult) {
                 is SyncedFanfictionsResult.NoSyncedFanfictions -> showNoSyncedFanfictions()
@@ -189,10 +182,5 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         context?.let { context ->
             startActivity(FanfictionActivity.intent(context, fanfictionId))
         }
-    }
-
-    private fun initRecyclerView() {
-        syncedFanfictionsRecyclerView.layoutManager = LinearLayoutManager(context)
-        syncedFanfictionsRecyclerView.adapter = SyncedAdapter(this)
     }
 }

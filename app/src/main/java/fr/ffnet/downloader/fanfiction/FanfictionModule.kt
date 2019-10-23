@@ -1,6 +1,7 @@
 package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
+import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -11,15 +12,26 @@ import fr.ffnet.downloader.utils.DateFormatter
 class FanfictionModule {
 
     @Provides
-    fun provideSearchViewModel(
+    fun provideFanfictionViewModel(
+        activity: FanfictionActivity,
+        viewModelCreator: () -> FanfictionViewModel
+    ): FanfictionViewModel {
+        val factory = FanfictionViewModelFactory(viewModelCreator)
+        return ViewModelProviders.of(activity, factory)[FanfictionViewModel::class.java]
+    }
+
+    @Provides
+    fun provideCreator(
         resources: Resources,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
         dateFormatter: DateFormatter
-    ): FanfictionViewModel = FanfictionViewModel(
-        resources,
-        apiRepository,
-        dbRepository,
-        dateFormatter
-    )
+    ): () -> FanfictionViewModel = {
+        FanfictionViewModel(
+            resources,
+            apiRepository,
+            dbRepository,
+            dateFormatter
+        )
+    }
 }

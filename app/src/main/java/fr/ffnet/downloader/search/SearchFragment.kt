@@ -7,20 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.common.ViewModelFactory
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
 class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
 
-    private lateinit var viewModel: SearchViewModel
-    @Inject lateinit var viewModelFactory: ViewModelFactory<SearchViewModel>
+    @Inject lateinit var viewModel: SearchViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,21 +25,19 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_search, container, false).also {
         requireActivity().title = resources.getString(R.string.search_title)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SearchViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE
 
             (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                    .hideSoftInputFromWindow(view.windowToken, 0)
+                .hideSoftInputFromWindow(view.windowToken, 0)
 
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
-        initRecyclerView()
+        historyRecyclerView.adapter = HistoryAdapter(this)
         setErrorListener()
         initObservers()
     }
@@ -83,10 +78,5 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
                 }
             }
         })
-    }
-
-    private fun initRecyclerView() {
-        historyRecyclerView.layoutManager = LinearLayoutManager(context)
-        historyRecyclerView.adapter = HistoryAdapter(this)
     }
 }

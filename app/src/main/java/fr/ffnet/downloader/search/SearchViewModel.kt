@@ -1,7 +1,12 @@
 package fr.ffnet.downloader.search
 
 import android.content.res.Resources
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
@@ -91,5 +96,14 @@ class SearchViewModel(
     sealed class SearchError(val message: String) {
         data class UrlNotValid(val msg: String) : SearchError(msg)
         data class InfoFetchingFailed(val msg: String) : SearchError(msg)
+    }
+}
+
+class SearchViewModelFactory(
+    private val creator: () -> SearchViewModel
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return creator() as T
     }
 }
