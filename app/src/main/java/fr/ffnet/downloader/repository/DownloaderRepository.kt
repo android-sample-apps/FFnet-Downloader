@@ -3,7 +3,7 @@ package fr.ffnet.downloader.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.work.*
-import androidx.work.ExistingWorkPolicy.*
+import androidx.work.ExistingWorkPolicy.KEEP
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
@@ -17,28 +17,32 @@ import retrofit2.Response
 import java.io.IOException
 
 class DownloaderRepository(
-        private val service: CrawlService,
-        private val fanfictionBuilder: FanfictionBuilder,
-        private val fanfictionDao: FanfictionDao,
-        private val fanfictionTransformer: FanfictionTransformer,
-        private val workManager: WorkManager
+    private val service: CrawlService,
+    private val fanfictionBuilder: FanfictionBuilder,
+    private val fanfictionDao: FanfictionDao,
+    private val fanfictionTransformer: FanfictionTransformer,
+    private val workManager: WorkManager
 ) {
 
     private val chaptersDownloadState = MutableLiveData<ChaptersDownloadResult>()
 
     fun getDownloadState(): LiveData<ChaptersDownloadResult> = chaptersDownloadState
 
+    fun getWorkManagerStateForFanfiction(fanfictionId: String): LiveData<List<WorkInfo>> {
+        return workManager.getWorkInfosForUniqueWorkLiveData(fanfictionId)
+    }
+
     fun downloadChaptersWithWorkManager(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
         if (chapterList.isNotEmpty()) {
+            println("WorkManager state Trying to enqueue $fanfictionId")
             workManager.enqueueUniqueWork(
-                    fanfictionId,
-                    KEEP,
-                    OneTimeWorkRequest.Builder(DownloaderWorker::class.java)
-                            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                            .addTag(fanfictionId)
-                            .setInputData(Data.Builder().putString(FANFICTION_ID_KEY, fanfictionId).build())
-                            .build()
+                fanfictionId,
+                KEEP,
+                OneTimeWorkRequest.Builder(DownloaderWorker::class.java)
+                    .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .setInputData(Data.Builder().putString(FANFICTION_ID_KEY, fanfictionId).build())
+                    .build()
             )
         }
     }
@@ -49,38 +53,38 @@ class DownloaderRepository(
             chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadOngoing)
             chapterList.forEach { chapter ->
                 service.getFanfiction(
-                        fanfictionId, chapter.chapterId
+                    fanfictionId, chapter.chapterId
                 ).enqueue(object : Callback<ResponseBody> {
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         chaptersDownloadState.postValue(ChaptersDownloadResult.RepositoryException)
                     }
 
                     override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
                     ) {
                         if (response.isSuccessful) {
                             response.body()?.let {
                                 val chapterContent = fanfictionBuilder.extractChapter(it.string())
                                 Thread {
                                     fanfictionDao.updateChapter(
-                                            content = chapterContent,
-                                            isSynced = true,
-                                            chapterId = chapter.chapterId,
-                                            fanfictionId = fanfictionId
+                                        content = chapterContent,
+                                        isSynced = true,
+                                        chapterId = chapter.chapterId,
+                                        fanfictionId = fanfictionId
                                     )
                                 }.start()
                                 if (chapter.chapterId.toInt() == chapterList.size) {
                                     chaptersDownloadState.postValue(
-                                            ChaptersDownloadResult.DownloadSuccessful
+                                        ChaptersDownloadResult.DownloadSuccessful
                                     )
                                 }
                             } ?: chaptersDownloadState.postValue(
-                                    ChaptersDownloadResult.ChapterEmpty
+                                ChaptersDownloadResult.ChapterEmpty
                             )
                         } else {
                             chaptersDownloadState.postValue(
-                                    ChaptersDownloadResult.ResponseNotSuccessful
+                                ChaptersDownloadResult.ResponseNotSuccessful
                             )
                         }
                     }
@@ -98,11 +102,11 @@ class DownloaderRepository(
                 response.body()?.let { responseBody ->
                     val existingChapters = fanfictionDao.getChaptersIds(fanfictionId)
                     val (firstChapter, fanfictionInfo) = fanfictionBuilder.buildFanfiction(
-                            fanfictionId, responseBody.string()
+                        fanfictionId, responseBody.string()
                     )
 
                     fanfictionDao.insertFanfiction(
-                            fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
+                        fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
                     )
 
                     val chapterList = if (existingChapters.isNotEmpty()) {
@@ -111,7 +115,7 @@ class DownloaderRepository(
                         fanfictionInfo.chapterList
                     }
                     fanfictionDao.insertChapterList(
-                            fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
+                        fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
                     )
                     fanfictionDao.updateFirstChapter(fanfictionId, firstChapter)
                     FanfictionRepositoryResultSuccess(fanfictionInfo)

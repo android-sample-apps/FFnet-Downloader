@@ -54,7 +54,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         intent.getStringExtra(EXTRA_ID)?.let { fanfictionId ->
             viewModel.loadFanfictionInfo(fanfictionId)
             viewModel.loadChapters(fanfictionId)
-            viewModel.loadChapterDownloadingState()
+//            viewModel.loadChapterDownloadingState()
             setListeners(fanfictionId)
         } ?: closeActivityNoExtra()
 
@@ -71,9 +71,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         }
     }
 
-    override fun onChapterSelected(chapter: ChapterUIModel) {
-        // No feature right now
-    }
+    override fun onChapterSelected(chapter: ChapterUIModel) = Unit
 
     private fun setObservers() {
         viewModel.getFanfictionInfo().observe(this, Observer {
@@ -88,17 +86,20 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-        viewModel.getDownloadButtonState().observe(this, Observer { chapterDownloadResult ->
-            when (chapterDownloadResult) {
-                FanfictionViewModel.ChapterStatusState.ChapterSynced -> downloadButton.isEnabled = true
-                FanfictionViewModel.ChapterStatusState.ChapterSyncing -> downloadButton.isEnabled = false
-                is FanfictionViewModel.ChapterStatusState.ChapterSyncError -> enableDownloadButtonAndDisplayErrorMessage(
-                    chapterDownloadResult.message
-                )
-                is FanfictionViewModel.ChapterStatusState.ChaptersAlreadySynced -> enableDownloadButtonAndDisplayErrorMessage(
-                    chapterDownloadResult.message
-                )
-            }
+//        viewModel.getDownloadButtonState().observe(this, Observer { chapterDownloadResult ->
+//            when (chapterDownloadResult) {
+//                FanfictionViewModel.ChapterStatusState.ChapterSynced -> downloadButton.isEnabled = true
+//                FanfictionViewModel.ChapterStatusState.ChapterSyncing -> downloadButton.isEnabled = false
+//                is FanfictionViewModel.ChapterStatusState.ChapterSyncError -> enableDownloadButtonAndDisplayErrorMessage(
+//                    chapterDownloadResult.message
+//                )
+//                is FanfictionViewModel.ChapterStatusState.ChaptersAlreadySynced -> enableDownloadButtonAndDisplayErrorMessage(
+//                    chapterDownloadResult.message
+//                )
+//            }
+//        })
+        viewModel.getDownloadButtonState().observe(this, Observer {
+            println("WorkManager state -> $it")
         })
     }
 

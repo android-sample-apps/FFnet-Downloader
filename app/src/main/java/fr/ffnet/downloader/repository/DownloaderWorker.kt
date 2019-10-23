@@ -1,21 +1,24 @@
 package fr.ffnet.downloader.repository
 
 import android.content.Context
-import androidx.work.CoroutineWorker
+import androidx.concurrent.futures.ResolvableFuture
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import fr.ffnet.downloader.common.DaggerApplicationComponent
-import fr.ffnet.downloader.common.MainApplication
+import com.google.common.util.concurrent.ListenableFuture
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DownloaderWorker(
-        context: Context,
-        workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
+    context: Context,
+    workerParams: WorkerParameters
+) : ListenableWorker(context, workerParams) {
 
     companion object {
         const val FANFICTION_ID_KEY = "FANFICTION_ID"
@@ -25,40 +28,48 @@ class DownloaderWorker(
     lateinit var fanfictionBuilder: FanfictionBuilder
     lateinit var fanfictionDao: FanfictionDao
 
-    override suspend fun doWork(): Result {
+    private val future: ResolvableFuture<Result> = ResolvableFuture.create()
 
-        val fanfictionId = inputData.getString(FANFICTION_ID_KEY) ?: ""
-        val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
-        if (chapterList.isNotEmpty()) {
-            chapterList.forEach { chapter ->
-                service.getFanfiction(
+    override fun startWork(): ListenableFuture<Result> {
+        CoroutineScope(Default).launch {
+            val fanfictionId = inputData.getString(FANFICTION_ID_KEY) ?: ""
+            val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
+            if (chapterList.isNotEmpty()) {
+                chapterList.forEachIndexed { index, chapter ->
+                    service.getFanfiction(
                         fanfictionId, chapter.chapterId
-                ).enqueue(object : Callback<ResponseBody> {
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    ).enqueue(object : Callback<ResponseBody> {
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                    }
+                        }
 
-                    override fun onResponse(
+                        override fun onResponse(
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
-                    ) {
-                        if (response.isSuccessful) {
-                            response.body()?.let {
-                                val chapterContent = fanfictionBuilder.extractChapter(it.string())
-                                Thread {
-                                    fanfictionDao.updateChapter(
+                        ) {
+                            if (response.isSuccessful) {
+                                println("WorkManager state Received response for chapter ${chapter
+                                    .chapterId}")
+                                response.body()?.let {
+                                    val chapterContent = fanfictionBuilder.extractChapter(it.string())
+                                    Thread {
+                                        fanfictionDao.updateChapter(
                                             content = chapterContent,
                                             isSynced = true,
                                             chapterId = chapter.chapterId,
                                             fanfictionId = fanfictionId
-                                    )
-                                }.start()
+                                        )
+                                    }.start()
+                                }
+                                if (index == chapterList.size - 1) {
+                                    future.set(Result.success())
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
-        return Result.success()
+        return future
     }
 }

@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult
-import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult.DownloadOngoing
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,15 +24,28 @@ class FanfictionViewModel(
 
     private lateinit var fanfictionInfo: LiveData<FanfictionUIModel>
 
-    private lateinit var downloadButtonState: LiveData<ChapterStatusState>
+    private lateinit var downloadButtonState: LiveData<String>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionUIModel> = fanfictionInfo
 
-    fun getDownloadButtonState(): LiveData<ChapterStatusState> = downloadButtonState
+    fun getDownloadButtonState(): LiveData<String> = downloadButtonState
 
     fun loadFanfictionInfo(fanfictionId: String) {
+        downloadButtonState = Transformations.map(apiRepository.getWorkManagerStateForFanfiction(fanfictionId)) {
+            it.firstOrNull()?.let { workInfo ->
+                when (workInfo.state) {
+                    WorkInfo.State.ENQUEUED -> "ENQUEUED"
+                    WorkInfo.State.RUNNING  -> "RUNNING "
+                    WorkInfo.State.SUCCEEDED -> "SUCCEEDED"
+                    WorkInfo.State.FAILED -> "FAILED"
+                    WorkInfo.State.BLOCKED -> "BLOCKED"
+                    WorkInfo.State.CANCELLED -> "CANCELLED"
+                }
+            } ?: "Not found"
+        }
+
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
             FanfictionUIModel(
                 id = it.id,
@@ -68,7 +80,7 @@ class FanfictionViewModel(
                     title = it.title,
                     status = resources.getString(
                         when (it.isSynced) {
-                            true -> R.string.download_info_chapter_status_synced
+                            true  -> R.string.download_info_chapter_status_synced
                             false -> R.string.download_info_chapter_status_not_synced
                         }
                     )
@@ -77,24 +89,24 @@ class FanfictionViewModel(
         }
     }
 
-    fun loadChapterDownloadingState() {
-        downloadButtonState = Transformations.map(
-            apiRepository.getDownloadState()
-        ) { downloadStatus ->
-            when (downloadStatus) {
-                DownloadOngoing -> ChapterStatusState.ChapterSyncing
-                ChaptersDownloadResult.DownloadSuccessful -> ChapterStatusState.ChapterSynced
-                ChaptersDownloadResult.ChapterEmpty,
-                ChaptersDownloadResult.RepositoryException,
-                ChaptersDownloadResult.ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
-                    resources.getString(R.string.download_chapter_error)
-                )
-                ChaptersDownloadResult.NothingToDownload -> ChapterStatusState.ChaptersAlreadySynced(
-                    resources.getString(R.string.download_chapter_already_done)
-                )
-            }
-        }
-    }
+//    fun loadChapterDownloadingState() {
+//        downloadButtonState = Transformations.map(
+//            apiRepository.getDownloadState()
+//        ) { downloadStatus ->
+//            when (downloadStatus) {
+//                DownloadOngoing -> ChapterStatusState.ChapterSyncing
+//                ChaptersDownloadResult.DownloadSuccessful -> ChapterStatusState.ChapterSynced
+//                ChaptersDownloadResult.ChapterEmpty,
+//                ChaptersDownloadResult.RepositoryException,
+//                ChaptersDownloadResult.ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
+//                    resources.getString(R.string.download_chapter_error)
+//                )
+//                ChaptersDownloadResult.NothingToDownload -> ChapterStatusState.ChaptersAlreadySynced(
+//                    resources.getString(R.string.download_chapter_already_done)
+//                )
+//            }
+//        }
+//    }
 
     sealed class ChapterStatusState {
         object ChapterSynced : ChapterStatusState()
