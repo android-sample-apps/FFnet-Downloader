@@ -6,7 +6,11 @@ import androidx.room.TypeConverters
 import fr.ffnet.downloader.repository.dao.ErrorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
-import fr.ffnet.downloader.repository.entities.*
+import fr.ffnet.downloader.repository.entities.ChapterEntity
+import fr.ffnet.downloader.repository.entities.ErrorEntity
+import fr.ffnet.downloader.repository.entities.FanfictionEntity
+import fr.ffnet.downloader.repository.entities.ProfileEntity
+import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 import fr.ffnet.downloader.utils.Converters
 
 @Database(
@@ -17,7 +21,7 @@ import fr.ffnet.downloader.utils.Converters
         ProfileFanfictionEntity::class,
         ErrorEntity::class
     ],
-    version = 25
+    version = 1
 )
 @TypeConverters(Converters::class)
 abstract class FanfictionDownloaderDatabase : RoomDatabase() {

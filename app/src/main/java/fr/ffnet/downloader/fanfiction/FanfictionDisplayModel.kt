@@ -8,7 +8,9 @@ data class FanfictionDisplayModel(
     val publishedDate: String,
     val updatedDate: String,
     val syncedDate: String,
-    val progression: String
+    val progressionText: String,
+    val progression: Int,
+    val nbChapters: Int
 )
 
 data class ChapterUIModel(

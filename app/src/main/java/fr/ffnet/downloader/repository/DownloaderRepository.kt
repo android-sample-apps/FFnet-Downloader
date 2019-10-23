@@ -26,7 +26,6 @@ class DownloaderRepository(
     fun downloadChaptersWithWorkManager(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
         if (chapterList.isNotEmpty()) {
-            println("WorkManager state Trying to enqueue $fanfictionId")
             workManager.enqueueUniqueWork(
                 fanfictionId,
                 KEEP,

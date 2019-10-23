@@ -18,9 +18,7 @@ class FanfictionViewModel(
 ) : ViewModel() {
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
-
     private lateinit var fanfictionInfo: LiveData<FanfictionDisplayModel>
-
     private lateinit var downloadButtonState: LiveData<Pair<String, Boolean>>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
@@ -49,11 +47,13 @@ class FanfictionViewModel(
                 updatedDate = dateFormatter.format(it.updatedDate),
                 publishedDate = dateFormatter.format(it.publishedDate),
                 syncedDate = dateFormatter.format(it.fetchedDate),
-                progression = resources.getString(
+                progressionText = resources.getString(
                     R.string.download_info_chapters_value,
                     it.nbSyncedChapters,
                     it.nbChapters
-                )
+                ),
+                progression = it.nbSyncedChapters,
+                nbChapters = it.nbChapters
             )
         }
     }

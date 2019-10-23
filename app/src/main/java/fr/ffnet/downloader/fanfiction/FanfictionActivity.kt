@@ -8,17 +8,20 @@ import android.view.View
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.fanfiction.notification.DownloadNotification
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
 class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
+    @Inject lateinit var notificationBuilder: DownloadNotification
 
     private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
 
     companion object {
 
+        private const val NOTIFICATION_CHANNEL_ID = "fanfictionDownloadProgress"
         private const val EXTRA_ID = "EXTRA_ID"
 
         fun intent(context: Context, id: String): Intent = Intent(
@@ -62,7 +65,8 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             publishedDateValueTextView.text = it.publishedDate
             updatedDateValueTextView.text = it.updatedDate
             syncedDateValueTextView.text = it.syncedDate
-            chaptersValueTextView.text = it.progression
+            chaptersValueTextView.text = it.progressionText
+            notificationBuilder.showNotification(it)
         })
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList

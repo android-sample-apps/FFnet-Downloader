@@ -12,6 +12,10 @@
     <string name="profile_title">My profile</string>
     <string name="synced_title">Synced Fanfictions</string>
 
+    <string name="notification_download_progression_title">Download progression %s</string>
+    <string name="notification_download_progression_channel_name">downloadNotificationProgression</string>
+    <string name="notification_download_progression_channel_description">downloadNotificationDescription</string>
+
     <string name="search_fetched_date">Fetched on %s</string>
     <string name="search_fanfiction_url_error">The given url could not be fetched</string>
     <string name="search_fanfiction_info_fetching_error">There was an error while fetching from fanfiction.net</string>
