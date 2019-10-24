@@ -67,10 +67,4 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
     private fun showNoSyncedFanfictions() {
         fanfictionResultViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
     }
-
-    private fun startFanfictionActivity() {
-        context?.let { context ->
-            startActivity(FanfictionActivity.intent(context, fanfictionId))
-        }
-    }
 }

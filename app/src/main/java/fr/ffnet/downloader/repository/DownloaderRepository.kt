@@ -1,11 +1,19 @@
 package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy.KEEP
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.repository.DownloaderWorker.Companion.FANFICTION_ID_KEY
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
@@ -59,7 +67,12 @@ class DownloaderRepository(
                     fanfictionDao.insertChapterList(
                         fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
                     )
-                    fanfictionDao.updateFirstChapter(fanfictionId, firstChapter)
+                    fanfictionDao.updateChapter(
+                        content = firstChapter,
+                        isSynced = true,
+                        fanfictionId = fanfictionId,
+                        chapterId = "1"
+                    )
                     FanfictionRepositoryResultSuccess(fanfictionInfo)
                 } ?: FanfictionRepositoryResultFailure
             } else {

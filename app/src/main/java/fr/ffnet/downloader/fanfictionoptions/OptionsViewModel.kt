@@ -51,8 +51,10 @@ class OptionsViewModel(
     fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-                navigateToFanfictionActivity.postValue(Unit)
+            when (fanfictionResult) {
+                is FanfictionRepositoryResultSuccess -> navigateToFanfictionActivity.postValue(Unit)
+                is FanfictionRepositoryResultInternetFailure,
+                is FanfictionRepositoryResultServerFailure -> checkFanfictionInDatabase(fanfictionId)
             }
         }
     }
@@ -78,6 +80,12 @@ class OptionsViewModel(
                 val fileName = epubBuilder.buildEpub(fanfiction)
                 _getFile.postValue(fileName)
             }
+        }
+    }
+
+    private fun checkFanfictionInDatabase(fanfictionId: String) {
+        databaseRepository.getCompleteFanfiction(fanfictionId)?.let {
+            navigateToFanfictionActivity.postValue(Unit)
         }
     }
 }
