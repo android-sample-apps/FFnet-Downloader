@@ -77,8 +77,8 @@ class ProfileRepository(
         }
     }
 
-    fun hasAssociatedProfile(): LiveData<Boolean> = Transformations.map(profileDao.getProfile()) {
-        it?.let { true } ?: false
+    fun hasAssociatedProfile(): LiveData<String?> = Transformations.map(profileDao.getProfile()) {
+        it?.name
     }
 
     fun dissociateProfile() {

@@ -31,7 +31,7 @@ class DownloaderRepository(
         return workManager.getWorkInfosForUniqueWorkLiveData(fanfictionId)
     }
 
-    fun downloadChaptersWithWorkManager(fanfictionId: String) {
+    fun downloadChapters(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
         if (chapterList.isNotEmpty()) {
             workManager.enqueueUniqueWork(

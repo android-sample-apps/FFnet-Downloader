@@ -20,8 +20,8 @@ class ProfileViewModel(
 ) : ViewModel() {
 
     private lateinit var historyList: LiveData<List<ProfileUIModel>>
-    private lateinit var isAssociatedLiveData: LiveData<Boolean>
-    fun getIsAssociated(): LiveData<Boolean> = isAssociatedLiveData
+    private lateinit var isAssociatedLiveData: LiveData<String?>
+    fun getIsAssociated(): LiveData<String?> = isAssociatedLiveData
 
     fun loadIsProfileAssociated() {
         isAssociatedLiveData = profileRepository.hasAssociatedProfile()

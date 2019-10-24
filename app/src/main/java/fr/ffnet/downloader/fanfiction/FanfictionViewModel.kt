@@ -60,7 +60,7 @@ class FanfictionViewModel(
 
     fun syncChapters(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            apiRepository.downloadChaptersWithWorkManager(fanfictionId)
+            apiRepository.downloadChapters(fanfictionId)
         }
     }
 

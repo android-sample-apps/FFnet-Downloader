@@ -30,9 +30,7 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_profile, container, false).also {
-        requireActivity().title = resources.getString(R.string.profile_title)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,14 +48,16 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
         })
 
         viewModel.loadIsProfileAssociated()
-        viewModel.getIsAssociated().observe(this, Observer { isAssociated ->
-            if (isAssociated) {
+        viewModel.getIsAssociated().observe(this, Observer { profileName ->
+            if (profileName != null) {
+                toolbar.title = profileName
                 progressBar.visibility = View.GONE
                 setHasOptionsMenu(true)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_LIST
                 profileFanfictionsTabLayout.visibility = View.VISIBLE
                 noFanfictionFoundTextView.visibility = View.VISIBLE
             } else {
+                toolbar.title = getString(R.string.profile_title)
                 setHasOptionsMenu(false)
                 profileAssociationStatusViewFlipper.displayedChild = DISPLAY_ASSOCIATE
                 profileFanfictionsTabLayout.visibility = View.GONE

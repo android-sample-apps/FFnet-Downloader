@@ -34,40 +34,36 @@ class DownloaderWorker(
         CoroutineScope(Default).launch {
             val fanfictionId = inputData.getString(FANFICTION_ID_KEY) ?: ""
             val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
-            if (chapterList.isNotEmpty()) {
-                chapterList.forEachIndexed { index, chapter ->
-                    service.getFanfiction(
-                        fanfictionId, chapter.chapterId
-                    ).enqueue(object : Callback<ResponseBody> {
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            chapterList.forEachIndexed { index, chapter ->
+                service.getFanfiction(
+                    fanfictionId, chapter.chapterId
+                ).enqueue(object : Callback<ResponseBody> {
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        // Do nothing
+                    }
 
-                        }
-
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if (response.isSuccessful) {
-                                println("WorkManager state Received response for chapter ${chapter
-                                    .chapterId}")
-                                response.body()?.let {
-                                    val chapterContent = fanfictionBuilder.extractChapter(it.string())
-                                    Thread {
-                                        fanfictionDao.updateChapter(
-                                            content = chapterContent,
-                                            isSynced = true,
-                                            chapterId = chapter.chapterId,
-                                            fanfictionId = fanfictionId
-                                        )
-                                    }.start()
-                                }
-                                if (index == chapterList.size - 1) {
-                                    future.set(Result.success())
-                                }
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.isSuccessful) {
+                            response.body()?.let {
+                                val chapterContent = fanfictionBuilder.extractChapter(it.string())
+                                Thread {
+                                    fanfictionDao.updateChapter(
+                                        content = chapterContent,
+                                        isSynced = true,
+                                        chapterId = chapter.chapterId,
+                                        fanfictionId = fanfictionId
+                                    )
+                                }.start()
+                            }
+                            if (index == chapterList.size - 1) {
+                                future.set(Result.success())
                             }
                         }
-                    })
-                }
+                    }
+                })
             }
         }
         return future
