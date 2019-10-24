@@ -21,8 +21,9 @@ class DownloadNotification @Inject constructor(
     }
 
     fun showNotification(model: FanfictionDisplayModel) {
-        val notificationChannel = createNotificationChannel()
+        createNotificationChannel()
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentText(
                 resources.getString(
                     R.string.notification_download_progression_title,
@@ -30,10 +31,10 @@ class DownloadNotification @Inject constructor(
                 )
             )
             .setProgress(model.nbChapters, model.progression, false)
-//        NotificationManagerCompat.from(context).notify(
-//            model.id,
-//            builder.build()
-//        )
+        NotificationManagerCompat.from(context).notify(
+            model.id.toInt(),
+            builder.build()
+        )
     }
 
     private fun createNotificationChannel() {

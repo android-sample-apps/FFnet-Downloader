@@ -1,7 +1,7 @@
 package fr.ffnet.downloader.search
 
 import android.content.res.Resources
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
@@ -17,7 +17,7 @@ class SearchModule {
         viewModelCreator: () -> SearchViewModel
     ): SearchViewModel {
         val factory = SearchViewModelFactory(viewModelCreator)
-        return ViewModelProviders.of(fragment, factory)[SearchViewModel::class.java]
+        return ViewModelProvider(fragment.viewModelStore, factory)[SearchViewModel::class.java]
     }
 
     @Provides

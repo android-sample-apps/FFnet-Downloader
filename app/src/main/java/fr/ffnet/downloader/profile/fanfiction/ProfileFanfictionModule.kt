@@ -1,7 +1,7 @@
 package fr.ffnet.downloader.profile.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -16,7 +16,10 @@ class ProfileFanfictionModule {
         viewModelCreator: () -> ProfileFanfictionViewModel
     ): ProfileFanfictionViewModel {
         val factory = ProfileFanfictionViewModelFactory(viewModelCreator)
-        return ViewModelProviders.of(fragment, factory)[ProfileFanfictionViewModel::class.java]
+        return ViewModelProvider(
+            fragment.viewModelStore,
+            factory
+        )[ProfileFanfictionViewModel::class.java]
     }
 
     @Provides

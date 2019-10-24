@@ -71,7 +71,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/syncedDateLabelTextView"
+            android:id="@+id/fetchedDateLabelTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/synced_fanfictions_synced_date_label"
@@ -81,12 +81,12 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/syncedDateValueTextView"
+            android:id="@+id/fetchedDateValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:visibility="gone"
-            app:layout_constraintBaseline_toBaselineOf="@+id/syncedDateLabelTextView"
+            app:layout_constraintBaseline_toBaselineOf="@+id/fetchedDateLabelTextView"
             app:layout_constraintLeft_toRightOf="@+id/barrier"
             tools:text="2019/03/03"
             tools:visibility="visible" />
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="right"
-            app:constraint_referenced_ids="publishedDateLabelTextView, updatedDateLabelTextView, syncedDateLabelTextView" />
+            app:constraint_referenced_ids="publishedDateLabelTextView, updatedDateLabelTextView, fetchedDateLabelTextView" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"

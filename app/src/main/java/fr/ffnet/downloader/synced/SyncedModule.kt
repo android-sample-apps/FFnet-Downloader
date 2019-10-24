@@ -1,7 +1,7 @@
 package fr.ffnet.downloader.synced
 
 import android.content.res.Resources
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.fanfictionutils.EpubBuilder
@@ -17,7 +17,7 @@ class SyncedModule {
         viewModelCreator: () -> SyncedViewModel
     ): SyncedViewModel {
         val factory = SyncedViewModelFactory(viewModelCreator)
-        return ViewModelProviders.of(fragment, factory)[SyncedViewModel::class.java]
+        return ViewModelProvider(fragment.viewModelStore, factory)[SyncedViewModel::class.java]
     }
 
     @Provides

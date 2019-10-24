@@ -66,7 +66,6 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             updatedDateValueTextView.text = it.updatedDate
             syncedDateValueTextView.text = it.syncedDate
             chaptersValueTextView.text = it.progressionText
-            notificationBuilder.showNotification(it)
         })
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList

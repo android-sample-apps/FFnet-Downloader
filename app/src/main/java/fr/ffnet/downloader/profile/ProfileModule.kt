@@ -1,6 +1,6 @@
 package fr.ffnet.downloader.profile
 
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
@@ -15,7 +15,7 @@ class ProfileModule {
         viewModelCreator: () -> ProfileViewModel
     ): ProfileViewModel {
         val factory = ProfileViewModelFactory(viewModelCreator)
-        return ViewModelProviders.of(fragment, factory)[ProfileViewModel::class.java]
+        return ViewModelProvider(fragment.viewModelStore, factory)[ProfileViewModel::class.java]
     }
 
     @Provides

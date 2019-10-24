@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
-import fr.ffnet.downloader.OptionsBottomSheetDialogFragment
+import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
@@ -88,12 +88,8 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
     }
 
     override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
-        val optionsFragment = OptionsBottomSheetDialogFragment.newInstance(
+        val optionsFragment = OptionsFragment.newInstance(
             fanfiction.id,
-            fanfiction.title,
-            fanfiction.publishedDate,
-            fanfiction.updatedDate,
-            fanfiction.fetchedDate,
             shouldShowDeleteOption = false
         )
         optionsFragment.setTargetFragment(this, 1000)
@@ -102,30 +98,30 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            data?.let { intent ->
-                val fanfictionId = intent.getStringExtra(
-                    OptionsBottomSheetDialogFragment.EXTRA_FANFICTION_ID
-                )
-                when (intent.getStringExtra(
-                    OptionsBottomSheetDialogFragment.EXTRA_ACTION
-                )) {
-                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
-                        fanfictionId
-                    )
-                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
-                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_EPUB -> println(
-                        "EXTRA_ACTION_EPUB"
-                    )
-                    OptionsBottomSheetDialogFragment.EXTRA_ACTION_DELETE -> println("Nope")
-                }
-            }
-        }
-    }
-
-    private fun fetchFanfictionInformation(fanfictionId: String) {
-        progressBar.visibility = View.VISIBLE
-        viewModel.loadFanfictionInfo(fanfictionId)
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        if (resultCode == Activity.RESULT_OK) {
+//            data?.let { intent ->
+//                val fanfictionId = intent.getStringExtra(
+//                    OptionsFragment.EXTRA_FANFICTION_ID
+//                )
+//                when (intent.getStringExtra(
+//                    OptionsFragment.EXTRA_ACTION
+//                )) {
+//                    OptionsFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
+//                        fanfictionId
+//                    )
+//                    OptionsFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
+//                    OptionsFragment.EXTRA_ACTION_EPUB -> println(
+//                        "EXTRA_ACTION_EPUB"
+//                    )
+//                    OptionsFragment.EXTRA_ACTION_DELETE -> println("Nope")
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun fetchFanfictionInformation(fanfictionId: String) {
+//        progressBar.visibility = View.VISIBLE
+//        viewModel.loadFanfictionInfo(fanfictionId)
+//    }
 }
