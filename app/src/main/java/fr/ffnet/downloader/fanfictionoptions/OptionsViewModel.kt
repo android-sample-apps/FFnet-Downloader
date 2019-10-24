@@ -9,8 +9,7 @@ import fr.ffnet.downloader.fanfictionutils.EpubBuilder
 import fr.ffnet.downloader.fanfictionutils.PdfBuilder
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
@@ -51,10 +50,12 @@ class OptionsViewModel(
     fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
-            when (fanfictionResult) {
-                is FanfictionRepositoryResultSuccess -> navigateToFanfictionActivity.postValue(Unit)
-                is FanfictionRepositoryResultInternetFailure,
-                is FanfictionRepositoryResultServerFailure -> checkFanfictionInDatabase(fanfictionId)
+            if (fanfictionResult is FanfictionRepositoryResultSuccess
+                || databaseRepository.isFanfictionInDatabase(fanfictionId)
+            ) {
+                navigateToFanfictionActivity.postValue(Unit)
+            } else {
+                // Show error message
             }
         }
     }
@@ -80,12 +81,6 @@ class OptionsViewModel(
                 val fileName = epubBuilder.buildEpub(fanfiction)
                 _getFile.postValue(fileName)
             }
-        }
-    }
-
-    private fun checkFanfictionInDatabase(fanfictionId: String) {
-        databaseRepository.getCompleteFanfiction(fanfictionId)?.let {
-            navigateToFanfictionActivity.postValue(Unit)
         }
     }
 }

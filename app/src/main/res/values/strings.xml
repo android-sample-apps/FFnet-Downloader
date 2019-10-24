@@ -18,7 +18,7 @@
 
     <string name="search_fetched_date">Fetched on %s</string>
     <string name="search_fanfiction_url_error">The given url could not be fetched</string>
-    <string name="search_fanfiction_info_fetching_error">There was an error while fetching from fanfiction.net</string>
+    <string name="search_fanfiction_info_fetching_error">There was an error while fetching fanfiction from fanfiction.net</string>
     <string name="search_fanfiction_info_server_error">The server can\'t be reached</string>
 
     <string name="download_info_title_label">Title</string>

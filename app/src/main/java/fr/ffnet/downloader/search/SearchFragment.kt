@@ -46,8 +46,8 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     }
 
     private fun initObservers() {
-        viewModel.navigateToFanfiction.observe(this, Observer {
-            startActivity(FanfictionActivity.intent(requireContext(), it)).also {
+        viewModel.navigateToFanfiction.observe(this, Observer { fanfictionId ->
+            startActivity(FanfictionActivity.intent(requireContext(), fanfictionId)).also {
                 fetchInformationButton.isEnabled = true
                 progressBar.visibility = View.GONE
             }

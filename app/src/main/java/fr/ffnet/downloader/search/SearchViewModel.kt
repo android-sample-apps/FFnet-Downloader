@@ -13,6 +13,7 @@ import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResul
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.SingleLiveEvent
@@ -22,8 +23,8 @@ import kotlinx.coroutines.launch
 class SearchViewModel(
     private val urlTransformer: UrlTransformer,
     private val resources: Resources,
-    private val apiRepository: DownloaderRepository,
-    private val dbRepository: DatabaseRepository,
+    private val downloaderRepository: DownloaderRepository,
+    private val databaseRepository: DatabaseRepository,
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
@@ -52,7 +53,7 @@ class SearchViewModel(
     }
 
     fun loadHistory(): LiveData<List<HistoryUIModel>> {
-        historyList = Transformations.map(dbRepository.loadHistory()) { historyList ->
+        historyList = Transformations.map(databaseRepository.loadHistory()) { historyList ->
             historyList.map {
                 HistoryUIModel(
                     fanfictionId = it.id,
@@ -70,24 +71,25 @@ class SearchViewModel(
 
     private fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
-            when (fanfictionResult) {
-                is FanfictionRepositoryResultSuccess -> navigateToFanfictionActivity.postValue(
-                    fanfictionId
-                )
-                DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure,
-                DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure -> displayErrorMessage(
-                    resources.getString(R.string.search_fanfiction_info_fetching_error)
-                )
-                DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure -> displayErrorMessage(
-                    resources.getString(R.string.search_fanfiction_info_server_error)
-                )
+            val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
+            if (fanfictionResult is FanfictionRepositoryResultSuccess
+                || databaseRepository.isFanfictionInDatabase(fanfictionId)
+            ) {
+                navigateToFanfictionActivity.postValue(fanfictionId)
+            } else {
+                if (fanfictionResult is FanfictionRepositoryResultInternetFailure) {
+                    displayErrorMessage(R.string.search_fanfiction_info_server_error)
+                } else {
+                    displayErrorMessage(R.string.search_fanfiction_info_fetching_error)
+                }
             }
         }
     }
 
-    private fun displayErrorMessage(message: String) {
-        errorPresent.postValue(SearchError.InfoFetchingFailed(message))
+    private fun displayErrorMessage(messageResource: Int) {
+        errorPresent.postValue(
+            SearchError.InfoFetchingFailed(resources.getString(messageResource))
+        )
     }
 
     sealed class SearchError(val message: String) {

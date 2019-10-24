@@ -54,6 +54,10 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         } else null
     }
 
+    fun isFanfictionInDatabase(fanfictionId: String): Boolean {
+        return getCompleteFanfiction(fanfictionId) != null
+    }
+
     private fun transformEntityLiveDataToModelLiveData(
         liveData: LiveData<List<FanfictionEntity>>
     ): LiveData<List<Fanfiction>> = Transformations.map(liveData) { fanfictionList ->

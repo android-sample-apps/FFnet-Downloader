@@ -66,9 +66,11 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             syncedDateValueTextView.text = it.syncedDate
             chaptersValueTextView.text = it.progressionText
         })
+
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
+
         viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shoudEnabled) ->
             downloadButton.text = buttonText
             downloadButton.isEnabled = shoudEnabled
