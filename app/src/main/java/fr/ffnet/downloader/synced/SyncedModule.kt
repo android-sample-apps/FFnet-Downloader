@@ -24,16 +24,12 @@ class SyncedModule {
     fun provideCreator(
         resources: Resources,
         repository: DatabaseRepository,
-        dateFormatter: DateFormatter,
-        pdfBuilder: PdfBuilder,
-        epubBuilder: EpubBuilder
+        dateFormatter: DateFormatter
     ): () -> SyncedViewModel = {
         SyncedViewModel(
             resources,
             repository,
-            dateFormatter,
-            pdfBuilder,
-            epubBuilder
+            dateFormatter
         )
     }
 }

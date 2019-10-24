@@ -21,13 +21,12 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     companion object {
 
-        private const val NOTIFICATION_CHANNEL_ID = "fanfictionDownloadProgress"
         private const val EXTRA_ID = "EXTRA_ID"
 
-        fun intent(context: Context, id: String): Intent = Intent(
+        fun intent(context: Context, fanfictionId: String): Intent = Intent(
             context, FanfictionActivity::class.java
         ).apply {
-            putExtra(EXTRA_ID, id)
+            putExtra(EXTRA_ID, fanfictionId)
         }
     }
 

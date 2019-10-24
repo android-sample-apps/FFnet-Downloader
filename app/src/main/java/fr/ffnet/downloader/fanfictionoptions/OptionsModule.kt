@@ -3,7 +3,10 @@ package fr.ffnet.downloader.fanfictionoptions
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
+import fr.ffnet.downloader.fanfictionutils.EpubBuilder
+import fr.ffnet.downloader.fanfictionutils.PdfBuilder
 import fr.ffnet.downloader.repository.DatabaseRepository
+import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.utils.DateFormatter
 
 @Module
@@ -20,10 +23,17 @@ class OptionsModule {
     @Provides
     fun provideCreator(
         databaseRepository: DatabaseRepository,
-        dateFormatter: DateFormatter
+        dateFormatter: DateFormatter,
+        downloaderRepository: DownloaderRepository,
+        pdfBuilder: PdfBuilder,
+        epubBuilder: EpubBuilder
     ): () -> OptionsViewModel = {
         OptionsViewModel(
-            databaseRepository, dateFormatter
+            databaseRepository,
+            dateFormatter,
+            downloaderRepository,
+            pdfBuilder,
+            epubBuilder
         )
     }
 }

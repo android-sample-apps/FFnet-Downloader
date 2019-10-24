@@ -2,7 +2,6 @@ package fr.ffnet.downloader.search
 
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +15,7 @@ import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.DateFormatter
-import fr.ffnet.downloader.utils.LiveEvent
+import fr.ffnet.downloader.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -28,12 +27,12 @@ class SearchViewModel(
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    private val navigateToFanfictionActivity = MutableLiveData<LiveEvent<String>>()
-    val navigateToFanfiction: LiveData<LiveEvent<String>>
+    private val navigateToFanfictionActivity: SingleLiveEvent<String> = SingleLiveEvent()
+    val navigateToFanfiction: SingleLiveEvent<String>
         get() = navigateToFanfictionActivity
 
-    private val errorPresent = MutableLiveData<LiveEvent<SearchError>>()
-    val sendError: LiveData<LiveEvent<SearchError>>
+    private val errorPresent: SingleLiveEvent<SearchError> = SingleLiveEvent()
+    val sendError: SingleLiveEvent<SearchError>
         get() = errorPresent
 
     private lateinit var historyList: LiveData<List<HistoryUIModel>>
@@ -45,10 +44,8 @@ class SearchViewModel(
                 urlTransformationResult.id
             )
             is UrlTransformFailure -> errorPresent.postValue(
-                LiveEvent(
-                    SearchError.UrlNotValid(
-                        resources.getString(R.string.search_fanfiction_url_error)
-                    )
+                SearchError.UrlNotValid(
+                    resources.getString(R.string.search_fanfiction_url_error)
                 )
             )
         }
@@ -76,7 +73,7 @@ class SearchViewModel(
             val fanfictionResult = apiRepository.loadFanfictionInfo(fanfictionId)
             when (fanfictionResult) {
                 is FanfictionRepositoryResultSuccess -> navigateToFanfictionActivity.postValue(
-                    LiveEvent(fanfictionId)
+                    fanfictionId
                 )
                 DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure,
                 DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure -> displayErrorMessage(
@@ -90,7 +87,7 @@ class SearchViewModel(
     }
 
     private fun displayErrorMessage(message: String) {
-        errorPresent.postValue(LiveEvent(SearchError.InfoFetchingFailed(message)))
+        errorPresent.postValue(SearchError.InfoFetchingFailed(message))
     }
 
     sealed class SearchError(val message: String) {

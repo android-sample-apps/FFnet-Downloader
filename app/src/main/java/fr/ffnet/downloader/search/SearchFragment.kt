@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
@@ -47,14 +46,10 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     }
 
     private fun initObservers() {
-        viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
-            liveEvent.getContentIfNotHandled()?.let {
-                if (context != null) {
-                    startActivity(FanfictionActivity.intent(requireContext(), it)).also {
-                        fetchInformationButton.isEnabled = true
-                        progressBar.visibility = View.GONE
-                    }
-                }
+        viewModel.navigateToFanfiction.observe(this, Observer {
+            startActivity(FanfictionActivity.intent(requireContext(), it)).also {
+                fetchInformationButton.isEnabled = true
+                progressBar.visibility = View.GONE
             }
         })
 
@@ -64,17 +59,15 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     }
 
     private fun setErrorListener() {
-        viewModel.sendError.observe(this, Observer { liveEvent ->
-            liveEvent.getContentIfNotHandled()?.let { searchError ->
-                when (searchError) {
-                    is SearchViewModel.SearchError.UrlNotValid,
-                    is SearchViewModel.SearchError.InfoFetchingFailed -> {
-                        Snackbar.make(
-                            containerView, searchError.message, Snackbar.LENGTH_LONG
-                        ).show()
-                        fetchInformationButton.isEnabled = true
-                        progressBar.visibility = View.GONE
-                    }
+        viewModel.sendError.observe(this, Observer { searchError ->
+            when (searchError) {
+                is SearchViewModel.SearchError.UrlNotValid,
+                is SearchViewModel.SearchError.InfoFetchingFailed -> {
+                    Snackbar.make(
+                        containerView, searchError.message, Snackbar.LENGTH_LONG
+                    ).show()
+                    fetchInformationButton.isEnabled = true
+                    progressBar.visibility = View.GONE
                 }
             }
         })

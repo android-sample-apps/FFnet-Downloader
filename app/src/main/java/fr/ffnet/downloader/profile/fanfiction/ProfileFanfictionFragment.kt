@@ -1,16 +1,13 @@
 package fr.ffnet.downloader.profile.fanfiction
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
-import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.synced.SyncedAdapter
@@ -60,15 +57,6 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
                 onProfileFanfictionsResult(it)
             })
         }
-
-        viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
-            liveEvent.getContentIfNotHandled()?.let {
-                if (context != null) {
-                    progressBar.visibility = View.GONE
-                    startActivity(FanfictionActivity.intent(context!!, it))
-                }
-            }
-        })
     }
 
     private fun onProfileFanfictionsResult(result: ProfileFanfictionsResult) {
@@ -89,7 +77,7 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
 
     override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
         val optionsFragment = OptionsFragment.newInstance(
-            fanfiction.id,
+            fanfictionId = fanfiction.id,
             shouldShowDeleteOption = false
         )
         optionsFragment.setTargetFragment(this, 1000)
@@ -98,30 +86,30 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         }
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        if (resultCode == Activity.RESULT_OK) {
-//            data?.let { intent ->
-//                val fanfictionId = intent.getStringExtra(
-//                    OptionsFragment.EXTRA_FANFICTION_ID
-//                )
-//                when (intent.getStringExtra(
-//                    OptionsFragment.EXTRA_ACTION
-//                )) {
-//                    OptionsFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
-//                        fanfictionId
-//                    )
-//                    OptionsFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
-//                    OptionsFragment.EXTRA_ACTION_EPUB -> println(
-//                        "EXTRA_ACTION_EPUB"
-//                    )
-//                    OptionsFragment.EXTRA_ACTION_DELETE -> println("Nope")
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun fetchFanfictionInformation(fanfictionId: String) {
-//        progressBar.visibility = View.VISIBLE
-//        viewModel.loadFanfictionInfo(fanfictionId)
-//    }
+    //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    //        if (resultCode == Activity.RESULT_OK) {
+    //            data?.let { intent ->
+    //                val fanfictionId = intent.getStringExtra(
+    //                    OptionsFragment.EXTRA_FANFICTION_ID
+    //                )
+    //                when (intent.getStringExtra(
+    //                    OptionsFragment.EXTRA_ACTION
+    //                )) {
+    //                    OptionsFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
+    //                        fanfictionId
+    //                    )
+    //                    OptionsFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
+    //                    OptionsFragment.EXTRA_ACTION_EPUB -> println(
+    //                        "EXTRA_ACTION_EPUB"
+    //                    )
+    //                    OptionsFragment.EXTRA_ACTION_DELETE -> println("Nope")
+    //                }
+    //            }
+    //        }
+    //    }
+    //
+    //    private fun fetchFanfictionInformation(fanfictionId: String) {
+    //        progressBar.visibility = View.VISIBLE
+    //        viewModel.loadFanfictionInfo(fanfictionId)
+    //    }
 }
