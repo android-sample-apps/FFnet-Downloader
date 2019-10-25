@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.synced
+package fr.ffnet.downloader.profile
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
 
-class SyncedAdapter(
+class FanfictionAdapter(
     private val onMenuItemClickListener: OnFanfictionOptionsListener
-) : RecyclerView.Adapter<SyncedAdapter.SyncedViewHolder>() {
+) : RecyclerView.Adapter<FanfictionAdapter.SyncedViewHolder>() {
 
     var fanfictionList: List<FanfictionSyncedUIModel> = emptyList()
         set(value) {
@@ -41,7 +40,7 @@ class SyncedAdapter(
 
         fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnFanfictionOptionsListener) {
             view.setOnClickListener {
-                listener.onOptionsClicked(fanfiction)
+                listener.onOptionsClicked(fanfiction.id)
             }
             titleTextView.text = fanfiction.title
             chaptersTextView.text = fanfiction.chapters

@@ -5,15 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
+import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.DateFormatter
+import fr.ffnet.downloader.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ProfileFanfictionViewModel(
     private val resources: Resources,
+    private val downloaderRepository: DownloaderRepository,
     private val databaseRepository: DatabaseRepository,
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
@@ -24,6 +32,10 @@ class ProfileFanfictionViewModel(
 
     private lateinit var myStoriesResult: LiveData<ProfileViewModel.ProfileFanfictionsResult>
     fun getMyStoriesList(): LiveData<ProfileViewModel.ProfileFanfictionsResult> = myStoriesResult
+
+    private val navigateToFanfictionActivity: SingleLiveEvent<String> = SingleLiveEvent()
+    val navigateToFanfiction: SingleLiveEvent<String>
+        get() = navigateToFanfictionActivity
 
     fun loadFavoriteFanfictions() {
         myFavoritesResult = Transformations.map(
@@ -49,6 +61,19 @@ class ProfileFanfictionViewModel(
                 )
             } else {
                 ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
+            }
+        }
+    }
+
+    fun loadFanfictionInfo(fanfictionId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
+            if (fanfictionResult is FanfictionRepositoryResultSuccess
+                || databaseRepository.isFanfictionInDatabase(fanfictionId)
+            ) {
+                navigateToFanfictionActivity.postValue(fanfictionId)
+            } else {
+                // Show error message
             }
         }
     }

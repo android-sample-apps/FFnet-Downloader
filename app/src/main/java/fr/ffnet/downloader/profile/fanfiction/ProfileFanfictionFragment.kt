@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
+import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
-import fr.ffnet.downloader.synced.SyncedAdapter
+import fr.ffnet.downloader.profile.FanfictionAdapter
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
@@ -44,10 +44,13 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fanfictionRecyclerView.adapter = SyncedAdapter(this)
+        fanfictionRecyclerView.adapter = FanfictionAdapter(this)
         viewModel.loadFavoriteFanfictions()
         viewModel.loadMyFanfictions()
 
+        viewModel.navigateToFanfiction.observe(this, Observer { fanfictionId ->
+            startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
+        })
         if (isFavorites) {
             viewModel.getMyFavoritesList().observe(this, Observer {
                 onProfileFanfictionsResult(it)
@@ -71,16 +74,11 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
     }
 
     private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (fanfictionRecyclerView.adapter as SyncedAdapter).fanfictionList = fanfictionList
+        (fanfictionRecyclerView.adapter as FanfictionAdapter).fanfictionList = fanfictionList
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 
-    override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
-        val optionsFragment = OptionsFragment.newInstance(
-            fanfictionId = fanfiction.id,
-            shouldShowDeleteOption = false
-        )
-        optionsFragment.setTargetFragment(this, 1000)
-        optionsFragment.show(requireActivity().supportFragmentManager, "fanfiction_options")
+    override fun onOptionsClicked(fanfictionId: String) {
+        viewModel.loadFanfictionInfo(fanfictionId)
     }
 }

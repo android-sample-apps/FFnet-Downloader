@@ -25,11 +25,13 @@ class ProfileFanfictionModule {
     @Provides
     fun provideCreator(
         resources: Resources,
+        downloaderRepository: DownloaderRepository,
         databaseRepository: DatabaseRepository,
         dateFormatter: DateFormatter
     ): () -> ProfileFanfictionViewModel = {
         ProfileFanfictionViewModel(
             resources,
+            downloaderRepository,
             databaseRepository,
             dateFormatter
         )
