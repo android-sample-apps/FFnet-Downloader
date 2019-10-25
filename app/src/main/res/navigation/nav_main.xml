@@ -12,11 +12,6 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
-        android:id="@+id/bottomNavSyncedFragment"
-        android:name="fr.ffnet.downloader.synced.SyncedFragment"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
         android:id="@+id/bottomNavProfileFragment"
         android:name="fr.ffnet.downloader.profile.ProfileFragment"
         tools:layout="@layout/fragment_search" />

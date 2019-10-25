@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.ProfileRepository
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -80,6 +79,15 @@ class ProfileViewModel(
         object ProfileHasNoFanfictions : ProfileFanfictionsResult()
     }
 }
+
+data class FanfictionSyncedUIModel(
+    val id: String,
+    val title: String,
+    val chapters: String,
+    val updatedDate: String,
+    val publishedDate: String,
+    val fetchedDate: String
+)
 
 class ProfileViewModelFactory(
     private val creator: () -> ProfileViewModel

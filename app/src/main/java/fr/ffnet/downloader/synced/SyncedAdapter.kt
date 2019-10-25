@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
 

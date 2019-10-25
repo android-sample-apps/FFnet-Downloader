@@ -6,10 +6,10 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.search.Fanfiction
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.DateFormatter
 
 class ProfileFanfictionViewModel(

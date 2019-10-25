@@ -13,8 +13,6 @@ import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
 import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionModule
 import fr.ffnet.downloader.search.SearchFragment
 import fr.ffnet.downloader.search.SearchModule
-import fr.ffnet.downloader.synced.SyncedFragment
-import fr.ffnet.downloader.synced.SyncedModule
 
 @Module
 abstract class ActivityBindingModule {
@@ -30,10 +28,6 @@ abstract class ActivityBindingModule {
     @ContributesAndroidInjector(modules = [SearchModule::class])
     @FragmentScope
     abstract fun contributeSearchFragmentInjector(): SearchFragment
-
-    @ContributesAndroidInjector(modules = [SyncedModule::class])
-    @FragmentScope
-    abstract fun contributeSyncedFragmentInjector(): SyncedFragment
 
     @ContributesAndroidInjector(modules = [ProfileModule::class])
     @FragmentScope

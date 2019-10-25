@@ -8,8 +8,8 @@ import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
+import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.synced.SyncedAdapter
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
