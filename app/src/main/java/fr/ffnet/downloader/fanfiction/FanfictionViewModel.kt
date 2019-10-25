@@ -1,7 +1,11 @@
 package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -16,6 +20,19 @@ class FanfictionViewModel(
     private val dbRepository: DatabaseRepository,
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
+
+    // TODO
+    // Put chapter list in an other place
+    // Display author
+    // Display fanfiction picture
+    // Remove "SYNC CHAPTERS"
+    // Add button with icon EPUB
+    // Add button with icon PDF
+    // When clicking on an export button, disable both buttons until task completed
+    // Remove fanfiction from database when done
+    // Remove Synced information
+    // Show number of chapters
+    // Show number of downloaded chapters
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
     private lateinit var fanfictionInfo: LiveData<FanfictionDisplayModel>
@@ -74,7 +91,7 @@ class FanfictionViewModel(
                     title = it.title,
                     status = resources.getString(
                         when (it.isSynced) {
-                            true  -> R.string.download_info_chapter_status_synced
+                            true -> R.string.download_info_chapter_status_synced
                             false -> R.string.download_info_chapter_status_not_synced
                         }
                     )
