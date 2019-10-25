@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.synced
 
-import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
@@ -17,7 +15,6 @@ import javax.inject.Inject
 
 class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
 
-    private lateinit var fanfictionId: String
     @Inject lateinit var viewModel: SyncedViewModel
 
     companion object {
@@ -54,9 +51,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
             shouldShowDeleteOption = true
         )
         optionsFragment.setTargetFragment(this, 1000)
-        fragmentManager?.let {
-            optionsFragment.show(it, "fanfiction_options")
-        }
+        optionsFragment.show(requireActivity().supportFragmentManager, "fanfiction_options")
     }
 
     private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {

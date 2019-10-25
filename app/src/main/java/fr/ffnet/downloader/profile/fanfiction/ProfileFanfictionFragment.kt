@@ -81,35 +81,6 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
             shouldShowDeleteOption = false
         )
         optionsFragment.setTargetFragment(this, 1000)
-        fragmentManager?.let {
-            optionsFragment.show(it, "fanfiction_options")
-        }
+        optionsFragment.show(requireActivity().supportFragmentManager, "fanfiction_options")
     }
-
-    //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    //        if (resultCode == Activity.RESULT_OK) {
-    //            data?.let { intent ->
-    //                val fanfictionId = intent.getStringExtra(
-    //                    OptionsFragment.EXTRA_FANFICTION_ID
-    //                )
-    //                when (intent.getStringExtra(
-    //                    OptionsFragment.EXTRA_ACTION
-    //                )) {
-    //                    OptionsFragment.EXTRA_ACTION_DETAILS -> fetchFanfictionInformation(
-    //                        fanfictionId
-    //                    )
-    //                    OptionsFragment.EXTRA_ACTION_PDF -> println("EXTRA_ACTION_PDF")
-    //                    OptionsFragment.EXTRA_ACTION_EPUB -> println(
-    //                        "EXTRA_ACTION_EPUB"
-    //                    )
-    //                    OptionsFragment.EXTRA_ACTION_DELETE -> println("Nope")
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    private fun fetchFanfictionInformation(fanfictionId: String) {
-    //        progressBar.visibility = View.VISIBLE
-    //        viewModel.loadFanfictionInfo(fanfictionId)
-    //    }
 }
