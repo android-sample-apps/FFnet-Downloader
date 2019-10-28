@@ -5,6 +5,10 @@ import dagger.android.ContributesAndroidInjector
 import fr.ffnet.downloader.MainActivity
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.fanfiction.FanfictionModule
+import fr.ffnet.downloader.fanfiction.chapters.FanfictionChaptersFragment
+import fr.ffnet.downloader.fanfiction.chapters.FanfictionChaptersModule
+import fr.ffnet.downloader.fanfiction.info.FanfictionInfoFragment
+import fr.ffnet.downloader.fanfiction.info.FanfictionInfoModule
 import fr.ffnet.downloader.profile.ProfileFragment
 import fr.ffnet.downloader.profile.ProfileModule
 import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
@@ -34,4 +38,12 @@ abstract class ActivityBindingModule {
     @ContributesAndroidInjector(modules = [ProfileFanfictionModule::class])
     @FragmentScope
     abstract fun contributeProfileFanfictionFragmentInjector(): ProfileFanfictionFragment
+
+    @ContributesAndroidInjector(modules = [FanfictionChaptersModule::class])
+    @FragmentScope
+    abstract fun contributeFanfictionChaptersFragmentInjector(): FanfictionChaptersFragment
+
+    @ContributesAndroidInjector(modules = [FanfictionInfoModule::class])
+    @FragmentScope
+    abstract fun contributeFanfictionInfoFragmentInjector(): FanfictionInfoFragment
 }

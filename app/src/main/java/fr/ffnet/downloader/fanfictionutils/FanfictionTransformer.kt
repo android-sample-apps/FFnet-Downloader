@@ -17,7 +17,10 @@ class FanfictionTransformer @Inject constructor() {
         updatedDate = fanfiction.updatedDate,
         fetchedDate = fanfiction.fetchedDate,
         nbChapters = fanfiction.nbChapters,
-        nbSyncedChapters = fanfiction.nbSyncedChapters
+        nbSyncedChapters = fanfiction.nbSyncedChapters,
+        imageUrl = fanfiction.imageUrl,
+        authorName = fanfiction.authorName,
+        authorId = fanfiction.authorId
     )
 
     fun toChapterEntityList(
@@ -32,19 +35,4 @@ class FanfictionTransformer @Inject constructor() {
             isSynced = chapter.status
         )
     }
-
-    fun toFanfiction(fanfictionEntity: FanfictionEntity): Fanfiction = Fanfiction(
-        id = fanfictionEntity.id,
-        title = fanfictionEntity.title,
-        words = fanfictionEntity.words,
-        summary = fanfictionEntity.summary,
-        publishedDate = fanfictionEntity.publishedDate,
-        updatedDate = fanfictionEntity.updatedDate,
-        fetchedDate = fanfictionEntity.fetchedDate,
-        profileType = fanfictionEntity.profileType,
-        nbChapters = fanfictionEntity.nbChapters,
-        nbSyncedChapters = fanfictionEntity.nbSyncedChapters,
-        chapterList = emptyList()
-    )
-
 }

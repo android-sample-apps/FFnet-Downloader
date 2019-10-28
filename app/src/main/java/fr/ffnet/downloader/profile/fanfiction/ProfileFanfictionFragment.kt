@@ -8,9 +8,9 @@ import androidx.lifecycle.Observer
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.profile.FanfictionAdapter
 import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
-import fr.ffnet.downloader.profile.FanfictionAdapter
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
@@ -48,8 +48,14 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         viewModel.loadFavoriteFanfictions()
         viewModel.loadMyFanfictions()
 
-        viewModel.navigateToFanfiction.observe(this, Observer { fanfictionId ->
-            startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
+        viewModel.navigateToFanfiction.observe(this, Observer { (fanfictionId, fanfictionTitle) ->
+            startActivity(
+                FanfictionActivity.newIntent(
+                    requireContext(),
+                    fanfictionId,
+                    fanfictionTitle
+                )
+            )
         })
         if (isFavorites) {
             viewModel.getMyFavoritesList().observe(this, Observer {

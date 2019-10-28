@@ -2,7 +2,7 @@ package fr.ffnet.downloader.fanfiction
 
 data class FanfictionDisplayModel(
     val id: String,
-    val title: String,
+    val fanfictionTitleAndAuthor: String,
     val words: String,
     val summary: String,
     val publishedDate: String,
@@ -10,7 +10,8 @@ data class FanfictionDisplayModel(
     val syncedDate: String,
     val progressionText: String,
     val progression: Int,
-    val nbChapters: Int
+    val nbChapters: Int,
+    val imageUrl: String
 )
 
 data class ChapterUIModel(

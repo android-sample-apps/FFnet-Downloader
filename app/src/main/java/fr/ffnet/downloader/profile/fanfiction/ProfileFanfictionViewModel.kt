@@ -11,8 +11,7 @@ import fr.ffnet.downloader.profile.FanfictionSyncedUIModel
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.SingleLiveEvent
@@ -33,8 +32,8 @@ class ProfileFanfictionViewModel(
     private lateinit var myStoriesResult: LiveData<ProfileViewModel.ProfileFanfictionsResult>
     fun getMyStoriesList(): LiveData<ProfileViewModel.ProfileFanfictionsResult> = myStoriesResult
 
-    private val navigateToFanfictionActivity: SingleLiveEvent<String> = SingleLiveEvent()
-    val navigateToFanfiction: SingleLiveEvent<String>
+    private val navigateToFanfictionActivity: SingleLiveEvent<Pair<String, String>> = SingleLiveEvent()
+    val navigateToFanfiction: SingleLiveEvent<Pair<String, String>>
         get() = navigateToFanfictionActivity
 
     fun loadFavoriteFanfictions() {
@@ -68,10 +67,8 @@ class ProfileFanfictionViewModel(
     fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is FanfictionRepositoryResultSuccess
-                || databaseRepository.isFanfictionInDatabase(fanfictionId)
-            ) {
-                navigateToFanfictionActivity.postValue(fanfictionId)
+            if (fanfictionResult is FanfictionRepositoryResultSuccess) {
+                navigateToFanfictionActivity.postValue(fanfictionResult.fanfictionInfo.id to fanfictionResult.fanfictionInfo.title)
             } else {
                 // Show error message
             }

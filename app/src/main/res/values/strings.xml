@@ -5,6 +5,7 @@
     <string name="cancel">Cancel</string>
 
     <string name="download_url_hint">Url</string>
+    <string name="download_url_http">https:%s</string>
     <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Sync chapters</string>
     <string name="download_button_downloading">Downloading</string>
@@ -21,6 +22,10 @@
     <string name="search_fanfiction_info_fetching_error">There was an error while fetching fanfiction from fanfiction.net</string>
     <string name="search_fanfiction_info_server_error">The server can\'t be reached</string>
 
+    <string name="download_info_title">Infos</string>
+    <string name="download_chapters_title">Chapters</string>
+
+    <string name="fanfiction_title_author">%s by %s</string>
     <string name="download_info_title_label">Title</string>
     <string name="download_info_words_label">Words</string>
     <string name="download_info_published_date_label">Published date</string>

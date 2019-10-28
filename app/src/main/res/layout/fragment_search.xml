@@ -34,8 +34,8 @@
         app:cardBackgroundColor="#FAFAFA"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintLeft_toRightOf="@+id/startGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/endGuideline"
         app:layout_constraintTop_toTopOf="@+id/progressBar">
 
         <EditText
@@ -61,8 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/fetch_information_button_title"
-        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintLeft_toRightOf="@+id/startGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/endGuideline"
         app:layout_constraintTop_toBottomOf="@+id/searchCardView" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -75,14 +75,14 @@
         app:layout_constraintTop_toBottomOf="@id/fetchInformationButton" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/leftGuideline"
+        android:id="@+id/startGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/rightGuideline"
+        android:id="@+id/endGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"

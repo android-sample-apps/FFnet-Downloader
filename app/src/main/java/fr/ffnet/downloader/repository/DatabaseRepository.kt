@@ -79,7 +79,10 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         profileType = profileType,
         nbChapters = nbChapters,
         nbSyncedChapters = nbSyncedChapters,
-        chapterList = chapterList.map { it.toChapter() }
+        chapterList = chapterList.map { it.toChapter() },
+        authorName = authorName,
+        authorId = authorId,
+        imageUrl = imageUrl
     )
 
     private fun ChapterEntity.toChapter(): Chapter = Chapter(

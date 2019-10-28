@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/chapterStatusTextView"
-        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintLeft_toRightOf="@id/startGuideline"
         app:layout_constraintTop_toTopOf="@+id/chapterTitleTextView"
         tools:text="1" />
 
@@ -25,7 +25,7 @@
         android:layout_marginStart="64dp"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+        app:layout_constraintRight_toLeftOf="@+id/endGuideline"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="A Day of Very Low Probability" />
 
@@ -38,14 +38,14 @@
         tools:text="Not synced" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/leftGuideline"
+        android:id="@+id/startGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="16dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/rightGuideline"
+        android:id="@+id/endGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"

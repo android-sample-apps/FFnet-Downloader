@@ -14,7 +14,10 @@ data class Fanfiction(
     val profileType: Int,
     val nbChapters: Int,
     val nbSyncedChapters: Int,
-    val chapterList: List<Chapter> = emptyList()
+    val chapterList: List<Chapter> = emptyList(),
+    val authorName: String,
+    val authorId: String,
+    val imageUrl: String
 )
 
 data class Chapter(

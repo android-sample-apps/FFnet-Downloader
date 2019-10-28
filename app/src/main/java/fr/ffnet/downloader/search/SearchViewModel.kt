@@ -28,8 +28,8 @@ class SearchViewModel(
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    private val navigateToFanfictionActivity: SingleLiveEvent<String> = SingleLiveEvent()
-    val navigateToFanfiction: SingleLiveEvent<String>
+    private val navigateToFanfictionActivity: SingleLiveEvent<Pair<String, String>> = SingleLiveEvent()
+    val navigateToFanfiction: SingleLiveEvent<Pair<String, String>>
         get() = navigateToFanfictionActivity
 
     private val errorPresent: SingleLiveEvent<SearchError> = SingleLiveEvent()
@@ -72,10 +72,10 @@ class SearchViewModel(
     private fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is FanfictionRepositoryResultSuccess
-                || databaseRepository.isFanfictionInDatabase(fanfictionId)
-            ) {
-                navigateToFanfictionActivity.postValue(fanfictionId)
+            if (fanfictionResult is FanfictionRepositoryResultSuccess) {
+                navigateToFanfictionActivity.postValue(
+                    fanfictionResult.fanfictionInfo.id to fanfictionResult.fanfictionInfo.title
+                )
             } else {
                 if (fanfictionResult is FanfictionRepositoryResultInternetFailure) {
                     displayErrorMessage(R.string.search_fanfiction_info_server_error)

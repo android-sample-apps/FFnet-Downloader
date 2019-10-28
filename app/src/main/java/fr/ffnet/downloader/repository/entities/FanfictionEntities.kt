@@ -17,7 +17,10 @@ data class FanfictionEntity(
     var fetchedDate: LocalDateTime?,
     var profileType: Int = 0,
     var nbChapters: Int = 0,
-    var nbSyncedChapters: Int = 0
+    var nbSyncedChapters: Int = 0,
+    val imageUrl: String,
+    val authorName: String,
+    val authorId: String
 )
 
 @Entity

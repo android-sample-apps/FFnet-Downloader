@@ -15,13 +15,13 @@ package fr.ffnet.downloader.fanfictionoptions
 //            // Open file with user selected app
 //            val uri = Uri.fromFile(file).normalizeScheme()
 //            val mimeValue = getMimeType(uri.toString())
-//            val intent = Intent().apply {
+//            val newIntent = Intent().apply {
 //                action = Intent.ACTION_VIEW
 //                data = uri
 //                type = mimeValue
 //                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 //            }
-//            requireContext().startActivity(Intent.createChooser(intent, "Open file with"))
+//            requireContext().startActivity(Intent.createChooser(newIntent, "Open file with"))
 //        })
 //
 //    override fun onRequestPermissionsResult(

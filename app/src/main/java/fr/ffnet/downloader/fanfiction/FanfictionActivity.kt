@@ -4,30 +4,30 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
-import androidx.lifecycle.Observer
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfiction.notification.DownloadNotification
+import fr.ffnet.downloader.fanfiction.chapters.FanfictionChaptersFragment
+import fr.ffnet.downloader.fanfiction.info.FanfictionInfoFragment
+import fr.ffnet.downloader.profile.fanfiction.FanfictionsTabAdapter
 import kotlinx.android.synthetic.main.activity_fanfiction.*
-import javax.inject.Inject
 
-class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
+class FanfictionActivity : DaggerAppCompatActivity() {
 
-    @Inject lateinit var viewModel: FanfictionViewModel
-    @Inject lateinit var notificationBuilder: DownloadNotification
-
-    private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
+    private val fanfictionId by lazy { intent.getStringExtra(EXTRA_FANFICTION_ID) }
+    private val fanfictionTitle by lazy { intent.getStringExtra(EXTRA_FANFICTION_TITLE) }
 
     companion object {
 
-        private const val EXTRA_ID = "EXTRA_ID"
+        const val EXTRA_FANFICTION_ID = "EXTRA_FANFICTION_ID"
+        const val EXTRA_FANFICTION_TITLE = "EXTRA_FANFICTION_TITLE"
 
-        fun intent(context: Context, fanfictionId: String): Intent = Intent(
-            context, FanfictionActivity::class.java
-        ).apply {
-            putExtra(EXTRA_ID, fanfictionId)
-        }
+        fun newIntent(context: Context, fanfictionId: String, fanfictionTitle: String): Intent =
+            Intent(
+                context, FanfictionActivity::class.java
+            ).apply {
+                putExtra(EXTRA_FANFICTION_ID, fanfictionId)
+                putExtra(EXTRA_FANFICTION_TITLE, fanfictionTitle)
+            }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,13 +35,8 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         setContentView(R.layout.activity_fanfiction)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        chapterListRecyclerView.adapter = ChapterListAdapter(this)
-
-        viewModel.loadFanfictionInfo(fanfictionId)
-        viewModel.loadChapters(fanfictionId)
-        setListeners(fanfictionId)
-
-        setObservers()
+        toolbar.title = fanfictionTitle
+        initTabLayout()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -54,32 +49,17 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         }
     }
 
-    override fun onChapterSelected(chapter: ChapterUIModel) = Unit
-
-    private fun setObservers() {
-        viewModel.getFanfictionInfo().observe(this, Observer {
-            widgetVisibilityGroup.visibility = View.VISIBLE
-            titleValueTextView.text = it.title
-            wordsValueTextView.text = it.words
-            publishedDateValueTextView.text = it.publishedDate
-            updatedDateValueTextView.text = it.updatedDate
-            syncedDateValueTextView.text = it.syncedDate
-            chaptersValueTextView.text = it.progressionText
-        })
-
-        viewModel.getChapterList().observe(this, Observer { chapterList ->
-            (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
-        })
-
-        viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shoudEnabled) ->
-            downloadButton.text = buttonText
-            downloadButton.isEnabled = shoudEnabled
-        })
-    }
-
-    private fun setListeners(fanfictionId: String) {
-        downloadButton.setOnClickListener {
-            viewModel.syncChapters(fanfictionId)
+    private fun initTabLayout() {
+        fanfictionViewPager.adapter = FanfictionsTabAdapter(supportFragmentManager).apply {
+            fragmentList = listOf(
+                resources.getString(
+                    R.string.download_info_title
+                ) to FanfictionInfoFragment.newInstance(fanfictionId),
+                resources.getString(
+                    R.string.download_chapters_title
+                ) to FanfictionChaptersFragment.newInstance(fanfictionId)
+            )
         }
+        fanfictionTabLayout.setupWithViewPager(fanfictionViewPager)
     }
 }

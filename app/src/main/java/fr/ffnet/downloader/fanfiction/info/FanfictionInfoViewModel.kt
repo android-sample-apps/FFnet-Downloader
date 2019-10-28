@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.fanfiction
+package fr.ffnet.downloader.fanfiction.info
 
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
@@ -8,21 +8,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.fanfiction.FanfictionDisplayModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FanfictionViewModel(
+class FanfictionInfoViewModel(
     private val resources: Resources,
     private val apiRepository: DownloaderRepository,
     private val dbRepository: DatabaseRepository,
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    // TODO
-    // Put chapter list in an other place
     // Display author
     // Display fanfiction picture
     // Remove "SYNC CHAPTERS"
@@ -34,11 +33,8 @@ class FanfictionViewModel(
     // Show number of chapters
     // Show number of downloaded chapters
 
-    private lateinit var chapterList: LiveData<List<ChapterUIModel>>
     private lateinit var fanfictionInfo: LiveData<FanfictionDisplayModel>
     private lateinit var downloadButtonState: LiveData<Pair<String, Boolean>>
-
-    fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionDisplayModel> = fanfictionInfo
 
@@ -58,7 +54,11 @@ class FanfictionViewModel(
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
             FanfictionDisplayModel(
                 id = it.id,
-                title = it.title,
+                fanfictionTitleAndAuthor = resources.getString(
+                    R.string.fanfiction_title_author,
+                    it.title,
+                    it.authorName
+                ),
                 words = it.words.toString(),
                 summary = it.summary,
                 updatedDate = dateFormatter.format(it.updatedDate),
@@ -70,7 +70,8 @@ class FanfictionViewModel(
                     it.nbChapters
                 ),
                 progression = it.nbSyncedChapters,
-                nbChapters = it.nbChapters
+                nbChapters = it.nbChapters,
+                imageUrl = it.imageUrl
             )
         }
     }
@@ -80,29 +81,10 @@ class FanfictionViewModel(
             apiRepository.downloadChapters(fanfictionId)
         }
     }
-
-    fun loadChapters(fanfictionId: String) {
-        chapterList = Transformations.map(
-            dbRepository.getChapters(fanfictionId)
-        ) { chapterList ->
-            chapterList.map {
-                ChapterUIModel(
-                    id = it.chapterId,
-                    title = it.title,
-                    status = resources.getString(
-                        when (it.isSynced) {
-                            true -> R.string.download_info_chapter_status_synced
-                            false -> R.string.download_info_chapter_status_not_synced
-                        }
-                    )
-                )
-            }
-        }
-    }
 }
 
-class FanfictionViewModelFactory(
-    private val creator: () -> FanfictionViewModel
+class FanfictionInfoViewModelFactory(
+    private val creator: () -> FanfictionInfoViewModel
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

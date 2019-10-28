@@ -22,7 +22,10 @@ class ProfileBuilder @Inject constructor(
         return Profile(
             profileId = profileId,
             name = name,
-            favoriteFanfictionList = extractFanfictionsFromList(favoriteStoriesSelector, PROFILE_TYPE_FAVORITE),
+            favoriteFanfictionList = extractFanfictionsFromList(
+                favoriteStoriesSelector,
+                PROFILE_TYPE_FAVORITE
+            ),
             myFanfictionList = extractFanfictionsFromList(myStoriesSelector, PROFILE_TYPE_MY_STORY)
         )
     }
@@ -40,7 +43,10 @@ class ProfileBuilder @Inject constructor(
                 profileType = profileType,
                 nbChapters = it.attr("data-chapters").toInt(),
                 nbSyncedChapters = 0,
-                chapterList = emptyList()
+                chapterList = emptyList(),
+                imageUrl = it.select("img.cimage").attr("src"),
+                authorName = "",
+                authorId = ""
             )
         }
     }
