@@ -7,7 +7,7 @@ import android.content.res.Resources
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.FanfictionDownloaderDatabase
+import fr.ffnet.downloader.RecipeDownloaderDatabase
 import javax.inject.Singleton
 
 @Module
@@ -22,9 +22,9 @@ class ApplicationMainModule {
 
     @Singleton
     @Provides
-    fun provideFanfictionDatabase(context: Context): FanfictionDownloaderDatabase {
+    fun provideFanfictionDatabase(context: Context): RecipeDownloaderDatabase {
         return Room.databaseBuilder(
-            context, FanfictionDownloaderDatabase::class.java, "fanfiction-db"
+            context, RecipeDownloaderDatabase::class.java, "recipe-db"
         ).fallbackToDestructiveMigration().build()
     }
 

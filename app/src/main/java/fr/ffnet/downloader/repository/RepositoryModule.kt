@@ -5,13 +5,9 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.FanfictionDownloaderDatabase
-import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
-import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
-import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
-import fr.ffnet.downloader.repository.dao.ErrorDao
-import fr.ffnet.downloader.repository.dao.FanfictionDao
-import fr.ffnet.downloader.repository.dao.ProfileDao
+import fr.ffnet.downloader.RecipeDownloaderDatabase
+import fr.ffnet.downloader.fanfictionutils.RecipeBuilder
+import fr.ffnet.downloader.repository.dao.RecipeDao
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -19,13 +15,8 @@ import javax.inject.Singleton
 class RepositoryModule {
 
     @Provides
-    fun provideFanfictionDao(database: FanfictionDownloaderDatabase): FanfictionDao = database.fanfictionDao()
-
-    @Provides
-    fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao = database.profileDao()
-
-    @Provides
-    fun provideErrorDao(database: FanfictionDownloaderDatabase): ErrorDao = database.errorDao()
+    fun provideRecipeDao(database: RecipeDownloaderDatabase): RecipeDao =
+        database.recipeDao()
 
     @Provides
     fun provideCrawlService(retrofit: Retrofit): CrawlService = retrofit.create(
@@ -33,18 +24,14 @@ class RepositoryModule {
     )
 
     @Provides
-    fun provideErrorRepository(errorDao: ErrorDao): ErrorRepository = ErrorRepository(errorDao)
-
-    @Provides
-    fun provideDatabaseRepository(dao: FanfictionDao): DatabaseRepository = DatabaseRepository(dao)
+    fun provideDatabaseRepository(dao: RecipeDao): DatabaseRepository = DatabaseRepository(dao)
 
     @Provides
     @Singleton
     fun provideDownloaderRepository(
         service: CrawlService,
-        fanfictionDao: FanfictionDao,
-        fanfictionBuilder: FanfictionBuilder,
-        fanfictionTransformer: FanfictionTransformer,
+        recipeDao: RecipeDao,
+        recipeBuilder: RecipeBuilder,
         context: Context,
         workerFactory: DownloaderWorkerFactory
     ): DownloaderRepository {
@@ -52,9 +39,8 @@ class RepositoryModule {
         WorkManager.initialize(context, configuration)
         return DownloaderRepository(
             service,
-            fanfictionBuilder,
-            fanfictionDao,
-            fanfictionTransformer,
+            recipeBuilder,
+            recipeDao,
             WorkManager.getInstance(context)
         )
     }
@@ -63,24 +49,9 @@ class RepositoryModule {
     @Singleton
     fun provideWorkerFactory(
         service: CrawlService,
-        fanfictionBuilder: FanfictionBuilder,
-        fanfictionDao: FanfictionDao
+        recipeBuilder: RecipeBuilder,
+        recipeDao: RecipeDao
     ): DownloaderWorkerFactory {
-        return DownloaderWorkerFactory(service, fanfictionBuilder, fanfictionDao)
+        return DownloaderWorkerFactory(service, recipeBuilder, recipeDao)
     }
-
-    @Provides
-    fun provideProfileRepository(
-        service: CrawlService,
-        profileDao: ProfileDao,
-        profileBuilder: ProfileBuilder,
-        fanfictionTransformer: FanfictionTransformer,
-        fanfictionDao: FanfictionDao
-    ): ProfileRepository = ProfileRepository(
-        service,
-        profileDao,
-        fanfictionDao,
-        profileBuilder,
-        fanfictionTransformer
-    )
 }
