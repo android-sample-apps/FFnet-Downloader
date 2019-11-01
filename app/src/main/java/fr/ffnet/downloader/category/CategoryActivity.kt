@@ -10,12 +10,12 @@ import fr.ffnet.downloader.R
 import kotlinx.android.synthetic.main.activity_category.*
 import javax.inject.Inject
 
-class CategoryActivity : DaggerAppCompatActivity(), RecipeListener {
+class CategoryActivity : DaggerAppCompatActivity(), RecipeListener, LoadMoreListener {
 
     @Inject lateinit var viewModel: CategoryViewModel
 
     private val categoryUrl: String by lazy { intent.getStringExtra(EXTRA_CATEGORY_URL) }
-    private val adapter: RecipeAdapter by lazy { RecipeAdapter(this) }
+    private val adapter: RecipeAdapter by lazy { RecipeAdapter(this, this) }
 
     companion object {
         private const val DISPLAY_CONTENT = 0
@@ -39,6 +39,10 @@ class CategoryActivity : DaggerAppCompatActivity(), RecipeListener {
 
     override fun onRecipeSelected(recipe: RecipeDisplayModel) {
         Toast.makeText(this, "Selected ${recipe.title}", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onLoadMore() {
+        viewModel.loadMore(categoryUrl)
     }
 
     private fun initObservers() {

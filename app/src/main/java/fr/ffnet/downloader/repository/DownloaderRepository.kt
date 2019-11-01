@@ -13,6 +13,8 @@ class DownloaderRepository(
     private val workManager: WorkManager
 ) {
 
+    private var loadPage = 1
+
     fun loadRecipe() {
         val recipe = service.getRecipe("boeuf-bourguignon-tout-simplement_108_4")
         val response = recipe.execute()
@@ -25,8 +27,9 @@ class DownloaderRepository(
 
     fun loadRecipes(categoryUrl: String) {
         try {
-            val response = service.getRecipes(categoryUrl).execute()
+            val response = service.getRecipes(categoryUrl, loadPage).execute()
             if (response.isSuccessful) {
+                loadPage++
                 response.body()?.let { responseBody ->
                     val recipeList = recipeBuilder.buildRecipes(
                         categoryUrl,

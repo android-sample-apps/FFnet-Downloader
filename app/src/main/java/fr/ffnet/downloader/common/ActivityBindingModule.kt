@@ -7,6 +7,8 @@ import fr.ffnet.downloader.categories.CategoriesFragment
 import fr.ffnet.downloader.categories.CategoriesModule
 import fr.ffnet.downloader.category.CategoryActivity
 import fr.ffnet.downloader.category.CategoryModule
+import fr.ffnet.downloader.recipe.RecipeActivity
+import fr.ffnet.downloader.recipe.RecipeModule
 
 @Module
 abstract class ActivityBindingModule {
@@ -22,4 +24,8 @@ abstract class ActivityBindingModule {
     @ContributesAndroidInjector(modules = [CategoryModule::class])
     @ActivityScope
     abstract fun contributeCategoryActivityInjector(): CategoryActivity
+
+    @ContributesAndroidInjector(modules = [RecipeModule::class])
+    @ActivityScope
+    abstract fun contributeRecipeActivityInjector(): RecipeActivity
 }

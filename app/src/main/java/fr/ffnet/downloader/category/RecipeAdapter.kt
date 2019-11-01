@@ -6,31 +6,66 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import fr.ffnet.downloader.R
+import kotlinx.android.synthetic.main.item_load_more.view.*
 import kotlinx.android.synthetic.main.item_recipe.view.*
 
 class RecipeAdapter(
-    private val listener: RecipeListener
-) : RecyclerView.Adapter<RecipeViewHolder>() {
+    private val recipeListener: RecipeListener,
+    private val loadMoreListener: LoadMoreListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var recipeList: List<RecipeDisplayModel> = emptyList()
+    var recipeList: List<RecipeDisplayItem> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
-        return RecipeViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_recipe, parent, false
-            ),
-            listener
-        )
+    companion object {
+        private const val TYPE_LOAD_MORE = 0
+        private const val TYPE_RECIPE = 1
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TYPE_RECIPE) {
+            RecipeViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_recipe, parent, false
+                ),
+                recipeListener
+            )
+        } else {
+            LoadMoreViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_load_more, parent, false
+                ),
+                loadMoreListener
+            )
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (recipeList[position] is RecipeDisplayModel) TYPE_RECIPE else TYPE_LOAD_MORE
     }
 
     override fun getItemCount(): Int = recipeList.size
 
-    override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        holder.bind(recipeList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = recipeList[position]) {
+            is RecipeDisplayModel -> (holder as RecipeViewHolder).bind(item)
+            is RecipeLoadMoreDisplayModel -> (holder as LoadMoreViewHolder).bind(item)
+        }
+    }
+}
+
+class LoadMoreViewHolder(
+    private val view: View,
+    private val listener: LoadMoreListener
+) : RecyclerView.ViewHolder(view) {
+    fun bind(loadMoreDisplayModel: RecipeLoadMoreDisplayModel) {
+        view.loadMoreTextView.text = loadMoreDisplayModel.title
+        view.setOnClickListener {
+            listener.onLoadMore()
+        }
     }
 }
 
@@ -49,4 +84,8 @@ class RecipeViewHolder(
 
 interface RecipeListener {
     fun onRecipeSelected(recipe: RecipeDisplayModel)
+}
+
+interface LoadMoreListener {
+    fun onLoadMore()
 }

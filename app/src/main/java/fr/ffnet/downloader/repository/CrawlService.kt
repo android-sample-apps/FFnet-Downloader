@@ -5,6 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CrawlService {
 
@@ -16,5 +17,8 @@ interface CrawlService {
     fun getCategories(): Call<ResponseBody>
 
     @GET("recettes/{category}")
-    fun getRecipes(@Path(value = "category", encoded = true) categoryUrl: String): Call<ResponseBody>
+    fun getRecipes(
+        @Path(value = "category", encoded = true) categoryUrl: String,
+        @Query("page") loadPage: Int
+    ): Call<ResponseBody>
 }
