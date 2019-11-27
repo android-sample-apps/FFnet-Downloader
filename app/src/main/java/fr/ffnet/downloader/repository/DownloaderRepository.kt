@@ -1,47 +1,71 @@
 package fr.ffnet.downloader.repository
 
-import androidx.lifecycle.LiveData
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy.KEEP
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
-import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure
-import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
-import fr.ffnet.downloader.repository.DownloaderWorker.Companion.FANFICTION_ID_KEY
-import fr.ffnet.downloader.repository.dao.FanfictionDao
-import fr.ffnet.downloader.search.Fanfiction
-import java.io.IOException
+import androidx.lifecycle.*
+import fr.ffnet.downloader.fanfictionutils.*
+import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.*
+import fr.ffnet.downloader.repository.dao.*
+import fr.ffnet.downloader.search.*
+import okhttp3.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.*
 
 class DownloaderRepository(
     private val service: CrawlService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
-    private val fanfictionTransformer: FanfictionTransformer,
-    private val workManager: WorkManager
+    private val fanfictionTransformer: FanfictionTransformer
 ) {
 
-    fun getDownloadState(fanfictionId: String): LiveData<List<WorkInfo>> {
-        return workManager.getWorkInfosForUniqueWorkLiveData(fanfictionId)
-    }
+    private val chaptersDownloadState = MutableLiveData<ChaptersDownloadResult>()
+    fun getDownloadState(): LiveData<ChaptersDownloadResult> = chaptersDownloadState
 
     fun downloadChapters(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
         if (chapterList.isNotEmpty()) {
-            workManager.enqueueUniqueWork(
-                fanfictionId,
-                KEEP,
-                OneTimeWorkRequest.Builder(DownloaderWorker::class.java)
-                    .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
-                    .setInputData(Data.Builder().putString(FANFICTION_ID_KEY, fanfictionId).build())
-                    .build()
-            )
+            chaptersDownloadState.postValue(ChaptersDownloadResult.DownloadOngoing)
+            chapterList.forEach { chapter ->
+                service.getFanfiction(
+                    fanfictionId, chapter.chapterId
+                ).enqueue(object : Callback<ResponseBody> {
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        chaptersDownloadState.postValue(ChaptersDownloadResult.RepositoryException)
+                    }
+
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.isSuccessful) {
+                            response.body()?.let {
+                                val chapterContent = fanfictionBuilder.extractChapter(it.string())
+                                Thread {
+                                    fanfictionDao.updateChapter(
+                                        content = chapterContent,
+                                        isSynced = true,
+                                        chapterId = chapter.chapterId,
+                                        fanfictionId = fanfictionId
+                                    )
+                                }.start()
+                                if (chapter.chapterId.toInt() == chapterList.size) {
+                                    chaptersDownloadState.postValue(
+                                        ChaptersDownloadResult.DownloadSuccessful
+                                    )
+                                }
+                            } ?: chaptersDownloadState.postValue(
+                                ChaptersDownloadResult.ChapterEmpty
+                            )
+                        } else {
+                            chaptersDownloadState.postValue(
+                                ChaptersDownloadResult.ResponseNotSuccessful
+                            )
+                        }
+                    }
+                })
+            }
+        } else {
+            chaptersDownloadState.postValue(ChaptersDownloadResult.NothingToDownload)
         }
     }
 
@@ -81,6 +105,15 @@ class DownloaderRepository(
         } catch (exception: IOException) {
             FanfictionRepositoryResultInternetFailure
         }
+    }
+
+    sealed class ChaptersDownloadResult {
+        object DownloadOngoing : ChaptersDownloadResult()
+        object DownloadSuccessful : ChaptersDownloadResult()
+        object NothingToDownload : ChaptersDownloadResult()
+        object ChapterEmpty : ChaptersDownloadResult()
+        object RepositoryException : ChaptersDownloadResult()
+        object ResponseNotSuccessful : ChaptersDownloadResult()
     }
 
     sealed class FanfictionRepositoryResult {

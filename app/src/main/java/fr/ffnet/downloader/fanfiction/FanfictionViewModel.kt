@@ -6,6 +6,8 @@ import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.repository.DownloaderRepository.*
+import fr.ffnet.downloader.repository.DownloaderRepository.ChaptersDownloadResult.*
 import fr.ffnet.downloader.utils.DateFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,25 +21,15 @@ class FanfictionViewModel(
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
     private lateinit var fanfictionInfo: LiveData<FanfictionDisplayModel>
-    private lateinit var downloadButtonState: LiveData<Pair<String, Boolean>>
+    private lateinit var downloadButtonState: LiveData<ChapterStatusState>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionDisplayModel> = fanfictionInfo
 
-    fun getDownloadButtonState(): LiveData<Pair<String, Boolean>> = downloadButtonState
+    fun getDownloadButtonState(): LiveData<ChapterStatusState> = downloadButtonState
 
     fun loadFanfictionInfo(fanfictionId: String) {
-        downloadButtonState = Transformations.map(apiRepository.getDownloadState(fanfictionId)) {
-            it.firstOrNull()?.let { workInfo ->
-                when (workInfo.state) {
-                    WorkInfo.State.ENQUEUED,
-                    WorkInfo.State.RUNNING -> resources.getString(R.string.download_button_downloading) to false
-                    else -> resources.getString(R.string.download_button_title) to true
-                }
-            } ?: resources.getString(R.string.download_button_title) to true
-        }
-
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
             FanfictionDisplayModel(
                 id = it.id,
@@ -55,6 +47,25 @@ class FanfictionViewModel(
                 progression = it.nbSyncedChapters,
                 nbChapters = it.nbChapters
             )
+        }
+    }
+
+    fun loadChapterDownloadingState() {
+        downloadButtonState = Transformations.map(
+            apiRepository.getDownloadState()
+        ) { downloadStatus ->
+            when (downloadStatus) {
+                DownloadOngoing -> ChapterStatusState.ChapterSyncing
+                DownloadSuccessful -> ChapterStatusState.ChapterSynced
+                ChapterEmpty,
+                RepositoryException,
+                ResponseNotSuccessful -> ChapterStatusState.ChapterSyncError(
+                    resources.getString(R.string.download_chapter_error)
+                )
+                NothingToDownload -> ChapterStatusState.ChaptersAlreadySynced(
+                    resources.getString(R.string.download_chapter_already_done)
+                )
+            }
         }
     }
 
@@ -81,6 +92,13 @@ class FanfictionViewModel(
                 )
             }
         }
+    }
+
+    sealed class ChapterStatusState {
+        object ChapterSynced : ChapterStatusState()
+        object ChapterSyncing : ChapterStatusState()
+        data class ChapterSyncError(val message: String) : ChapterStatusState()
+        data class ChaptersAlreadySynced(val message: String) : ChapterStatusState()
     }
 }
 

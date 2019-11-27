@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.*
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.notification.DownloadNotification
@@ -39,6 +40,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
         viewModel.loadFanfictionInfo(fanfictionId)
         viewModel.loadChapters(fanfictionId)
+        viewModel.loadChapterDownloadingState()
         setListeners(fanfictionId)
 
         setObservers()
@@ -71,10 +73,23 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
 
-        viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shoudEnabled) ->
-            downloadButton.text = buttonText
-            downloadButton.isEnabled = shoudEnabled
+        viewModel.getDownloadButtonState().observe(this, Observer { chapterDownloadResult ->
+            when (chapterDownloadResult) {
+                FanfictionViewModel.ChapterStatusState.ChapterSynced -> downloadButton.isEnabled = true
+                FanfictionViewModel.ChapterStatusState.ChapterSyncing -> downloadButton.isEnabled = false
+                is FanfictionViewModel.ChapterStatusState.ChapterSyncError -> enableDownloadButtonAndDisplayErrorMessage(
+                    chapterDownloadResult.message
+                )
+                is FanfictionViewModel.ChapterStatusState.ChaptersAlreadySynced -> enableDownloadButtonAndDisplayErrorMessage(
+                    chapterDownloadResult.message
+                )
+            }
         })
+    }
+
+    private fun enableDownloadButtonAndDisplayErrorMessage(message: String) {
+        downloadButton.isEnabled = true
+        Snackbar.make(containerConstraintLayout, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setListeners(fanfictionId: String) {
