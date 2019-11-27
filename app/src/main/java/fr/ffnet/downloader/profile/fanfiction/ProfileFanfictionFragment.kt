@@ -59,6 +59,15 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         }
     }
 
+    override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
+        val optionsFragment = OptionsFragment.newInstance(
+            fanfictionId = fanfiction.id,
+            shouldShowDeleteOption = false
+        )
+        optionsFragment.setTargetFragment(this, 1000)
+        optionsFragment.show(parentFragmentManager, "fanfiction_options")
+    }
+
     private fun onProfileFanfictionsResult(result: ProfileFanfictionsResult) {
         when (result) {
             is ProfileFanfictionsResult.ProfileHasFanfictions -> {
@@ -73,14 +82,5 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
     private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
         (fanfictionRecyclerView.adapter as SyncedAdapter).fanfictionList = fanfictionList
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
-    }
-
-    override fun onOptionsClicked(fanfiction: FanfictionSyncedUIModel) {
-        val optionsFragment = OptionsFragment.newInstance(
-            fanfictionId = fanfiction.id,
-            shouldShowDeleteOption = false
-        )
-        optionsFragment.setTargetFragment(this, 1000)
-        optionsFragment.show(requireActivity().supportFragmentManager, "fanfiction_options")
     }
 }

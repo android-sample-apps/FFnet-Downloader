@@ -18,11 +18,11 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         }
     }
 
-    fun getSyncedFanfictions(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(
+    fun getSyncedFanfictions(): LiveData<List<Fanfiction>> = transformEntityToModel(
         dao.getSyncedFanfictions()
     )
 
-    fun loadHistory(): LiveData<List<Fanfiction>> = transformEntityLiveDataToModelLiveData(
+    fun loadHistory(): LiveData<List<Fanfiction>> = transformEntityToModel(
         dao.getFanfictionHistory()
     )
 
@@ -31,13 +31,13 @@ class DatabaseRepository(private val dao: FanfictionDao) {
     )
 
     fun getMyFavoriteFanfictions(): LiveData<List<Fanfiction>> {
-        return transformEntityLiveDataToModelLiveData(
+        return transformEntityToModel(
             dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_FAVORITE)
         )
     }
 
     fun getMyFanfictions(): LiveData<List<Fanfiction>> {
-        return transformEntityLiveDataToModelLiveData(
+        return transformEntityToModel(
             dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_MY_STORY)
         )
     }
@@ -58,14 +58,10 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         return getCompleteFanfiction(fanfictionId) != null
     }
 
-    private fun transformEntityLiveDataToModelLiveData(
+    private fun transformEntityToModel(
         liveData: LiveData<List<FanfictionEntity>>
     ): LiveData<List<Fanfiction>> = Transformations.map(liveData) { fanfictionList ->
-        if (fanfictionList.isEmpty()) {
-            emptyList()
-        } else {
-            fanfictionList.map { it.toFanfiction(emptyList()) }
-        }
+        fanfictionList.map { it.toFanfiction(emptyList()) }
     }
 
     private fun FanfictionEntity.toFanfiction(chapterList: List<ChapterEntity>) = Fanfiction(

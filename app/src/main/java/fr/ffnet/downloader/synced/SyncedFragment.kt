@@ -28,7 +28,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().title = resources.getString(R.string.synced_title)
-        viewModel.loadFanfictionsFromDb()
+        viewModel.loadFanfictions()
         return inflater.inflate(R.layout.fragment_synced, container, false)
     }
 
@@ -51,7 +51,7 @@ class SyncedFragment : DaggerFragment(), OnFanfictionOptionsListener {
             shouldShowDeleteOption = true
         )
         optionsFragment.setTargetFragment(this, 1000)
-        optionsFragment.show(requireActivity().supportFragmentManager, "fanfiction_options")
+        optionsFragment.show(parentFragmentManager, "fanfiction_options")
     }
 
     private fun showSyncedFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {

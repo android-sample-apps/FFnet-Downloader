@@ -19,7 +19,7 @@ class SyncedViewModel(
 
     fun getFanfictionList(): LiveData<SyncedFanfictionsResult> = fanfictionResult
 
-    fun loadFanfictionsFromDb() {
+    fun loadFanfictions() {
         fanfictionResult = Transformations.map(repository.getSyncedFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 SyncedFanfictionsResult.SyncedFanfictions(fanfictionList.map { fanfiction ->

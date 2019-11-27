@@ -58,7 +58,7 @@ class DownloaderWorker(
                                     )
                                 }.start()
                             }
-                            if (index == chapterList.size - 1) {
+                            if (index == chapterList.lastIndex) {
                                 future.set(Result.success())
                             }
                         }
