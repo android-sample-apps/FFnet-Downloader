@@ -8,7 +8,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import fr.ffnet.downloader.FanfictionConverter
+import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure

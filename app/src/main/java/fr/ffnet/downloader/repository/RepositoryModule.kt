@@ -5,7 +5,7 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.FanfictionConverter
+import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder

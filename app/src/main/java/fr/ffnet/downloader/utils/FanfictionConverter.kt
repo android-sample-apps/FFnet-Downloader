@@ -1,4 +1,4 @@
-package fr.ffnet.downloader
+package fr.ffnet.downloader.utils
 
 import fr.ffnet.downloader.repository.entities.ChapterEntity
 import fr.ffnet.downloader.repository.entities.FanfictionEntity

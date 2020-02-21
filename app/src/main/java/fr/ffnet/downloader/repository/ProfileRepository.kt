@@ -2,7 +2,7 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import fr.ffnet.downloader.FanfictionConverter
+import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
