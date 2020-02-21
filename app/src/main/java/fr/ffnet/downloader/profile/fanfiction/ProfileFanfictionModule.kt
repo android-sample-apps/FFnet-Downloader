@@ -5,33 +5,25 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.repository.DatabaseRepository
-import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.utils.DateFormatter
+import fr.ffnet.downloader.utils.ViewModelFactory
 
 @Module
 class ProfileFanfictionModule {
     @Provides
     fun provideProfileFanfictionViewModel(
         fragment: ProfileFanfictionFragment,
-        viewModelCreator: () -> ProfileFanfictionViewModel
-    ): ProfileFanfictionViewModel {
-        val factory = ProfileFanfictionViewModelFactory(viewModelCreator)
-        return ViewModelProvider(
-            fragment.viewModelStore,
-            factory
-        )[ProfileFanfictionViewModel::class.java]
-    }
-
-    @Provides
-    fun provideCreator(
         resources: Resources,
         databaseRepository: DatabaseRepository,
         dateFormatter: DateFormatter
-    ): () -> ProfileFanfictionViewModel = {
-        ProfileFanfictionViewModel(
-            resources,
-            databaseRepository,
-            dateFormatter
-        )
+    ): ProfileFanfictionViewModel {
+        val factory = ViewModelFactory {
+            ProfileFanfictionViewModel(
+                resources,
+                databaseRepository,
+                dateFormatter
+            )
+        }
+        return ViewModelProvider(fragment, factory)[ProfileFanfictionViewModel::class.java]
     }
 }

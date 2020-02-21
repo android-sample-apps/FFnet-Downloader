@@ -2,19 +2,22 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import fr.ffnet.downloader.FanfictionConverter
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.entities.ChapterEntity
 import fr.ffnet.downloader.repository.entities.FanfictionEntity
-import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 
-class DatabaseRepository(private val dao: FanfictionDao) {
+class DatabaseRepository(
+    private val dao: FanfictionDao,
+    private val fanfictionConverter: FanfictionConverter
+) {
 
     fun getFanfictionInfo(fanfictionId: String): LiveData<Fanfiction> {
         return Transformations.map(dao.getFanfictionLiveData(fanfictionId)) {
-            it.toFanfiction(emptyList())
+            fanfictionConverter.toFanfiction(it)
         }
     }
 
@@ -50,7 +53,7 @@ class DatabaseRepository(private val dao: FanfictionDao) {
         val fanfiction = dao.getFanfiction(fanfictionId)
         val chapterList = dao.getSyncedChapters(fanfictionId)
         return if (chapterList.isNotEmpty() && fanfiction != null) {
-            fanfiction.toFanfiction(chapterList)
+            fanfictionConverter.toFanfiction(fanfiction, chapterList)
         } else null
     }
 
@@ -61,27 +64,6 @@ class DatabaseRepository(private val dao: FanfictionDao) {
     private fun transformEntityToModel(
         liveData: LiveData<List<FanfictionEntity>>
     ): LiveData<List<Fanfiction>> = Transformations.map(liveData) { fanfictionList ->
-        fanfictionList.map { it.toFanfiction(emptyList()) }
+        fanfictionList.map { fanfictionConverter.toFanfiction(it) }
     }
-
-    private fun FanfictionEntity.toFanfiction(chapterList: List<ChapterEntity>) = Fanfiction(
-        id = id,
-        title = title,
-        words = words,
-        summary = summary,
-        publishedDate = publishedDate,
-        updatedDate = updatedDate,
-        fetchedDate = fetchedDate,
-        profileType = profileType,
-        nbChapters = nbChapters,
-        nbSyncedChapters = nbSyncedChapters,
-        chapterList = chapterList.map { it.toChapter() }
-    )
-
-    private fun ChapterEntity.toChapter(): Chapter = Chapter(
-        id = chapterId,
-        title = title,
-        content = content,
-        status = content.isNotEmpty()
-    )
 }

@@ -3,7 +3,6 @@ package fr.ffnet.downloader.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.fanfictionutils.UrlTransformer
@@ -78,14 +77,5 @@ class ProfileViewModel(
         ) : ProfileFanfictionsResult()
 
         object ProfileHasNoFanfictions : ProfileFanfictionsResult()
-    }
-}
-
-class ProfileViewModelFactory(
-    private val creator: () -> ProfileViewModel
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return creator() as T
     }
 }

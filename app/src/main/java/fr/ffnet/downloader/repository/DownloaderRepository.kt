@@ -8,8 +8,8 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import fr.ffnet.downloader.FanfictionConverter
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
-import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure
@@ -23,7 +23,7 @@ class DownloaderRepository(
     private val service: CrawlService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
-    private val fanfictionTransformer: FanfictionTransformer,
+    private val converter: FanfictionConverter,
     private val workManager: WorkManager
 ) {
 
@@ -56,7 +56,7 @@ class DownloaderRepository(
                     )
 
                     fanfictionDao.insertFanfiction(
-                        fanfictionTransformer.toFanfictionEntity(fanfictionInfo)
+                        converter.toFanfictionEntity(fanfictionInfo)
                     )
 
                     val chapterList = if (existingChapters.isNotEmpty()) {
@@ -65,7 +65,7 @@ class DownloaderRepository(
                         fanfictionInfo.chapterList
                     }
                     fanfictionDao.insertChapterList(
-                        fanfictionTransformer.toChapterEntityList(fanfictionId, chapterList)
+                        converter.toChapterEntityList(fanfictionId, chapterList)
                     )
                     fanfictionDao.updateChapter(
                         content = firstChapter,

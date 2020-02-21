@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.R
@@ -28,9 +27,9 @@ class SearchViewModel(
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    private val navigateToFanfictionActivity: SingleLiveEvent<String> = SingleLiveEvent()
+    private val goToFanfiction: SingleLiveEvent<String> = SingleLiveEvent()
     val navigateToFanfiction: SingleLiveEvent<String>
-        get() = navigateToFanfictionActivity
+        get() = goToFanfiction
 
     private val errorPresent: SingleLiveEvent<SearchError> = SingleLiveEvent()
     val sendError: SingleLiveEvent<SearchError>
@@ -39,8 +38,7 @@ class SearchViewModel(
     private lateinit var historyList: LiveData<List<HistoryUIModel>>
 
     fun loadFanfictionInfos(url: String?) {
-        val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(url)
-        when (urlTransformationResult) {
+        when (val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(url)) {
             is UrlTransformSuccess -> loadFanfictionInfo(
                 urlTransformationResult.id
             )
@@ -71,16 +69,14 @@ class SearchViewModel(
 
     private fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is FanfictionRepositoryResultSuccess
-                || databaseRepository.isFanfictionInDatabase(fanfictionId)
-            ) {
-                navigateToFanfictionActivity.postValue(fanfictionId)
+            val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
+            if (isFanfictionInDatabase) {
+                goToFanfiction.postValue(fanfictionId)
             } else {
-                if (fanfictionResult is FanfictionRepositoryResultInternetFailure) {
-                    displayErrorMessage(R.string.search_fanfiction_info_server_error)
-                } else {
-                    displayErrorMessage(R.string.search_fanfiction_info_fetching_error)
+                when (downloaderRepository.loadFanfictionInfo(fanfictionId)) {
+                    is FanfictionRepositoryResultSuccess -> goToFanfiction.postValue(fanfictionId)
+                    FanfictionRepositoryResultInternetFailure -> displayErrorMessage(R.string.search_fanfiction_info_server_error)
+                    else -> displayErrorMessage(R.string.search_fanfiction_info_fetching_error)
                 }
             }
         }
@@ -95,14 +91,5 @@ class SearchViewModel(
     sealed class SearchError(val message: String) {
         data class UrlNotValid(val msg: String) : SearchError(msg)
         data class InfoFetchingFailed(val msg: String) : SearchError(msg)
-    }
-}
-
-class SearchViewModelFactory(
-    private val creator: () -> SearchViewModel
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return creator() as T
     }
 }

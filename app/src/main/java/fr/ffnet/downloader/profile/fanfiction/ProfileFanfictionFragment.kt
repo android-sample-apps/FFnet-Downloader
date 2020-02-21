@@ -49,11 +49,11 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
         viewModel.loadMyFanfictions()
 
         if (isFavorites) {
-            viewModel.getMyFavoritesList().observe(this, Observer {
+            viewModel.getMyFavoritesList().observe(viewLifecycleOwner, Observer {
                 onProfileFanfictionsResult(it)
             })
         } else {
-            viewModel.getMyStoriesList().observe(this, Observer {
+            viewModel.getMyStoriesList().observe(viewLifecycleOwner, Observer {
                 onProfileFanfictionsResult(it)
             })
         }

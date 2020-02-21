@@ -37,7 +37,6 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
         historyRecyclerView.adapter = HistoryAdapter(this)
-        setErrorListener()
         initObservers()
     }
 
@@ -46,20 +45,16 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     }
 
     private fun initObservers() {
-        viewModel.navigateToFanfiction.observe(this, Observer { fanfictionId ->
+        viewModel.navigateToFanfiction.observe(viewLifecycleOwner, Observer { fanfictionId ->
             startActivity(FanfictionActivity.intent(requireContext(), fanfictionId)).also {
                 fetchInformationButton.isEnabled = true
                 progressBar.visibility = View.GONE
             }
         })
-
-        viewModel.loadHistory().observe(this, Observer { historyList ->
+        viewModel.loadHistory().observe(viewLifecycleOwner, Observer { historyList ->
             (historyRecyclerView.adapter as HistoryAdapter).historyList = historyList
         })
-    }
-
-    private fun setErrorListener() {
-        viewModel.sendError.observe(this, Observer { searchError ->
+        viewModel.sendError.observe(viewLifecycleOwner, Observer { searchError ->
             when (searchError) {
                 is SearchViewModel.SearchError.UrlNotValid,
                 is SearchViewModel.SearchError.InfoFetchingFailed -> {

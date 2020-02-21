@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -68,14 +67,5 @@ class ProfileFanfictionViewModel(
                 )
             )
         }
-    }
-}
-
-class ProfileFanfictionViewModelFactory(
-    private val creator: () -> ProfileFanfictionViewModel
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return creator() as T
     }
 }

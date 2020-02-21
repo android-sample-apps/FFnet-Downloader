@@ -8,14 +8,12 @@ import android.view.View
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfiction.notification.DownloadNotification
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
 class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
-    @Inject lateinit var notificationBuilder: DownloadNotification
 
     private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
 
@@ -66,11 +64,9 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
             syncedDateValueTextView.text = it.syncedDate
             chaptersValueTextView.text = it.progressionText
         })
-
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-
         viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shoudEnabled) ->
             downloadButton.text = buttonText
             downloadButton.isEnabled = shoudEnabled

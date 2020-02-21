@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.utils.DateFormatter
@@ -45,14 +44,5 @@ class SyncedViewModel(
     sealed class SyncedFanfictionsResult {
         data class SyncedFanfictions(val fanfictionList: List<FanfictionSyncedUIModel>) : SyncedFanfictionsResult()
         object NoSyncedFanfictions : SyncedFanfictionsResult()
-    }
-}
-
-class SyncedViewModelFactory(
-    private val creator: () -> SyncedViewModel
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return creator() as T
     }
 }

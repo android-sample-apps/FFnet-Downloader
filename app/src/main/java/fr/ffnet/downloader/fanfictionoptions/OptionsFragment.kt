@@ -75,12 +75,12 @@ class OptionsFragment : BottomSheetDialogFragment() {
     }
 
     private fun initializeObservers() {
-        viewModel.navigateToFanfiction.observe(this, Observer {
+        viewModel.navigateToFanfiction.observe(viewLifecycleOwner, Observer {
             startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
             dismiss()
         })
 
-        viewModel.getDisplayModel().observe(this, Observer { displayModel ->
+        viewModel.getDisplayModel().observe(viewLifecycleOwner, Observer { displayModel ->
 
             fanfictionTitle.text = displayModel.title
 
@@ -108,7 +108,7 @@ class OptionsFragment : BottomSheetDialogFragment() {
                 dismiss()
             }
         })
-        viewModel.getFile.observe(this, Observer { fileName ->
+        viewModel.getFile.observe(viewLifecycleOwner, Observer { fileName ->
             val file = File(
                 Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS

@@ -3,7 +3,6 @@ package fr.ffnet.downloader.fanfictionoptions
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.fanfictionutils.EpubBuilder
 import fr.ffnet.downloader.fanfictionutils.PdfBuilder
@@ -49,13 +48,14 @@ class OptionsViewModel(
 
     fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
-            if (fanfictionResult is FanfictionRepositoryResultSuccess
-                || databaseRepository.isFanfictionInDatabase(fanfictionId)
-            ) {
+            val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
+            if (isFanfictionInDatabase) {
                 navigateToFanfictionActivity.postValue(Unit)
             } else {
-                // Show error message
+                val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
+                if (fanfictionResult is FanfictionRepositoryResultSuccess) {
+                    navigateToFanfictionActivity.postValue(Unit)
+                }
             }
         }
     }
@@ -94,12 +94,3 @@ data class OptionsDisplayModel(
     val shouldShowPdfExport: Boolean,
     val shouldShowEpubExport: Boolean
 )
-
-class OptionsViewModelFactory(
-    private val creator: () -> OptionsViewModel
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return creator() as T
-    }
-}

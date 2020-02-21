@@ -43,12 +43,12 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
             viewModel.associateProfile(profileUrlEditText.text.toString())
         }
 
-        viewModel.loadProfileHistory().observe(this, Observer { historyList ->
+        viewModel.loadProfileHistory().observe(viewLifecycleOwner, Observer { historyList ->
             (profileHistoryRecyclerView.adapter as ProfileHistoryAdapter).historyList = historyList
         })
 
         viewModel.loadIsProfileAssociated()
-        viewModel.getIsAssociated().observe(this, Observer { profileName ->
+        viewModel.getIsAssociated().observe(viewLifecycleOwner, Observer { profileName ->
             if (profileName != null) {
                 toolbar.title = profileName
                 progressBar.visibility = View.GONE

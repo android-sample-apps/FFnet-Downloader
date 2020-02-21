@@ -5,9 +5,9 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
+import fr.ffnet.downloader.FanfictionConverter
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
-import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import fr.ffnet.downloader.repository.dao.ErrorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
@@ -19,10 +19,12 @@ import javax.inject.Singleton
 class RepositoryModule {
 
     @Provides
-    fun provideFanfictionDao(database: FanfictionDownloaderDatabase): FanfictionDao = database.fanfictionDao()
+    fun provideFanfictionDao(database: FanfictionDownloaderDatabase): FanfictionDao =
+        database.fanfictionDao()
 
     @Provides
-    fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao = database.profileDao()
+    fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao =
+        database.profileDao()
 
     @Provides
     fun provideErrorDao(database: FanfictionDownloaderDatabase): ErrorDao = database.errorDao()
@@ -36,7 +38,10 @@ class RepositoryModule {
     fun provideErrorRepository(errorDao: ErrorDao): ErrorRepository = ErrorRepository(errorDao)
 
     @Provides
-    fun provideDatabaseRepository(dao: FanfictionDao): DatabaseRepository = DatabaseRepository(dao)
+    fun provideDatabaseRepository(
+        dao: FanfictionDao,
+        fanfictionConverter: FanfictionConverter
+    ): DatabaseRepository = DatabaseRepository(dao, fanfictionConverter)
 
     @Provides
     @Singleton
@@ -44,7 +49,7 @@ class RepositoryModule {
         service: CrawlService,
         fanfictionDao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder,
-        fanfictionTransformer: FanfictionTransformer,
+        fanfictionConverter: FanfictionConverter,
         context: Context,
         workerFactory: DownloaderWorkerFactory
     ): DownloaderRepository {
@@ -54,7 +59,7 @@ class RepositoryModule {
             service,
             fanfictionBuilder,
             fanfictionDao,
-            fanfictionTransformer,
+            fanfictionConverter,
             WorkManager.getInstance(context)
         )
     }
@@ -74,13 +79,13 @@ class RepositoryModule {
         service: CrawlService,
         profileDao: ProfileDao,
         profileBuilder: ProfileBuilder,
-        fanfictionTransformer: FanfictionTransformer,
+        fanfictionConverter: FanfictionConverter,
         fanfictionDao: FanfictionDao
     ): ProfileRepository = ProfileRepository(
         service,
         profileDao,
         fanfictionDao,
         profileBuilder,
-        fanfictionTransformer
+        fanfictionConverter
     )
 }

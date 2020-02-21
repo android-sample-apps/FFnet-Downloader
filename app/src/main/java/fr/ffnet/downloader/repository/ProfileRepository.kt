@@ -2,7 +2,7 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import fr.ffnet.downloader.fanfictionutils.FanfictionTransformer
+import fr.ffnet.downloader.FanfictionConverter
 import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
@@ -16,7 +16,7 @@ class ProfileRepository(
     private val profileDao: ProfileDao,
     private val fanfictionDao: FanfictionDao,
     private val profileBuilder: ProfileBuilder,
-    private val fanfictionTransformer: FanfictionTransformer
+    private val fanfictionConverter: FanfictionConverter
 ) {
 
     companion object {
@@ -95,7 +95,7 @@ class ProfileRepository(
         return fanfictionList.map { fanfiction ->
             val fanfictionInfo = fanfictionDao.getFanfiction(fanfiction.id)
             if (fanfictionInfo == null) {
-                val fanfictionEntity = fanfictionTransformer.toFanfictionEntity(fanfiction)
+                val fanfictionEntity = fanfictionConverter.toFanfictionEntity(fanfiction)
                 fanfictionDao.insertFanfiction(fanfictionEntity)
             }
             fanfiction.id

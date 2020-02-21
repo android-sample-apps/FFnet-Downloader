@@ -1,7 +1,10 @@
 package fr.ffnet.downloader.fanfiction
 
 import android.content.res.Resources
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -74,21 +77,12 @@ class FanfictionViewModel(
                     title = it.title,
                     status = resources.getString(
                         when (it.isSynced) {
-                            true  -> R.string.download_info_chapter_status_synced
+                            true -> R.string.download_info_chapter_status_synced
                             false -> R.string.download_info_chapter_status_not_synced
                         }
                     )
                 )
             }
         }
-    }
-}
-
-class FanfictionViewModelFactory(
-    private val creator: () -> FanfictionViewModel
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return creator() as T
     }
 }
