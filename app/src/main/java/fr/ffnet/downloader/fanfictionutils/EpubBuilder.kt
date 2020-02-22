@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.fanfictionutils
 
-import android.os.Environment
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
 import nl.siegmann.epublib.domain.Book
@@ -16,22 +15,16 @@ import javax.inject.Inject
 class EpubBuilder @Inject constructor() {
 
     companion object {
-        private val HTML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        private const val HTML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<!DOCTYPE html>\n<html xmlns=\"http://www.w3.org/1999/xhtml\" >\n\n<head>\n" +
             "<meta charset=\"utf-8\" />\n"
-        private val HTML_FOOTER = "</body>\n</html>"
+        private const val HTML_FOOTER = "</body>\n</html>"
     }
 
-    fun buildEpub(fanfiction: Fanfiction): String {
+    fun buildEpub(absolutePath: String, fanfiction: Fanfiction): String {
 
         val fileTitle = "${fanfiction.title}.epub"
-        val file = File(
-            File(
-                Environment.getExternalStorageDirectory(),
-                Environment.DIRECTORY_DOWNLOADS
-            ),
-            fileTitle
-        )
+        val file = File(absolutePath, fileTitle)
 
         val outputStream = ByteArrayOutputStream()
         val epubWriter = EpubWriter()
@@ -43,7 +36,10 @@ class EpubBuilder @Inject constructor() {
 
         fanfiction.chapterList.forEach { chapter ->
             val chapterHtml = generateHtmlPageFromChapter(chapter)
-            book.addSection(chapter.title, Resource(chapterHtml.toByteArray(), MediatypeService.XHTML))
+            book.addSection(
+                chapter.title,
+                Resource(chapterHtml.toByteArray(), MediatypeService.XHTML)
+            )
         }
 
         epubWriter.write(book, outputStream)

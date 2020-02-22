@@ -66,19 +66,19 @@ class OptionsViewModel(
         }
     }
 
-    fun buildPdf(fanfictionId: String) {
+    fun buildPdf(absolutePath: String, fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
-                val file = pdfBuilder.buildPdf(fanfiction)
+                val file = pdfBuilder.buildPdf(absolutePath, fanfiction)
                 _getFile.postValue(file)
             }
         }
     }
 
-    fun buildEpub(fanfictionId: String) {
+    fun buildEpub(absolutePath: String, fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
-                val fileName = epubBuilder.buildEpub(fanfiction)
+                val fileName = epubBuilder.buildEpub(absolutePath, fanfiction)
                 _getFile.postValue(fileName)
             }
         }

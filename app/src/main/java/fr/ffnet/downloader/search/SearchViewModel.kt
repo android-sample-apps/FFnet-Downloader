@@ -72,6 +72,7 @@ class SearchViewModel(
             val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
             if (isFanfictionInDatabase) {
                 goToFanfiction.postValue(fanfictionId)
+                downloaderRepository.loadFanfictionInfo(fanfictionId)
             } else {
                 when (downloaderRepository.loadFanfictionInfo(fanfictionId)) {
                     is FanfictionRepositoryResultSuccess -> goToFanfiction.postValue(fanfictionId)

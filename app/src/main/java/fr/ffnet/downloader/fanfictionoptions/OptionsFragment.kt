@@ -27,6 +27,12 @@ class OptionsFragment : BottomSheetDialogFragment() {
 
     @Inject lateinit var viewModel: OptionsViewModel
 
+    private val absolutePath: String by lazy {
+        requireContext().getExternalFilesDir(
+            Environment.DIRECTORY_DOCUMENTS
+        )?.absolutePath ?: throw IllegalArgumentException()
+    }
+
     private val fanfictionId by lazy {
         val fanfictionId = arguments?.getString(EXTRA_FANFICTION_ID)
         if (fanfictionId.isNullOrBlank()) {
@@ -109,12 +115,7 @@ class OptionsFragment : BottomSheetDialogFragment() {
             }
         })
         viewModel.getFile.observe(viewLifecycleOwner, Observer { fileName ->
-            val file = File(
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-                ), fileName
-            )
-            // Open file with user selected app
+            val file = File(absolutePath, fileName)
             val uri = Uri.fromFile(file).normalizeScheme()
             val mimeValue = getMimeType(uri.toString())
             val intent = Intent().apply {
@@ -166,13 +167,13 @@ class OptionsFragment : BottomSheetDialogFragment() {
 
     private fun exportEpub() {
         if (checkPermission(EXPORT_EPUB_REQUEST)) {
-            viewModel.buildEpub(fanfictionId)
+            viewModel.buildEpub(absolutePath, fanfictionId)
         }
     }
 
     private fun exportPdf() {
         if (checkPermission(EXPORT_PDF_REQUEST)) {
-            viewModel.buildPdf(fanfictionId)
+            viewModel.buildPdf(absolutePath, fanfictionId)
         }
     }
 

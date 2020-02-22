@@ -1,6 +1,5 @@
 package fr.ffnet.downloader.fanfictionutils
 
-import android.os.Environment
 import com.itextpdf.text.Document
 import com.itextpdf.text.PageSize
 import com.itextpdf.text.pdf.PdfWriter
@@ -24,15 +23,9 @@ class PdfBuilder @Inject constructor() {
         private val HTML_FOOTER = "</body>\n</html>"
     }
 
-    fun buildPdf(fanfiction: Fanfiction): String {
+    fun buildPdf(absolutePath: String, fanfiction: Fanfiction): String {
         val fileTitle = "${fanfiction.title}.pdf"
-        val file = File(
-            File(
-                Environment.getExternalStorageDirectory(),
-                Environment.DIRECTORY_DOWNLOADS
-            ),
-            fileTitle
-        )
+        val file = File(absolutePath, fileTitle)
 
         val outputStream = ByteArrayOutputStream()
         val document = Document(PageSize.A4)
