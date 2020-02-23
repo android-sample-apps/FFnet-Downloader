@@ -3,17 +3,22 @@ package fr.ffnet.downloader.fanfiction
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
+import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
 class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
+
+    private lateinit var fanfictionOpener: FanfictionOpener
 
     private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
 
@@ -35,6 +40,7 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         chapterListRecyclerView.adapter = ChapterListAdapter(this)
 
+        fanfictionOpener = FanfictionOpener(this)
         viewModel.loadFanfictionInfo(fanfictionId)
         viewModel.loadChapters(fanfictionId)
         setListeners(fanfictionId)
@@ -42,10 +48,21 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
         setObservers()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.fanfiction_menu, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
+                true
+            }
+            R.id.exportEpub -> {
+                true
+            }
+            R.id.exportPdf -> {
                 true
             }
             else -> super.onOptionsItemSelected(item)

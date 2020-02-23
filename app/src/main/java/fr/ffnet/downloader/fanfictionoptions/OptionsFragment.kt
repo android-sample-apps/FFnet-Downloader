@@ -3,15 +3,12 @@ package fr.ffnet.downloader.fanfictionoptions
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -19,20 +16,21 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.support.AndroidSupportInjection
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
 import kotlinx.android.synthetic.main.options_fanfiction.*
-import java.io.File
 import javax.inject.Inject
 
 class OptionsFragment : BottomSheetDialogFragment() {
 
     @Inject lateinit var viewModel: OptionsViewModel
 
+    private lateinit var fanfictionOpener: FanfictionOpener
+
     private val absolutePath: String by lazy {
         requireContext().getExternalFilesDir(
             Environment.DIRECTORY_DOCUMENTS
         )?.absolutePath ?: throw IllegalArgumentException()
     }
-
     private val fanfictionId by lazy {
         val fanfictionId = arguments?.getString(EXTRA_FANFICTION_ID)
         if (fanfictionId.isNullOrBlank()) {
@@ -76,6 +74,7 @@ class OptionsFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fanfictionOpener = FanfictionOpener(requireContext())
         viewModel.load(fanfictionId)
         initializeObservers()
     }
@@ -114,17 +113,8 @@ class OptionsFragment : BottomSheetDialogFragment() {
                 dismiss()
             }
         })
-        viewModel.getFile.observe(viewLifecycleOwner, Observer { fileName ->
-            val file = File(absolutePath, fileName)
-            val uri = Uri.fromFile(file).normalizeScheme()
-            val mimeValue = getMimeType(uri.toString())
-            val intent = Intent().apply {
-                action = Intent.ACTION_VIEW
-                data = uri
-                type = mimeValue
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            requireContext().startActivity(Intent.createChooser(intent, "Open file with"))
+        viewModel.getFile.observe(viewLifecycleOwner, Observer {
+            fanfictionOpener.openFile(it)
         })
     }
 
@@ -175,14 +165,5 @@ class OptionsFragment : BottomSheetDialogFragment() {
         if (checkPermission(EXPORT_PDF_REQUEST)) {
             viewModel.buildPdf(absolutePath, fanfictionId)
         }
-    }
-
-    private fun getMimeType(url: String): String? {
-        val ext = MimeTypeMap.getFileExtensionFromUrl(url)
-        var mime: String? = null
-        if (ext != null) {
-            mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
-        }
-        return mime
     }
 }

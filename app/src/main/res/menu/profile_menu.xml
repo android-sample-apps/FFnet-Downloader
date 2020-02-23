@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/dissociateProfile"
-        android:icon="@drawable/ic_person_outline"
-        android:title="@string/profile_dissociate_profile"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/refreshProfile"
-        android:icon="@drawable/ic_person_outline"
-        android:title="@string/profile_refresh_profile"
-        app:showAsAction="never" />
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+    android:id="@+id/dissociateProfile"
+    android:icon="@drawable/ic_person_outline"
+    android:title="@string/profile_dissociate_profile"
+    app:showAsAction="never" />
+<item
+    android:id="@+id/refreshProfile"
+    android:icon="@drawable/ic_person_outline"
+    android:title="@string/profile_refresh_profile"
+    app:showAsAction="never" />
 </menu>
