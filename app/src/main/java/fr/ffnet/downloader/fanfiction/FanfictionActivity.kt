@@ -9,7 +9,6 @@ import android.view.View
 import androidx.lifecycle.Observer
 import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
 import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject

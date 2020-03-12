@@ -17,7 +17,7 @@ class FanfictionOpener(private val context: Context) {
 
         val contentUri = FileProvider.getUriForFile(
             context,
-            "${context.packageName}.fileprovider",
+            "fr.ffnet.downloader.fileprovider",
             File(absolutePath, fileName)
         )
 
@@ -27,30 +27,13 @@ class FanfictionOpener(private val context: Context) {
             Intent.FLAG_GRANT_READ_URI_PERMISSION
         )
         val mimeValue = getMimeType(contentUri.toString())
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = contentUri
-            type = mimeValue
-        }
-        context.startActivity(Intent.createChooser(intent, "Open with..."))
-
-        //        val contentUri = FileProvider.getUriForFile(
-        //            requireContext(),
-        //            "${requireContext().packageName}.fileprovider",
-        //            file
-        //        )
-        //        if (uri != null) {
-        //            val intent = Intent(Intent.ACTION_VIEW).apply {
-        //                data = contentUri
-        //                type = mimeValue
-        //            }
-        //            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        //            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        //            requireContext().startActivity(Intent.createChooser(intent, "Open with..."))
-        //        }
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(contentUri, mimeValue)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.startActivity(intent)
     }
 
     private fun getMimeType(url: String): String? {
-
         val ext = MimeTypeMap.getFileExtensionFromUrl(url)
         var mime: String? = null
         if (ext != null) {
