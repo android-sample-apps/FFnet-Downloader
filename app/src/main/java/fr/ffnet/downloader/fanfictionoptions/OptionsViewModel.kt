@@ -19,13 +19,14 @@ class OptionsViewModel(
     private val dateFormatter: DateFormatter,
     private val downloaderRepository: DownloaderRepository,
     private val pdfBuilder: PdfBuilder,
-    private val epubBuilder: EpubBuilder
+    private val epubBuilder: EpubBuilder,
+    private val _getFile: SingleLiveEvent<Pair<String, String>> = SingleLiveEvent(),
+    private val navigateToFanfictionActivity: SingleLiveEvent<Unit> = SingleLiveEvent()
 ) : ViewModel() {
 
-    private val _getFile: SingleLiveEvent<String> = SingleLiveEvent()
-    val getFile: SingleLiveEvent<String> get() = _getFile
+    val getFile: LiveData<Pair<String, String>>
+        get() = _getFile
 
-    private val navigateToFanfictionActivity: SingleLiveEvent<Unit> = SingleLiveEvent()
     val navigateToFanfiction: SingleLiveEvent<Unit>
         get() = navigateToFanfictionActivity
 
@@ -69,8 +70,8 @@ class OptionsViewModel(
     fun buildPdf(absolutePath: String, fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
-                val file = pdfBuilder.buildPdf(absolutePath, fanfiction)
-                _getFile.postValue(file)
+                val fileName = pdfBuilder.buildPdf(absolutePath, fanfiction)
+                _getFile.postValue(fileName to absolutePath)
             }
         }
     }
@@ -79,7 +80,7 @@ class OptionsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.getCompleteFanfiction(fanfictionId)?.let { fanfiction ->
                 val fileName = epubBuilder.buildEpub(absolutePath, fanfiction)
-                _getFile.postValue(fileName)
+                _getFile.postValue(fileName to absolutePath)
             }
         }
     }

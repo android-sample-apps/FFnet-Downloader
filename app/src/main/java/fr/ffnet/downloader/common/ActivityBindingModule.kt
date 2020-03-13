@@ -21,29 +21,36 @@ abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     @ActivityScope
+    @Suppress("Unused")
     abstract fun contributeMainActivityInjector(): MainActivity
 
     @ContributesAndroidInjector(modules = [FanfictionModule::class])
     @ActivityScope
+    @Suppress("Unused")
     abstract fun contributeFanfictionActivityInjector(): FanfictionActivity
 
     @ContributesAndroidInjector(modules = [SearchModule::class])
     @FragmentScope
+    @Suppress("Unused")
     abstract fun contributeSearchFragmentInjector(): SearchFragment
 
     @ContributesAndroidInjector(modules = [SyncedModule::class])
     @FragmentScope
+    @Suppress("Unused")
     abstract fun contributeSyncedFragmentInjector(): SyncedFragment
 
     @ContributesAndroidInjector(modules = [ProfileModule::class])
     @FragmentScope
+    @Suppress("Unused")
     abstract fun contributeProfileFragmentInjector(): ProfileFragment
 
     @ContributesAndroidInjector(modules = [ProfileFanfictionModule::class])
     @FragmentScope
+    @Suppress("Unused")
     abstract fun contributeProfileFanfictionFragmentInjector(): ProfileFanfictionFragment
 
     @ContributesAndroidInjector(modules = [OptionsModule::class])
     @FragmentScope
+    @Suppress("Unused")
     abstract fun contributeOptionsFragmentInjector(): OptionsFragment
 }

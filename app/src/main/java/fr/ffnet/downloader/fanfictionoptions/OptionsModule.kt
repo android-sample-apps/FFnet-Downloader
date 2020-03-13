@@ -23,11 +23,11 @@ class OptionsModule {
     ): OptionsViewModel {
         val factory = ViewModelFactory {
             OptionsViewModel(
-                databaseRepository,
-                dateFormatter,
-                downloaderRepository,
-                pdfBuilder,
-                epubBuilder
+                databaseRepository = databaseRepository,
+                dateFormatter = dateFormatter,
+                downloaderRepository = downloaderRepository,
+                pdfBuilder = pdfBuilder,
+                epubBuilder = epubBuilder
             )
         }
         return ViewModelProvider(fragment, factory)[OptionsViewModel::class.java]

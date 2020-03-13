@@ -113,8 +113,8 @@ class OptionsFragment : BottomSheetDialogFragment() {
                 dismiss()
             }
         })
-        viewModel.getFile.observe(viewLifecycleOwner, Observer {
-            fanfictionOpener.openFile(it)
+        viewModel.getFile.observe(viewLifecycleOwner, Observer { (fileName, absolutePath) ->
+            fanfictionOpener.openFile(fileName, absolutePath)
         })
     }
 
