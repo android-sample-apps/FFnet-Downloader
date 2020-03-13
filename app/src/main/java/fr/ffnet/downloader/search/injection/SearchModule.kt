@@ -1,33 +1,37 @@
-package fr.ffnet.downloader.fanfiction
+package fr.ffnet.downloader.search.injection
 
 import android.content.res.Resources
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
+import fr.ffnet.downloader.fanfictionutils.UrlTransformer
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.search.SearchViewModel
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.ViewModelFactory
 
 @Module
-class FanfictionModule {
+class SearchModule(private val fragment: Fragment) {
 
     @Provides
-    fun provideFanfictionViewModel(
-        activity: FanfictionActivity,
+    fun provideViewModel(
+        urlTransformer: UrlTransformer,
         resources: Resources,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
         dateFormatter: DateFormatter
-    ): FanfictionViewModel {
+    ): SearchViewModel {
         val factory = ViewModelFactory {
-            FanfictionViewModel(
+            SearchViewModel(
+                urlTransformer,
                 resources,
                 apiRepository,
                 dbRepository,
                 dateFormatter
             )
         }
-        return ViewModelProvider(activity, factory)[FanfictionViewModel::class.java]
+        return ViewModelProvider(fragment, factory)[SearchViewModel::class.java]
     }
 }

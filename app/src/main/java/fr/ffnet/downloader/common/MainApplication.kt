@@ -1,17 +1,29 @@
 package fr.ffnet.downloader.common
 
+import android.app.Application
+import android.content.Context
 import com.facebook.stetho.Stetho
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
 
-class MainApplication : DaggerApplication() {
+class MainApplication : Application() {
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerApplicationComponent.builder().create(this)
+    companion object {
+        fun getComponent(
+            context: Context
+        ): MainComponent = (context.applicationContext as MainApplication).component
     }
+
+    private lateinit var component: MainComponent
 
     override fun onCreate() {
         super.onCreate()
         Stetho.initializeWithDefaults(this)
+
+        component = DaggerMainComponent
+            .builder()
+            .mainModule(MainModule(this))
+            .build()
+            .apply {
+                inject(this@MainApplication)
+            }
     }
 }

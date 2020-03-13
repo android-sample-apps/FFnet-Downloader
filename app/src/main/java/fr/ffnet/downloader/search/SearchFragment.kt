@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
+import fr.ffnet.downloader.search.injection.SearchModule
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
-class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
+class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
 
     @Inject lateinit var viewModel: SearchViewModel
 
@@ -27,6 +29,12 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        MainApplication.getComponent(requireContext())
+            .plus(SearchModule(this))
+            .inject(this)
+
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE

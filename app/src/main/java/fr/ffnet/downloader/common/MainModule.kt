@@ -11,10 +11,11 @@ import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import javax.inject.Singleton
 
 @Module
-class ApplicationMainModule {
+class MainModule(private val application: MainApplication) {
+
     @Singleton
     @Provides
-    fun provideContext(application: MainApplication): Context = application
+    fun provideContext(): Context = application
 
     @Singleton
     @Provides

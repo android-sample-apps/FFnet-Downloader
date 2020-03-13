@@ -6,14 +6,16 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import dagger.android.support.DaggerAppCompatActivity
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.MainApplication
+import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
 import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
-class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.ChapterClickListener {
+class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
 
@@ -34,6 +36,11 @@ class FanfictionActivity : DaggerAppCompatActivity(), ChapterListAdapter.Chapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MainApplication.getComponent(this)
+            .plus(FanfictionModule(this))
+            .inject(this)
+
         setContentView(R.layout.activity_fanfiction)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

@@ -2,7 +2,6 @@ package fr.ffnet.downloader.fanfictionoptions
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
@@ -13,8 +12,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.android.support.AndroidSupportInjection
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
 import kotlinx.android.synthetic.main.options_fanfiction.*
@@ -61,11 +60,6 @@ class OptionsFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        AndroidSupportInjection.inject(this)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,6 +68,11 @@ class OptionsFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        MainApplication.getComponent(requireContext())
+            .plus(OptionsModule(this))
+            .inject(this)
+
         fanfictionOpener = FanfictionOpener(requireContext())
         viewModel.load(fanfictionId)
         initializeObservers()

@@ -14,7 +14,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
-class ApplicationNetworkModule {
+class NetworkModule {
+
     @Singleton
     @Provides
     fun provideOkhttpClient(

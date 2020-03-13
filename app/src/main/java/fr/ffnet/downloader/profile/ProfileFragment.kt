@@ -9,15 +9,17 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.profile.fanfiction.FanfictionsTabAdapter
 import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
+import fr.ffnet.downloader.profile.injection.ProfileModule
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
-class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickListener {
+class ProfileFragment : Fragment(), ProfileHistoryAdapter.OnHistoryClickListener {
 
     @Inject lateinit var viewModel: ProfileViewModel
 
@@ -34,6 +36,10 @@ class ProfileFragment : DaggerFragment(), ProfileHistoryAdapter.OnHistoryClickLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        MainApplication.getComponent(requireContext())
+            .plus(ProfileModule(this))
+            .inject(this)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         initTabLayout()

@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfictionoptions.OptionsFragment
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
+import fr.ffnet.downloader.profile.fanfiction.injection.ProfileFanfictionModule
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.synced.SyncedAdapter
 import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
 
-class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener {
+class ProfileFanfictionFragment : Fragment(), OnFanfictionOptionsListener {
 
     companion object {
         private const val DISPLAY_NO_FANFICTIONS = 0
@@ -43,6 +45,14 @@ class ProfileFanfictionFragment : DaggerFragment(), OnFanfictionOptionsListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        MainApplication.getComponent(requireContext())
+            .plus(
+                ProfileFanfictionModule(
+                    this
+                )
+            )
+            .inject(this)
 
         fanfictionRecyclerView.adapter = SyncedAdapter(this)
         viewModel.loadFavoriteFanfictions()

@@ -1,5 +1,6 @@
 package fr.ffnet.downloader.fanfictionoptions
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
@@ -11,10 +12,10 @@ import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.ViewModelFactory
 
 @Module
-class OptionsModule {
+class OptionsModule(private val fragment: Fragment) {
+
     @Provides
     fun provideOptionsViewModel(
-        fragment: OptionsFragment,
         databaseRepository: DatabaseRepository,
         dateFormatter: DateFormatter,
         downloaderRepository: DownloaderRepository,
