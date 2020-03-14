@@ -11,15 +11,12 @@ import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
-import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
 class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
-
-    private lateinit var fanfictionOpener: FanfictionOpener
 
     private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
 
@@ -46,7 +43,6 @@ class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         chapterListRecyclerView.adapter = ChapterListAdapter(this)
 
-        fanfictionOpener = FanfictionOpener(this)
         viewModel.loadFanfictionInfo(fanfictionId)
         viewModel.loadChapters(fanfictionId)
         setListeners(fanfictionId)

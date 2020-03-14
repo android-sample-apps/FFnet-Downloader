@@ -22,8 +22,7 @@ import javax.inject.Inject
 class OptionsFragment : BottomSheetDialogFragment() {
 
     @Inject lateinit var viewModel: OptionsViewModel
-
-    private lateinit var fanfictionOpener: FanfictionOpener
+    @Inject lateinit var fanfictionOpener: FanfictionOpener
 
     private val absolutePath: String by lazy {
         requireContext().getExternalFilesDir(
