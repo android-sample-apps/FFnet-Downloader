@@ -5,13 +5,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class DownloaderWorker(
     context: Context,
@@ -27,7 +28,17 @@ class DownloaderWorker(
     lateinit var fanfictionDao: FanfictionDao
 
     override suspend fun doWork(): Result {
-        CoroutineScope(Dispatchers.Default).launch {
+        val downloadResult = withContext(Dispatchers.IO) {
+            downloadFanfictionChapters()
+        }
+        return when (downloadResult) {
+            FanfictionDownloadResult.DownloadFailure -> Result.failure()
+            FanfictionDownloadResult.DownloadSuccess -> Result.success()
+        }
+    }
+
+    private suspend fun downloadFanfictionChapters(): FanfictionDownloadResult =
+        suspendCoroutine { continuation ->
             val fanfictionId = inputData.getString(FANFICTION_ID_KEY) ?: ""
             val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
             chapterList.forEachIndexed { index, chapter ->
@@ -35,7 +46,7 @@ class DownloaderWorker(
                     fanfictionId, chapter.chapterId
                 ).enqueue(object : Callback<ResponseBody> {
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        // Do nothing
+                        continuation.resume(FanfictionDownloadResult.DownloadFailure)
                     }
 
                     override fun onResponse(
@@ -55,13 +66,16 @@ class DownloaderWorker(
                                 }.start()
                             }
                             if (index == chapterList.lastIndex) {
-                                Result.success()
+                                continuation.resume(FanfictionDownloadResult.DownloadSuccess)
                             }
                         }
                     }
                 })
             }
         }
-        return Result.success()
-    }
+}
+
+sealed class FanfictionDownloadResult {
+    object DownloadSuccess : FanfictionDownloadResult()
+    object DownloadFailure : FanfictionDownloadResult()
 }
