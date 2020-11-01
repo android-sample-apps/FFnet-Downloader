@@ -2,13 +2,13 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.entities.ChapterEntity
 import fr.ffnet.downloader.repository.entities.FanfictionEntity
 import fr.ffnet.downloader.search.Fanfiction
+import fr.ffnet.downloader.utils.FanfictionConverter
 
 class DatabaseRepository(
     private val dao: FanfictionDao,
@@ -28,6 +28,11 @@ class DatabaseRepository(
     fun loadHistory(): LiveData<List<Fanfiction>> = transformEntityToModel(
         dao.getFanfictionHistory()
     )
+
+    fun changeWatchingStatus(fanfictionId: String) {
+        val newWatchingStatus = dao.getFanfiction(fanfictionId)?.isWatching?.not() ?: false
+        dao.setWatchingStatus(newWatchingStatus, fanfictionId)
+    }
 
     fun getChapters(fanfictionId: String): LiveData<List<ChapterEntity>> = dao.getChaptersLivedata(
         fanfictionId

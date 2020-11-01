@@ -4,8 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.fanfictionutils.UrlTransformer
-import fr.ffnet.downloader.profile.ProfileFragment
+import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.repository.ProfileRepository
 import fr.ffnet.downloader.utils.DateFormatter

@@ -1,8 +1,7 @@
-package fr.ffnet.downloader.fanfictionutils
+package fr.ffnet.downloader.utils
 
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
-import fr.ffnet.downloader.utils.JsoupParser
 import org.joda.time.DateTime
 import org.joda.time.LocalDateTime
 import org.jsoup.select.Elements
@@ -39,6 +38,7 @@ class FanfictionBuilder @Inject constructor(
             publishedDate = DateTime(published * 1000).toDate(),
             updatedDate = DateTime(updated * 1000).toDate(),
             fetchedDate = LocalDateTime.now(),
+            isWatching = false,
             profileType = 0,
             nbChapters = chapterList.size,
             nbSyncedChapters = 0,

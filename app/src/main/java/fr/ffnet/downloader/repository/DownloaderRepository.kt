@@ -8,8 +8,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import fr.ffnet.downloader.utils.FanfictionConverter
-import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure
@@ -17,6 +15,8 @@ import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryR
 import fr.ffnet.downloader.repository.DownloaderWorker.Companion.FANFICTION_ID_KEY
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
+import fr.ffnet.downloader.utils.FanfictionBuilder
+import fr.ffnet.downloader.utils.FanfictionConverter
 import java.io.IOException
 
 class DownloaderRepository(
@@ -38,7 +38,11 @@ class DownloaderRepository(
                 fanfictionId,
                 KEEP,
                 OneTimeWorkRequest.Builder(DownloaderWorker::class.java)
-                    .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                    .setConstraints(
+                        Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build()
+                    )
                     .setInputData(Data.Builder().putString(FANFICTION_ID_KEY, fanfictionId).build())
                     .build()
             )
@@ -50,19 +54,28 @@ class DownloaderRepository(
             val response = service.getFanfiction(fanfictionId).execute()
             if (response.isSuccessful) {
                 response.body()?.let { responseBody ->
+
+                    val existingFanfiction = fanfictionDao.getFanfiction(fanfictionId)
                     val existingChapters = fanfictionDao.getChaptersIds(fanfictionId)
-                    val (firstChapter, fanfictionInfo) = fanfictionBuilder.buildFanfiction(
+
+                    val (firstChapter, remoteFanfiction) = fanfictionBuilder.buildFanfiction(
                         fanfictionId, responseBody.string()
                     )
 
+                    val localFanfiction = existingFanfiction?.let {
+                        remoteFanfiction.copy(
+                            isWatching = it.isWatching
+                        )
+                    } ?: remoteFanfiction
+
                     fanfictionDao.insertFanfiction(
-                        converter.toFanfictionEntity(fanfictionInfo)
+                        converter.toFanfictionEntity(localFanfiction)
                     )
 
                     val chapterList = if (existingChapters.isNotEmpty()) {
-                        fanfictionInfo.chapterList.filter { it.id !in existingChapters }
+                        localFanfiction.chapterList.filter { it.id !in existingChapters }
                     } else {
-                        fanfictionInfo.chapterList
+                        localFanfiction.chapterList
                     }
                     fanfictionDao.insertChapterList(
                         converter.toChapterEntityList(fanfictionId, chapterList)
@@ -73,7 +86,7 @@ class DownloaderRepository(
                         fanfictionId = fanfictionId,
                         chapterId = "1"
                     )
-                    FanfictionRepositoryResultSuccess(fanfictionInfo)
+                    FanfictionRepositoryResultSuccess(localFanfiction)
                 } ?: FanfictionRepositoryResultFailure
             } else {
                 FanfictionRepositoryResultServerFailure
@@ -81,6 +94,10 @@ class DownloaderRepository(
         } catch (exception: IOException) {
             FanfictionRepositoryResultInternetFailure
         }
+    }
+
+    fun schedulePeriodicJob() {
+
     }
 
     sealed class FanfictionRepositoryResult {

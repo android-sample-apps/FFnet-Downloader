@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.fanfictionutils.UrlTransformer
-import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
-import fr.ffnet.downloader.fanfictionutils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
+import fr.ffnet.downloader.utils.UrlTransformer
+import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
+import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
@@ -87,6 +87,10 @@ class SearchViewModel(
         errorPresent.postValue(
             SearchError.InfoFetchingFailed(resources.getString(messageResource))
         )
+    }
+
+    fun schedulePeriodicJob() {
+        downloaderRepository.schedulePeriodicJob()
     }
 
     sealed class SearchError(val message: String) {

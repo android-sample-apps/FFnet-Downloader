@@ -7,8 +7,8 @@ import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
-import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
-import fr.ffnet.downloader.fanfictionutils.ProfileBuilder
+import fr.ffnet.downloader.utils.FanfictionBuilder
+import fr.ffnet.downloader.utils.ProfileBuilder
 import fr.ffnet.downloader.repository.dao.ErrorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao

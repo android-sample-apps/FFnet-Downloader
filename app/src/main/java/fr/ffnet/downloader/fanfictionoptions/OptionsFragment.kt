@@ -9,13 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
-import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
+import fr.ffnet.downloader.utils.FanfictionOpener
 import kotlinx.android.synthetic.main.options_fanfiction.*
 import javax.inject.Inject
 
@@ -72,7 +73,9 @@ class OptionsFragment : BottomSheetDialogFragment() {
             .plus(OptionsModule(this))
             .inject(this)
 
-        fanfictionOpener = FanfictionOpener(requireContext())
+        fanfictionOpener = FanfictionOpener(
+            requireContext()
+        )
         viewModel.load(fanfictionId)
         initializeObservers()
     }
@@ -86,6 +89,12 @@ class OptionsFragment : BottomSheetDialogFragment() {
         viewModel.getDisplayModel().observe(viewLifecycleOwner, Observer { displayModel ->
 
             fanfictionTitle.text = displayModel.title
+
+            val watchingDrawable = if (displayModel.isWatching) R.drawable.ic_eye_watching else R.drawable.ic_eye_not_watching
+            watchingImageView.background = ContextCompat.getDrawable(
+                requireContext(),
+                watchingDrawable
+            )
 
             optionDeleteTextView.isVisible = shouldShowDeleteOption
 
@@ -109,6 +118,9 @@ class OptionsFragment : BottomSheetDialogFragment() {
             optionDeleteTextView.setOnClickListener {
                 viewModel.unsyncFanfiction(fanfictionId)
                 dismiss()
+            }
+            watchingImageView.setOnClickListener {
+                viewModel.onWatchingChanged(fanfictionId)
             }
         })
         viewModel.getFile.observe(viewLifecycleOwner, Observer { (fileName, absolutePath) ->

@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.fanfictionutils
+package fr.ffnet.downloader.utils
 
 import com.itextpdf.text.Document
 import com.itextpdf.text.PageSize

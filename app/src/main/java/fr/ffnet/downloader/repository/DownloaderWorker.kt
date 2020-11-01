@@ -3,8 +3,8 @@ package fr.ffnet.downloader.repository
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
+import fr.ffnet.downloader.utils.FanfictionBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -37,8 +37,8 @@ class DownloaderWorker(
         }
     }
 
-    private suspend fun downloadFanfictionChapters(): FanfictionDownloadResult =
-        suspendCoroutine { continuation ->
+    private suspend fun downloadFanfictionChapters(): FanfictionDownloadResult {
+        return suspendCoroutine { continuation ->
             val fanfictionId = inputData.getString(FANFICTION_ID_KEY) ?: ""
             val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
             chapterList.forEachIndexed { index, chapter ->
@@ -73,6 +73,7 @@ class DownloaderWorker(
                 })
             }
         }
+    }
 }
 
 sealed class FanfictionDownloadResult {

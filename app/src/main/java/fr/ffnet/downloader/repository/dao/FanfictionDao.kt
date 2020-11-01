@@ -26,6 +26,9 @@ interface FanfictionDao {
     @Query("UPDATE ChapterEntity SET content = '', isSynced = 0 WHERE fanfictionId = :fanfictionId")
     fun unsyncFanfiction(fanfictionId: String): Int
 
+    @Query("UPDATE FanfictionEntity SET isWatching = :newWatchingStatus WHERE id = :fanfictionId")
+    fun setWatchingStatus(newWatchingStatus: Boolean, fanfictionId: String)
+
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +

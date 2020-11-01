@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.fanfictionutils
+package fr.ffnet.downloader.utils
 
 import fr.ffnet.downloader.search.Chapter
 import fr.ffnet.downloader.search.Fanfiction
@@ -53,7 +53,7 @@ class EpubBuilder @Inject constructor() {
 
     private fun generateHtmlPageFromChapter(chapter: Chapter): String {
         var htmlPage = chapter.content
-        htmlPage = "${HTML_HEADER}<title>" + StringEscapeUtils.escapeHtml4(
+        htmlPage = "$HTML_HEADER<title>" + StringEscapeUtils.escapeHtml4(
             chapter.title
         ) + "</title>\n</head>\n<body>\n" + htmlPage + HTML_FOOTER
         htmlPage = htmlPage

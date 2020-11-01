@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fr.ffnet.downloader.fanfictionutils.EpubBuilder
-import fr.ffnet.downloader.fanfictionutils.PdfBuilder
+import fr.ffnet.downloader.utils.EpubBuilder
+import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
@@ -40,6 +40,7 @@ class OptionsViewModel(
                 publishedDate = dateFormatter.format(fanfiction.publishedDate),
                 updatedDate = dateFormatter.format(fanfiction.updatedDate),
                 fetchedDate = dateFormatter.format(fanfiction.fetchedDate),
+                isWatching = fanfiction.isWatching,
                 shouldShowFetchedDate = fanfiction.fetchedDate != null,
                 shouldShowPdfExport = fanfiction.nbSyncedChapters > 0,
                 shouldShowEpubExport = fanfiction.nbSyncedChapters > 0
@@ -58,6 +59,12 @@ class OptionsViewModel(
                     navigateToFanfictionActivity.postValue(Unit)
                 }
             }
+        }
+    }
+
+    fun onWatchingChanged(fanfictionId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseRepository.changeWatchingStatus(fanfictionId)
         }
     }
 
@@ -91,6 +98,7 @@ data class OptionsDisplayModel(
     val publishedDate: String,
     val updatedDate: String,
     val fetchedDate: String,
+    val isWatching: Boolean,
     val shouldShowFetchedDate: Boolean,
     val shouldShowPdfExport: Boolean,
     val shouldShowEpubExport: Boolean

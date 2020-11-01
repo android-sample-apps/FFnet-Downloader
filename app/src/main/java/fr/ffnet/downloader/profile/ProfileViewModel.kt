@@ -5,7 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
-import fr.ffnet.downloader.fanfictionutils.UrlTransformer
+import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.repository.ProfileRepository
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.utils.DateFormatter

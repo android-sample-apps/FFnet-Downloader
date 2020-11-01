@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.fanfictionutils.EpubBuilder
-import fr.ffnet.downloader.fanfictionutils.FanfictionOpener
-import fr.ffnet.downloader.fanfictionutils.PdfBuilder
+import fr.ffnet.downloader.utils.EpubBuilder
+import fr.ffnet.downloader.utils.FanfictionOpener
+import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.utils.DateFormatter
@@ -19,7 +19,8 @@ class OptionsModule(private val fragment: Fragment) {
     @Provides
     fun provideFanfictionOpener(
         context: Context
-    ): FanfictionOpener = FanfictionOpener(context)
+    ): FanfictionOpener =
+        FanfictionOpener(context)
 
     @Provides
     fun provideOptionsViewModel(

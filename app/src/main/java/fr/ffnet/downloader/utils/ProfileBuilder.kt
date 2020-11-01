@@ -1,10 +1,9 @@
-package fr.ffnet.downloader.fanfictionutils
+package fr.ffnet.downloader.utils
 
 import fr.ffnet.downloader.profile.Profile
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
 import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.search.Fanfiction
-import fr.ffnet.downloader.utils.JsoupParser
 import org.joda.time.DateTime
 import org.jsoup.select.Elements
 import javax.inject.Inject
@@ -37,6 +36,7 @@ class ProfileBuilder @Inject constructor(
                 publishedDate = DateTime(it.attr("data-datesubmit").toLong() * 1000).toDate(),
                 updatedDate = DateTime(it.attr("data-dateupdate").toLong() * 1000).toDate(),
                 fetchedDate = null,
+                isWatching = false,
                 profileType = profileType,
                 nbChapters = it.attr("data-chapters").toInt(),
                 nbSyncedChapters = 0,

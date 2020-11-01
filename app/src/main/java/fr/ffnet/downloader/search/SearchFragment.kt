@@ -35,6 +35,8 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
             .plus(SearchModule(this))
             .inject(this)
 
+        viewModel.schedulePeriodicJob()
+
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE

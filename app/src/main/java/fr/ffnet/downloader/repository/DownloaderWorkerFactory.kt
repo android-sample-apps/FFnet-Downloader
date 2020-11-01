@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import fr.ffnet.downloader.fanfictionutils.FanfictionBuilder
+import fr.ffnet.downloader.utils.FanfictionBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 
 class DownloaderWorkerFactory(

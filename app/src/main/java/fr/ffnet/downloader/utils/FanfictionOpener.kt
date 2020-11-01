@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.fanfictionutils
+package fr.ffnet.downloader.utils
 
 import android.content.Context
 import android.content.Intent
