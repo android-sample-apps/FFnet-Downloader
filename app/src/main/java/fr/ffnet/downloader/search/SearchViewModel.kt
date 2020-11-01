@@ -7,15 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.BuildConfig
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.utils.UrlTransformer
-import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
-import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
+import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.SingleLiveEvent
+import fr.ffnet.downloader.utils.UrlTransformer
+import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
+import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -42,11 +43,14 @@ class SearchViewModel(
             is UrlTransformSuccess -> loadFanfictionInfo(
                 urlTransformationResult.id
             )
-            is UrlTransformFailure -> errorPresent.postValue(
-                SearchError.UrlNotValid(
-                    resources.getString(R.string.search_fanfiction_url_error)
+            is UrlTransformFailure -> {
+                FFLogger.d(FFLogger.EVENT_KEY, "Could not get fanfictionId from url $url")
+                errorPresent.postValue(
+                    SearchError.UrlNotValid(
+                        resources.getString(R.string.search_fanfiction_url_error)
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -69,13 +73,21 @@ class SearchViewModel(
 
     private fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            FFLogger.d(FFLogger.EVENT_KEY, "Loading fanfiction info for $fanfictionId")
             val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
             if (isFanfictionInDatabase) {
+                FFLogger.d(FFLogger.EVENT_KEY, "Fanfiction $fanfictionId is already in database")
                 goToFanfiction.postValue(fanfictionId)
                 downloaderRepository.loadFanfictionInfo(fanfictionId)
             } else {
                 when (downloaderRepository.loadFanfictionInfo(fanfictionId)) {
-                    is FanfictionRepositoryResultSuccess -> goToFanfiction.postValue(fanfictionId)
+                    is FanfictionRepositoryResultSuccess -> {
+                        FFLogger.d(
+                            FFLogger.EVENT_KEY,
+                            "Fanfiction $fanfictionId loaded successfully"
+                        )
+                        goToFanfiction.postValue(fanfictionId)
+                    }
                     FanfictionRepositoryResultInternetFailure -> displayErrorMessage(R.string.search_fanfiction_info_server_error)
                     else -> displayErrorMessage(R.string.search_fanfiction_info_fetching_error)
                 }
@@ -84,8 +96,10 @@ class SearchViewModel(
     }
 
     private fun displayErrorMessage(messageResource: Int) {
+        val errorMessage = resources.getString(messageResource)
+        FFLogger.d(FFLogger.EVENT_KEY, errorMessage)
         errorPresent.postValue(
-            SearchError.InfoFetchingFailed(resources.getString(messageResource))
+            SearchError.InfoFetchingFailed(errorMessage)
         )
     }
 

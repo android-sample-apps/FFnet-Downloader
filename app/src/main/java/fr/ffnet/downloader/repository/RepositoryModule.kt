@@ -1,17 +1,16 @@
 package fr.ffnet.downloader.repository
 
 import android.content.Context
-import androidx.work.Configuration
 import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
-import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
-import fr.ffnet.downloader.utils.FanfictionBuilder
-import fr.ffnet.downloader.utils.ProfileBuilder
 import fr.ffnet.downloader.repository.dao.ErrorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
+import fr.ffnet.downloader.utils.FanfictionBuilder
+import fr.ffnet.downloader.utils.FanfictionConverter
+import fr.ffnet.downloader.utils.ProfileBuilder
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -50,28 +49,25 @@ class RepositoryModule {
         fanfictionDao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder,
         fanfictionConverter: FanfictionConverter,
-        context: Context,
-        workerFactory: DownloaderWorkerFactory
+        scheduler: WorkScheduler
     ): DownloaderRepository {
-        val configuration = Configuration.Builder().setWorkerFactory(workerFactory).build()
-        WorkManager.initialize(context, configuration)
         return DownloaderRepository(
             service,
             fanfictionBuilder,
             fanfictionDao,
             fanfictionConverter,
-            WorkManager.getInstance(context)
+            scheduler
         )
     }
 
     @Provides
-    @Singleton
-    fun provideWorkerFactory(
-        service: CrawlService,
-        fanfictionBuilder: FanfictionBuilder,
-        fanfictionDao: FanfictionDao
-    ): DownloaderWorkerFactory {
-        return DownloaderWorkerFactory(service, fanfictionBuilder, fanfictionDao)
+    fun provideWorkScheduler(workManager: WorkManager): WorkScheduler {
+        return WorkScheduler(workManager)
+    }
+
+    @Provides
+    fun provideWorkManager(context: Context): WorkManager {
+        return WorkManager.getInstance(context)
     }
 
     @Provides

@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.utils.FanfictionOpener
@@ -107,6 +108,7 @@ class OptionsFragment : BottomSheetDialogFragment() {
             fetchedDateValueTextView.text = displayModel.fetchedDate
 
             optionSeeDetailsTextView.setOnClickListener {
+                FFLogger.d(FFLogger.EVENT_KEY, "Opening details for $fanfictionId")
                 viewModel.loadFanfictionInfo(fanfictionId)
             }
             optionExportPDFTextView.setOnClickListener {
@@ -116,10 +118,12 @@ class OptionsFragment : BottomSheetDialogFragment() {
                 exportEpub()
             }
             optionDeleteTextView.setOnClickListener {
+                FFLogger.d(FFLogger.EVENT_KEY, "Unsync $fanfictionId")
                 viewModel.unsyncFanfiction(fanfictionId)
                 dismiss()
             }
             watchingImageView.setOnClickListener {
+                FFLogger.d(FFLogger.EVENT_KEY, "Change watch status for $fanfictionId")
                 viewModel.onWatchingChanged(fanfictionId)
             }
         })
@@ -167,12 +171,14 @@ class OptionsFragment : BottomSheetDialogFragment() {
 
     private fun exportEpub() {
         if (checkPermission(EXPORT_EPUB_REQUEST)) {
+            FFLogger.d(FFLogger.EVENT_KEY, "Export EPUB for $fanfictionId")
             viewModel.buildEpub(absolutePath, fanfictionId)
         }
     }
 
     private fun exportPdf() {
         if (checkPermission(EXPORT_PDF_REQUEST)) {
+            FFLogger.d(FFLogger.EVENT_KEY, "Export PDF for $fanfictionId")
             viewModel.buildPdf(absolutePath, fanfictionId)
         }
     }

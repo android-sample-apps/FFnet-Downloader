@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
 import kotlinx.android.synthetic.main.activity_fanfiction.*
@@ -86,9 +87,13 @@ class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-        viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shoudEnabled) ->
+        viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shouldEnable) ->
+            FFLogger.d(
+                FFLogger.EVENT_KEY,
+                "Changing download button state for $fanfictionId to $shouldEnable"
+            )
             downloadButton.text = buttonText
-            downloadButton.isEnabled = shoudEnabled
+            downloadButton.isEnabled = shouldEnable
         })
     }
 

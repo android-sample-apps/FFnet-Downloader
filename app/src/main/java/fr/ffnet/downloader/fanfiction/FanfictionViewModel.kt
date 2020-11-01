@@ -31,14 +31,18 @@ class FanfictionViewModel(
     fun getDownloadButtonState(): LiveData<Pair<String, Boolean>> = downloadButtonState
 
     fun loadFanfictionInfo(fanfictionId: String) {
-        downloadButtonState = Transformations.map(apiRepository.getDownloadState(fanfictionId)) {
-            it.firstOrNull()?.let { workInfo ->
-                when (workInfo.state) {
+        downloadButtonState = Transformations.map(apiRepository.getDownloadState(fanfictionId)) { workInfo ->
+            val isDownloading = workInfo.any {
+                it.state in listOf(
                     WorkInfo.State.ENQUEUED,
-                    WorkInfo.State.RUNNING -> resources.getString(R.string.download_button_downloading) to false
-                    else -> resources.getString(R.string.download_button_title) to true
-                }
-            } ?: resources.getString(R.string.download_button_title) to true
+                    WorkInfo.State.RUNNING
+                )
+            }
+            if (isDownloading) {
+                resources.getString(R.string.download_button_downloading) to false
+            } else {
+                resources.getString(R.string.download_button_title) to true
+            }
         }
 
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {

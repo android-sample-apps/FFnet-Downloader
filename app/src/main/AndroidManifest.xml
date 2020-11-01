@@ -15,13 +15,6 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
-        <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="fr.ffnet.downloader.workmanager-init"
-            android:enabled="false"
-            android:exported="false"
-            tools:replace="android:authorities" />
-
         <activity
             android:name="fr.ffnet.downloader.MainActivity"
             android:label="@string/title_activity_ffnet"

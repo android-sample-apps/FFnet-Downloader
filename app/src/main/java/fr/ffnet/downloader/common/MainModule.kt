@@ -34,4 +34,10 @@ class MainModule(private val application: MainApplication) {
     fun provideSharedPreferences(application: Application): SharedPreferences {
         return application.getSharedPreferences("ffnetdownloader", Context.MODE_PRIVATE)
     }
+
+    @Singleton
+    @Provides
+    fun provideLogger(): FFLogger {
+        return FFLoggerImpl()
+    }
 }

@@ -1,18 +1,11 @@
 package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy.KEEP
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
-import fr.ffnet.downloader.repository.DownloaderWorker.Companion.FANFICTION_ID_KEY
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.FanfictionBuilder
@@ -24,28 +17,18 @@ class DownloaderRepository(
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
     private val converter: FanfictionConverter,
-    private val workManager: WorkManager
+    private val scheduler: WorkScheduler
 ) {
 
     fun getDownloadState(fanfictionId: String): LiveData<List<WorkInfo>> {
-        return workManager.getWorkInfosForUniqueWorkLiveData(fanfictionId)
+        return scheduler.getWorkInfosForUniqueWorkLiveData(fanfictionId)
     }
 
     fun downloadChapters(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
-        if (chapterList.isNotEmpty()) {
-            workManager.enqueueUniqueWork(
-                fanfictionId,
-                KEEP,
-                OneTimeWorkRequest.Builder(DownloaderWorker::class.java)
-                    .setConstraints(
-                        Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .build()
-                    )
-                    .setInputData(Data.Builder().putString(FANFICTION_ID_KEY, fanfictionId).build())
-                    .build()
-            )
+
+        chapterList.forEach { chapter ->
+            scheduler.downloadChapter(fanfictionId, chapter.chapterId)
         }
     }
 
@@ -97,7 +80,13 @@ class DownloaderRepository(
     }
 
     fun schedulePeriodicJob() {
+        scheduler.schedulePeriodicJob()
+    }
 
+    fun getAllWatchingFanfictions(): List<Fanfiction> {
+        return fanfictionDao.getAllWatchingFanfictions().map {
+            converter.toFanfiction(it)
+        }
     }
 
     sealed class FanfictionRepositoryResult {

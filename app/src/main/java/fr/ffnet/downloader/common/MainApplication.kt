@@ -3,8 +3,13 @@ package fr.ffnet.downloader.common
 import android.app.Application
 import android.content.Context
 import com.facebook.stetho.Stetho
+import timber.log.Timber
+import javax.inject.Inject
 
 class MainApplication : Application() {
+
+    private lateinit var component: MainComponent
+    @Inject lateinit var logger: FFLogger
 
     companion object {
         fun getComponent(
@@ -12,11 +17,8 @@ class MainApplication : Application() {
         ): MainComponent = (context.applicationContext as MainApplication).component
     }
 
-    private lateinit var component: MainComponent
-
     override fun onCreate() {
         super.onCreate()
-        Stetho.initializeWithDefaults(this)
 
         component = DaggerMainComponent
             .builder()
@@ -25,5 +27,9 @@ class MainApplication : Application() {
             .apply {
                 inject(this@MainApplication)
             }
+
+        Stetho.initializeWithDefaults(this)
+        Timber.plant(Timber.DebugTree())
+        FFLogger.init(logger)
     }
 }
