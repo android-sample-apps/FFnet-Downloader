@@ -55,4 +55,7 @@
     <string name="export_permission_content">The document cannot be generated without write permission</string>
     <string name="export_permission_grant">Grant</string>
     <string name="export_permission_deny">Deny</string>
+
+    <string name="notification_channel_name">ffnet_periodic</string>
+    <string name="notification_channel_description">periodic_sync_check</string>
 </resources>

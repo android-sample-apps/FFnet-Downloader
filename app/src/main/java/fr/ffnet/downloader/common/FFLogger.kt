@@ -4,7 +4,7 @@ interface FFLogger {
 
     companion object {
 
-        const val EVENT_KEY = "event"
+        const val EVENT_KEY = "ffnet-event"
         const val EVENT_MESSAGE = "eventMessage"
 
         private var instance: FFLogger = VoidLogger()
