@@ -77,10 +77,7 @@ class PeriodicCheckWorker(
     }
 
     private fun showNotification(fanfictionInfo: Fanfiction, nbChaptersToSync: Int) {
-        FFLogger.d(
-            EVENT_KEY,
-            "Showing notification"
-        )
+        FFLogger.d(EVENT_KEY, "Showing notification")
         val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Fanfiction syncing")

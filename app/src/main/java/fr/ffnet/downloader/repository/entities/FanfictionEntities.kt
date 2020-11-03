@@ -34,6 +34,5 @@ data class ChapterEntity(
     val fanfictionId: String,
     val chapterId: String,
     val title: String,
-    val content: String = "",
-    val isSynced: Boolean = false
+    val content: String = ""
 )

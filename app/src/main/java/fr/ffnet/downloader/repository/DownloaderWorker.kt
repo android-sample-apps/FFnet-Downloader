@@ -39,7 +39,6 @@ class DownloaderWorker(
                 Thread {
                     fanfictionDao.updateChapter(
                         content = chapterContent,
-                        isSynced = true,
                         chapterId = chapterId,
                         fanfictionId = fanfictionId
                     )

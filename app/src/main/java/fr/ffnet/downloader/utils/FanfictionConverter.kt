@@ -26,11 +26,10 @@ class FanfictionConverter @Inject constructor() {
         chapterList = chapterList.map { toChapter(it) }
     )
 
-    fun toChapter(chapter: ChapterEntity): Chapter = Chapter(
+    private fun toChapter(chapter: ChapterEntity): Chapter = Chapter(
         id = chapter.chapterId,
         title = chapter.title,
-        content = chapter.content,
-        status = chapter.content.isNotEmpty()
+        content = chapter.content
     )
 
     fun toFanfictionEntity(fanfiction: Fanfiction): FanfictionEntity = FanfictionEntity(
@@ -54,8 +53,7 @@ class FanfictionConverter @Inject constructor() {
             fanfictionId = fanfictionId,
             chapterId = chapter.id,
             title = chapter.title,
-            content = chapter.content,
-            isSynced = chapter.status
+            content = chapter.content
         )
     }
 }

@@ -21,6 +21,5 @@ data class Fanfiction(
 data class Chapter(
     val id: String,
     val title: String,
-    var content: String = "",
-    var status: Boolean = false
+    var content: String = ""
 )

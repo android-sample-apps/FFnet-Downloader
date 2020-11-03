@@ -65,7 +65,6 @@ class DownloaderRepository(
                     )
                     fanfictionDao.updateChapter(
                         content = firstChapter,
-                        isSynced = true,
                         fanfictionId = fanfictionId,
                         chapterId = "1"
                     )
@@ -80,7 +79,7 @@ class DownloaderRepository(
     }
 
     fun schedulePeriodicJob() {
-        scheduler.schedulePeriodicJob()
+        // scheduler.schedulePeriodicJob()
     }
 
     fun getAllWatchingFanfictions(): List<Fanfiction> {

@@ -72,15 +72,13 @@ class FanfictionViewModel(
     }
 
     fun loadChapters(fanfictionId: String) {
-        chapterList = Transformations.map(
-            dbRepository.getChapters(fanfictionId)
-        ) { chapterList ->
+        chapterList = Transformations.map(dbRepository.getChapters(fanfictionId)) { chapterList ->
             chapterList.map {
                 ChapterUIModel(
                     id = it.chapterId,
                     title = it.title,
                     status = resources.getString(
-                        when (it.isSynced) {
+                        when (it.content.isNotEmpty()) {
                             true -> R.string.download_info_chapter_status_synced
                             false -> R.string.download_info_chapter_status_not_synced
                         }

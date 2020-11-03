@@ -17,13 +17,10 @@ interface FanfictionDao {
     @Insert
     fun insertChapterList(chapterList: List<ChapterEntity>)
 
-    @Query("UPDATE ChapterEntity SET isSynced = 1, content = :content WHERE fanfictionId = :fanfictionId AND chapterId = 1")
-    fun updateFirstChapter(fanfictionId: String, content: String)
+    @Query("UPDATE ChapterEntity SET content = :content WHERE fanfictionId = :fanfictionId AND chapterId = :chapterId")
+    fun updateChapter(content: String, fanfictionId: String, chapterId: String)
 
-    @Query("UPDATE ChapterEntity SET content = :content, isSynced = :isSynced WHERE fanfictionId = :fanfictionId AND chapterId = :chapterId")
-    fun updateChapter(content: String, isSynced: Boolean, fanfictionId: String, chapterId: String)
-
-    @Query("UPDATE ChapterEntity SET content = '', isSynced = 0 WHERE fanfictionId = :fanfictionId")
+    @Query("UPDATE ChapterEntity SET content = '' WHERE fanfictionId = :fanfictionId")
     fun unsyncFanfiction(fanfictionId: String): Int
 
     @Query("UPDATE FanfictionEntity SET isWatching = :newWatchingStatus WHERE id = :fanfictionId")
@@ -32,7 +29,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
-            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE id = :fanfictionId"
     )
     fun getFanfiction(fanfictionId: String): FanfictionEntity?
@@ -40,7 +37,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
-            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE id = :fanfictionId"
     )
     fun getFanfictionLiveData(fanfictionId: String): LiveData<FanfictionEntity>
@@ -48,16 +45,16 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
-            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
-            "WHERE id IN (SELECT fanfictionId FROM ChapterEntity GROUP BY fanfictionId HAVING SUM(isSynced) > 1 OR COUNT(*) = 1)"
+            "WHERE id IN (SELECT fanfictionId FROM ChapterEntity WHERE content != '' GROUP BY fanfictionId)"
     )
     fun getSyncedFanfictions(): LiveData<List<FanfictionEntity>>
 
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
-            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "WHERE isWatching = 1"
     )
@@ -66,7 +63,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
-            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE fetchedDate IS NOT NULL"
     )
     fun getFanfictionHistory(): LiveData<List<FanfictionEntity>>
@@ -86,7 +83,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, ProfileFanfictionEntity.profileType, " +
-            "(SELECT SUM(isSynced) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbSyncedChapters " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "LEFT JOIN ProfileFanfictionEntity ON (ProfileFanfictionEntity.fanfictionId = FanfictionEntity.id) " +
             "LEFT JOIN ProfileEntity ON (ProfileFanfictionEntity.profileId = ProfileEntity.profileId) " +
