@@ -6,6 +6,8 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.profile.ProfileViewModel
+import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions
+import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
@@ -25,29 +27,21 @@ class ProfileFanfictionViewModel(
     fun getMyStoriesList(): LiveData<ProfileViewModel.ProfileFanfictionsResult> = myStoriesResult
 
     fun loadFavoriteFanfictions() {
-        myFavoritesResult = Transformations.map(
-            databaseRepository.getMyFavoriteFanfictions()
-        ) { fanfictionList ->
+        myFavoritesResult = Transformations.map(databaseRepository.getMyFavoriteFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
-                ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions(
-                    buildFanfictionSyncedUIModelList(fanfictionList)
-                )
+                ProfileHasFanfictions(buildFanfictionSyncedUIModelList(fanfictionList))
             } else {
-                ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
+                ProfileHasNoFanfictions
             }
         }
     }
 
     fun loadMyFanfictions() {
-        myStoriesResult = Transformations.map(
-            databaseRepository.getMyFanfictions()
-        ) { fanfictionList ->
+        myStoriesResult = Transformations.map(databaseRepository.getMyFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
-                ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions(
-                    buildFanfictionSyncedUIModelList(fanfictionList)
-                )
+                ProfileHasFanfictions(buildFanfictionSyncedUIModelList(fanfictionList))
             } else {
-                ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
+                ProfileHasNoFanfictions
             }
         }
     }

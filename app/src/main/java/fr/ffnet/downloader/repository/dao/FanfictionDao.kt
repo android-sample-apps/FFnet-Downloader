@@ -29,6 +29,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE id = :fanfictionId"
     )
@@ -37,6 +38,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE id = :fanfictionId"
     )
@@ -45,6 +47,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "WHERE id IN (SELECT fanfictionId FROM ChapterEntity WHERE content != '' GROUP BY fanfictionId)"
@@ -54,6 +57,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "WHERE isWatching = 1"
@@ -63,6 +67,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
+            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity WHERE fetchedDate IS NOT NULL"
     )
@@ -83,6 +88,7 @@ interface FanfictionDao {
     @Query(
         "SELECT " +
             "FanfictionEntity.*, ProfileFanfictionEntity.profileType, " +
+            "CASE WHEN ((SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId)) > 0 THEN ((SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId)) ELSE nbChapters END AS nbChapters, " +
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "LEFT JOIN ProfileFanfictionEntity ON (ProfileFanfictionEntity.fanfictionId = FanfictionEntity.id) " +
