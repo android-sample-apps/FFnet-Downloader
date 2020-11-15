@@ -26,6 +26,10 @@ class DownloaderRepository(
         return scheduler.getWorkInfosForUniqueWorkLiveData(fanfictionId)
     }
 
+    fun stopSyncing(fanfictionId: String) {
+        scheduler.stopSyncing(fanfictionId)
+    }
+
     fun downloadChapters(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
 
@@ -41,27 +45,20 @@ class DownloaderRepository(
             if (response.isSuccessful) {
                 response.body()?.let { responseBody ->
 
-                    val existingFanfiction = fanfictionDao.getFanfiction(fanfictionId)
                     val existingChapters = fanfictionDao.getChaptersIds(fanfictionId)
 
                     val (firstChapter, remoteFanfiction) = fanfictionBuilder.buildFanfiction(
                         fanfictionId, responseBody.string()
                     )
 
-                    val localFanfiction = existingFanfiction?.let {
-                        remoteFanfiction.copy(
-                            isWatching = it.isWatching
-                        )
-                    } ?: remoteFanfiction
-
                     fanfictionDao.insertFanfiction(
-                        converter.toFanfictionEntity(localFanfiction)
+                        converter.toFanfictionEntity(remoteFanfiction)
                     )
 
                     val chapterList = if (existingChapters.isNotEmpty()) {
-                        localFanfiction.chapterList.filter { it.id !in existingChapters }
+                        remoteFanfiction.chapterList.filter { it.id !in existingChapters }
                     } else {
-                        localFanfiction.chapterList
+                        remoteFanfiction.chapterList
                     }
                     fanfictionDao.insertChapterList(
                         converter.toChapterEntityList(fanfictionId, chapterList)
@@ -71,23 +68,13 @@ class DownloaderRepository(
                         fanfictionId = fanfictionId,
                         chapterId = "1"
                     )
-                    FanfictionRepositoryResultSuccess(localFanfiction)
+                    FanfictionRepositoryResultSuccess(remoteFanfiction)
                 } ?: FanfictionRepositoryResultFailure
             } else {
                 FanfictionRepositoryResultServerFailure
             }
         } catch (exception: IOException) {
             FanfictionRepositoryResultInternetFailure
-        }
-    }
-
-    fun schedulePeriodicJob() {
-        // scheduler.schedulePeriodicJob()
-    }
-
-    fun getAllWatchingFanfictions(): List<Fanfiction> {
-        return fanfictionDao.getAllWatchingFanfictions().map {
-            converter.toFanfiction(it)
         }
     }
 

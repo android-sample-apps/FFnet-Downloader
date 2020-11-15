@@ -11,7 +11,6 @@ data class Fanfiction(
     val publishedDate: Date,
     val updatedDate: Date,
     val fetchedDate: LocalDateTime?,
-    val isWatching: Boolean,
     val profileType: Int,
     val nbChapters: Int,
     val nbSyncedChapters: Int,

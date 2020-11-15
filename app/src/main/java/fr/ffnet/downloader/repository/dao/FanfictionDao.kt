@@ -23,9 +23,6 @@ interface FanfictionDao {
     @Query("UPDATE ChapterEntity SET content = '' WHERE fanfictionId = :fanfictionId")
     fun unsyncFanfiction(fanfictionId: String): Int
 
-    @Query("UPDATE FanfictionEntity SET isWatching = :newWatchingStatus WHERE id = :fanfictionId")
-    fun setWatchingStatus(newWatchingStatus: Boolean, fanfictionId: String)
-
     @Query(
         "SELECT " +
             "FanfictionEntity.*, " +
@@ -53,16 +50,6 @@ interface FanfictionDao {
             "WHERE id IN (SELECT fanfictionId FROM ChapterEntity WHERE content != '' GROUP BY fanfictionId)"
     )
     fun getSyncedFanfictions(): LiveData<List<FanfictionEntity>>
-
-    @Query(
-        "SELECT " +
-            "FanfictionEntity.*, " +
-            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId) AS nbChapters, " +
-            "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
-            "FROM FanfictionEntity " +
-            "WHERE isWatching = 1"
-    )
-    fun getAllWatchingFanfictions(): List<FanfictionEntity>
 
     @Query(
         "SELECT " +

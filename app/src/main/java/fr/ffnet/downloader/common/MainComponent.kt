@@ -8,7 +8,6 @@ import fr.ffnet.downloader.profile.fanfiction.injection.ProfileFanfictionModule
 import fr.ffnet.downloader.profile.injection.ProfileComponent
 import fr.ffnet.downloader.profile.injection.ProfileModule
 import fr.ffnet.downloader.repository.DownloaderWorker
-import fr.ffnet.downloader.repository.PeriodicCheckWorker
 import fr.ffnet.downloader.repository.RepositoryModule
 import fr.ffnet.downloader.search.injection.SearchComponent
 import fr.ffnet.downloader.search.injection.SearchModule
@@ -28,7 +27,6 @@ interface MainComponent {
 
     fun inject(application: MainApplication)
     fun inject(downloaderWorker: DownloaderWorker)
-    fun inject(periodicCheckWorker: PeriodicCheckWorker)
 
     fun plus(module: FanfictionModule): FanfictionComponent
     fun plus(module: ProfileModule): ProfileComponent

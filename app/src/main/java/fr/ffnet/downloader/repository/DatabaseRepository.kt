@@ -30,15 +30,6 @@ class DatabaseRepository(
         dao.getFanfictionHistory()
     )
 
-    fun changeWatchingStatus(fanfictionId: String) {
-        val newWatchingStatus = dao.getFanfiction(fanfictionId)?.isWatching?.not() ?: false
-        dao.setWatchingStatus(newWatchingStatus, fanfictionId)
-        FFLogger.d(
-            FFLogger.EVENT_KEY,
-            "Changed watch status for $fanfictionId to $newWatchingStatus"
-        )
-    }
-
     fun getChapters(fanfictionId: String): LiveData<List<ChapterEntity>> = dao.getChaptersLivedata(
         fanfictionId
     )

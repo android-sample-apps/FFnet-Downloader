@@ -103,10 +103,6 @@ class SearchViewModel(
         )
     }
 
-    fun schedulePeriodicJob() {
-        downloaderRepository.schedulePeriodicJob()
-    }
-
     sealed class SearchError(val message: String) {
         data class UrlNotValid(val msg: String) : SearchError(msg)
         data class InfoFetchingFailed(val msg: String) : SearchError(msg)

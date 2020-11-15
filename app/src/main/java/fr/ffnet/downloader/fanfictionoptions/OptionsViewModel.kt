@@ -1,15 +1,13 @@
 package fr.ffnet.downloader.fanfictionoptions
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import fr.ffnet.downloader.utils.EpubBuilder
-import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
-import fr.ffnet.downloader.utils.DateFormatter
+import fr.ffnet.downloader.utils.EpubBuilder
+import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,6 +43,8 @@ class OptionsViewModel(
 
     fun unsyncFanfiction(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            // TODO : Stop jobs
+            downloaderRepository.stopSyncing(fanfictionId)
             databaseRepository.unsyncFanfiction(fanfictionId)
         }
     }

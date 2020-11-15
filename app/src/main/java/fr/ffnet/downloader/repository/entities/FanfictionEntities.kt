@@ -15,7 +15,6 @@ data class FanfictionEntity(
     var publishedDate: Date,
     var updatedDate: Date,
     var fetchedDate: LocalDateTime?,
-    var isWatching: Boolean,
     var profileType: Int = 0,
     var nbChapters: Int = 0,
     var nbSyncedChapters: Int = 0

@@ -19,7 +19,6 @@ class FanfictionConverter @Inject constructor() {
         publishedDate = fanfiction.publishedDate,
         updatedDate = fanfiction.updatedDate,
         fetchedDate = fanfiction.fetchedDate,
-        isWatching = fanfiction.isWatching,
         profileType = fanfiction.profileType,
         nbChapters = fanfiction.nbChapters,
         nbSyncedChapters = fanfiction.nbSyncedChapters,
@@ -40,7 +39,6 @@ class FanfictionConverter @Inject constructor() {
         publishedDate = fanfiction.publishedDate,
         updatedDate = fanfiction.updatedDate,
         fetchedDate = fanfiction.fetchedDate,
-        isWatching = fanfiction.isWatching,
         nbChapters = fanfiction.nbChapters,
         nbSyncedChapters = fanfiction.nbSyncedChapters
     )

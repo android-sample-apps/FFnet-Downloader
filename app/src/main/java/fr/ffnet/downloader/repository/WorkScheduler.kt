@@ -3,16 +3,13 @@ package fr.ffnet.downloader.repository
 import androidx.lifecycle.LiveData
 import androidx.work.Constraints
 import androidx.work.Data
-import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
-import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.FFLogger.Companion.EVENT_KEY
-import java.util.concurrent.TimeUnit
 
 class WorkScheduler(
     private val workManager: WorkManager
@@ -55,20 +52,7 @@ class WorkScheduler(
         )
     }
 
-    fun schedulePeriodicJob() {
-        FFLogger.d(EVENT_KEY, "Scheduling periodic job")
-        workManager.enqueueUniquePeriodicWork(
-            PERIODIC_CHECK,
-            ExistingPeriodicWorkPolicy.KEEP,
-            PeriodicWorkRequest.Builder(
-                PeriodicCheckWorker::class.java,
-                PERIODIC_INTERVAL,
-                TimeUnit.MINUTES
-            ).setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            ).build()
-        )
+    fun stopSyncing(fanfictionId: String) {
+        workManager.getWorkInfosByTag(fanfictionId).cancel(true)
     }
 }
