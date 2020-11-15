@@ -21,13 +21,13 @@ class OptionsViewModel(
     private val pdfBuilder: PdfBuilder,
     private val epubBuilder: EpubBuilder,
     private val _getFile: SingleLiveEvent<Pair<String, String>> = SingleLiveEvent(),
-    private val navigateToFanfictionActivity: SingleLiveEvent<Unit> = SingleLiveEvent()
+    private val navigateToFanfictionActivity: SingleLiveEvent<String> = SingleLiveEvent()
 ) : ViewModel() {
 
     val getFile: LiveData<Pair<String, String>>
         get() = _getFile
 
-    val navigateToFanfiction: SingleLiveEvent<Unit>
+    val navigateToFanfiction: SingleLiveEvent<String>
         get() = navigateToFanfictionActivity
 
     private lateinit var displayModel: LiveData<OptionsDisplayModel>
@@ -52,11 +52,11 @@ class OptionsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
             if (isFanfictionInDatabase) {
-                navigateToFanfictionActivity.postValue(Unit)
+                navigateToFanfictionActivity.postValue(fanfictionId)
             } else {
                 val fanfictionResult = downloaderRepository.loadFanfictionInfo(fanfictionId)
                 if (fanfictionResult is FanfictionRepositoryResultSuccess) {
-                    navigateToFanfictionActivity.postValue(Unit)
+                    navigateToFanfictionActivity.postValue(fanfictionId)
                 }
             }
         }

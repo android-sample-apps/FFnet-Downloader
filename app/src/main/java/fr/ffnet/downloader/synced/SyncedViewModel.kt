@@ -32,7 +32,10 @@ class SyncedViewModel(
                             R.string.synced_fanfictions_chapters,
                             fanfiction.nbSyncedChapters,
                             fanfiction.nbChapters
-                        )
+                        ),
+                        syncedChapters = fanfiction.nbSyncedChapters,
+                        nbChapters = fanfiction.nbChapters,
+                        isDownloadComplete = fanfiction.nbSyncedChapters == fanfiction.nbChapters
                     )
                 })
             } else {

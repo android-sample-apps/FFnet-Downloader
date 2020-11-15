@@ -3,14 +3,13 @@ package fr.ffnet.downloader.synced
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
-import fr.ffnet.downloader.utils.OnFanfictionOptionsListener
+import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
 
 class SyncedAdapter(
-    private val onMenuItemClickListener: OnFanfictionOptionsListener
+    private val onActionListener: OnFanfictionActionsListener
 ) : RecyclerView.Adapter<SyncedAdapter.SyncedViewHolder>() {
 
     var fanfictionList: List<FanfictionSyncedUIModel> = emptyList()
@@ -30,20 +29,31 @@ class SyncedAdapter(
     override fun getItemCount(): Int = fanfictionList.size
 
     override fun onBindViewHolder(holder: SyncedViewHolder, position: Int) {
-        holder.bind(fanfictionList[position], onMenuItemClickListener)
+        holder.bind(fanfictionList[position])
+    }
+
+    fun unsync(position: Int) {
+        onActionListener.onUnsync(fanfictionList[position])
     }
 
     inner class SyncedViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val titleTextView: TextView = view.titleTextView
-        private val chaptersTextView: TextView = view.chaptersTextView
+        fun bind(fanfiction: FanfictionSyncedUIModel) {
 
-        fun bind(fanfiction: FanfictionSyncedUIModel, listener: OnFanfictionOptionsListener) {
-            view.setOnClickListener {
-                listener.onOptionsClicked(fanfiction)
+            view.titleTextView.text = fanfiction.title
+            view.syncedChaptersTextView.text = fanfiction.chapters
+            view.publishedDateValueTextView.text = fanfiction.publishedDate
+            view.updatedDateValueTextView.text = fanfiction.updatedDate
+
+            view.fetchInfoImageView.setOnClickListener {
+                onActionListener.onFetchInformation(fanfiction)
             }
-            titleTextView.text = fanfiction.title
-            chaptersTextView.text = fanfiction.chapters
+            view.exportPdfImageView.setOnClickListener {
+                onActionListener.onExportPdf(fanfiction)
+            }
+            view.exportEpubImageView.setOnClickListener {
+                onActionListener.onExportEpub(fanfiction)
+            }
         }
     }
 }

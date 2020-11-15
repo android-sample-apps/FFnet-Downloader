@@ -1,59 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:layout_margin="8dp">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-light"
-        android:singleLine="true"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintRight_toLeftOf="@+id/actionsImageButton"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Harry Potter and the Methods of Rationality" />
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="16dp">
 
-    <TextView
-        android:id="@+id/chaptersTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:textSize="16sp"
-        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
-        app:layout_constraintRight_toLeftOf="@+id/actionsImageButton"
-        app:layout_constraintTop_toBottomOf="@id/titleTextView"
-        tools:text="120/122 synced chapters" />
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-light"
+            android:singleLine="true"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/syncedChaptersTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Harry Potter and Harry Potter and the Methods of Rationality" />
 
-    <ImageView
-        android:id="@+id/actionsImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@drawable/ic_more"
-        android:tint="@color/bottomNavigationGrey"
-        app:layout_constraintBaseline_toBaselineOf="@+id/titleTextView"
-        app:layout_constraintRight_toLeftOf="@id/rightGuideline" />
+        <TextView
+            android:id="@+id/syncedChaptersTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="45/122" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/leftGuideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="16dp" />
+        <TextView
+            android:id="@+id/publishedDateLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/download_info_published_date_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/rightGuideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="16dp" />
+        <TextView
+            android:id="@+id/publishedDateValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/publishedDateLabelTextView"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            tools:text="2010/02/28" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/updatedDateLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_info_updated_date_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/publishedDateLabelTextView" />
+
+        <TextView
+            android:id="@+id/updatedDateValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/updatedDateLabelTextView"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            tools:text="2015/03/14" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="publishedDateLabelTextView,updatedDateLabelTextView" />
+
+        <ImageView
+            android:id="@+id/fetchInfoImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/ic_download"
+            android:contentDescription="@string/description_fetch_information"
+            app:layout_constraintEnd_toStartOf="@id/exportPdfImageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView" />
+
+        <ImageView
+            android:id="@+id/exportPdfImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_pdf"
+            android:contentDescription="@string/description_export_pdf"
+            app:layout_constraintEnd_toStartOf="@id/exportEpubImageView"
+            app:layout_constraintStart_toEndOf="@id/fetchInfoImageView"
+            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView" />
+
+        <ImageView
+            android:id="@+id/exportEpubImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_epub"
+            android:contentDescription="@string/description_export_epub"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/exportPdfImageView"
+            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

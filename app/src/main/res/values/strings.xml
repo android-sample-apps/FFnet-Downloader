@@ -35,7 +35,7 @@
 
     <string name="synced_fanfictions_no_fanfictions">No fanfictions synced</string>
     <string name="synced_fanfictions_synced_date_label">Synced</string>
-    <string name="synced_fanfictions_chapters">%d/%d synced chapters</string>
+    <string name="synced_fanfictions_chapters">%d/%d</string>
 
     <string name="fanfiction_options_menu_goto">See details</string>
     <string name="fanfiction_options_menu_export_pdf">Export PDF</string>

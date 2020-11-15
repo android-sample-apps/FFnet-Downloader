@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="description_fetch_information">Fetch fanfiction information</string>
+    <string name="description_export_pdf">Export PDF file</string>
+    <string name="description_export_epub">Export EPUB file</string>
+    <string name="description_unsync_fanfiction">Unsync fanfiction</string>
+</resources>

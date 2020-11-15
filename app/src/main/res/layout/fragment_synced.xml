@@ -16,7 +16,7 @@
         app:title="@string/synced_title" />
 
     <ViewFlipper
-        android:id="@+id/fanfictionResultViewFlipper"
+        android:id="@+id/fanfictionViewFlipper"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
