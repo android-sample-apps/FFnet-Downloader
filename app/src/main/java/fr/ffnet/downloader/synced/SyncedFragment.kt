@@ -2,8 +2,12 @@ package fr.ffnet.downloader.synced
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -18,7 +22,7 @@ import javax.inject.Inject
 
 class SyncedFragment : Fragment() {
 
-    @Inject lateinit var syncedViewModel: SyncedViewModel
+    @Inject lateinit var viewModel: SyncedViewModel
     @Inject lateinit var optionsController: OptionsController
 
     companion object {
@@ -42,6 +46,32 @@ class SyncedFragment : Fragment() {
             .plus(SyncedModule(this))
             .inject(this)
 
+        swipeRefresh.setOnRefreshListener {
+            viewModel.refreshSyncedInfo()
+        }
+
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+        setHasOptionsMenu(true)
+
+        initializeAdapter()
+        setObservers()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.synced_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.syncUnsynced -> {
+                viewModel.syncAllUnsyncedChapters()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initializeAdapter() {
         syncedFanfictionsRecyclerView.adapter = SyncedAdapter(optionsController)
         val swiper = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -52,13 +82,11 @@ class SyncedFragment : Fragment() {
         }
         val itemTouchHelper = ItemTouchHelper(swiper)
         itemTouchHelper.attachToRecyclerView(syncedFanfictionsRecyclerView)
-
-        setListeners()
     }
 
-    private fun setListeners() {
-        syncedViewModel.loadFanfictions()
-        syncedViewModel.getFanfictionList().observe(viewLifecycleOwner, Observer { result ->
+    private fun setObservers() {
+        viewModel.loadFanfictions()
+        viewModel.getFanfictionList().observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is SyncedFanfictionsResult.NoSyncedFanfictions -> {
                     fanfictionViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
@@ -68,6 +96,9 @@ class SyncedFragment : Fragment() {
                     fanfictionViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
                 }
             }
+        })
+        viewModel.fanfictionRefreshResult.observe(viewLifecycleOwner, Observer { result ->
+            swipeRefresh.isRefreshing = false
         })
     }
 

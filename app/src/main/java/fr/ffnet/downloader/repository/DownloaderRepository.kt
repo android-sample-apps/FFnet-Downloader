@@ -2,6 +2,8 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
+import fr.ffnet.downloader.common.FFLogger
+import fr.ffnet.downloader.common.FFLogger.Companion.EVENT_KEY
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultServerFailure
@@ -34,6 +36,7 @@ class DownloaderRepository(
 
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
         return try {
+            FFLogger.d(EVENT_KEY, "Refreshing info for $fanfictionId")
             val response = service.getFanfiction(fanfictionId).execute()
             if (response.isSuccessful) {
                 response.body()?.let { responseBody ->

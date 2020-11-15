@@ -22,13 +22,15 @@ class SyncedModule(private val fragment: Fragment) {
     @Provides
     fun provideSyncedViewModel(
         resources: Resources,
-        repository: DatabaseRepository,
+        downloaderRepository: DownloaderRepository,
+        databaseRepository: DatabaseRepository,
         dateFormatter: DateFormatter
     ): SyncedViewModel {
         val factory = ViewModelFactory {
             SyncedViewModel(
                 resources,
-                repository,
+                downloaderRepository,
+                databaseRepository,
                 dateFormatter
             )
         }
