@@ -94,20 +94,20 @@
             android:id="@+id/exportPdfImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_pdf"
             android:contentDescription="@string/description_export_pdf"
             app:layout_constraintEnd_toStartOf="@id/exportEpubImageView"
             app:layout_constraintStart_toEndOf="@id/fetchInfoImageView"
-            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView" />
+            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView"
+            tools:background="@drawable/ic_export_pdf_enabled" />
 
         <ImageView
             android:id="@+id/exportEpubImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_epub"
             android:contentDescription="@string/description_export_epub"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/exportPdfImageView"
-            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView" />
+            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView"
+            tools:background="@drawable/ic_export_epub_enabled" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

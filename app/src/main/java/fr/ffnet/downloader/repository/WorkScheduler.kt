@@ -51,8 +51,4 @@ class WorkScheduler(
                 .build()
         )
     }
-
-    fun stopSyncing(fanfictionId: String) {
-        workManager.getWorkInfosByTag(fanfictionId).cancel(true)
-    }
 }

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/exportPdf"
-        android:icon="@drawable/ic_pdf"
+        android:icon="@drawable/ic_export_pdf_enabled"
         android:title="@string/fanfiction_options_menu_export_pdf"
         app:showAsAction="never" />
     <item
         android:id="@+id/exportEpub"
-        android:icon="@drawable/ic_epub"
+        android:icon="@drawable/ic_export_epub_enabled"
         android:title="@string/fanfiction_options_menu_export_epub"
         app:showAsAction="never" />
 </menu>

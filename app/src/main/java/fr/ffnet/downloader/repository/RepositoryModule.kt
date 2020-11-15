@@ -5,7 +5,6 @@ import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
-import fr.ffnet.downloader.repository.dao.ErrorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.utils.FanfictionBuilder
@@ -26,15 +25,9 @@ class RepositoryModule {
         database.profileDao()
 
     @Provides
-    fun provideErrorDao(database: FanfictionDownloaderDatabase): ErrorDao = database.errorDao()
-
-    @Provides
     fun provideCrawlService(retrofit: Retrofit): CrawlService = retrofit.create(
         CrawlService::class.java
     )
-
-    @Provides
-    fun provideErrorRepository(errorDao: ErrorDao): ErrorRepository = ErrorRepository(errorDao)
 
     @Provides
     fun provideDatabaseRepository(

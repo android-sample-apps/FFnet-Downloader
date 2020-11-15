@@ -26,10 +26,6 @@ class DownloaderRepository(
         return scheduler.getWorkInfosForUniqueWorkLiveData(fanfictionId)
     }
 
-    fun stopSyncing(fanfictionId: String) {
-        scheduler.stopSyncing(fanfictionId)
-    }
-
     fun downloadChapters(fanfictionId: String) {
         val chapterList = fanfictionDao.getChaptersToSync(fanfictionId)
 

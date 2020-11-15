@@ -17,35 +17,14 @@
         app:title="@string/search_title" />
 
     <TextView
-        android:id="@+id/titleLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/download_info_title_label"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/titleValueTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textSize="16sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/titleLabelTextView"
-        app:layout_constraintLeft_toRightOf="@+id/barrier"
-        app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-        tools:text="Harry Potter and the Methods of Rationality" />
-
-    <TextView
         android:id="@+id/wordsLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/download_info_words_label"
         android:textSize="14sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-        app:layout_constraintTop_toBottomOf="@id/titleValueTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <TextView
         android:id="@+id/wordsValueTextView"
@@ -142,15 +121,56 @@
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
         tools:text="12/122" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/middleGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:id="@+id/exportPdfImageView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/description_export_pdf"
+        app:layout_constraintEnd_toStartOf="@id/exportEpubImageView"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chaptersLabelTextView"
+        tools:background="@drawable/ic_export_pdf_enabled" />
+
+    <ImageView
+        android:id="@+id/exportEpubImageView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:contentDescription="@string/description_export_epub"
+        app:layout_constraintEnd_toStartOf="@+id/unsyncImageView"
+        app:layout_constraintStart_toEndOf="@id/exportPdfImageView"
+        app:layout_constraintTop_toTopOf="@+id/exportPdfImageView"
+        tools:background="@drawable/ic_export_epub_enabled" />
+
+    <ImageView
+        android:id="@+id/unsyncImageView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/ic_trash_enabled"
+        android:contentDescription="@string/description_export_epub"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/exportEpubImageView"
+        app:layout_constraintTop_toTopOf="@+id/exportPdfImageView" />
+
     <Button
         android:id="@+id/downloadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/download_button_title"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
-        app:layout_constraintTop_toBottomOf="@+id/chaptersValueTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/exportPdfImageView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chapterListRecyclerView"
@@ -169,7 +189,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="titleLabelTextView, wordsLabelTextView, chaptersLabelTextView, publishedDateLabelTextView, updatedDateLabelTextView" />
+        app:constraint_referenced_ids="wordsLabelTextView, chaptersLabelTextView, publishedDateLabelTextView, updatedDateLabelTextView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"
@@ -190,7 +210,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="titleLabelTextView, titleValueTextView, wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton, publishedDateLabelTextView, publishedDateValueTextView, updatedDateLabelTextView, updatedDateValueTextView"
+        app:constraint_referenced_ids="wordsLabelTextView, wordsValueTextView, chaptersLabelTextView, chaptersValueTextView, chapterListRecyclerView, downloadButton, publishedDateLabelTextView, publishedDateValueTextView, updatedDateLabelTextView, updatedDateValueTextView"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

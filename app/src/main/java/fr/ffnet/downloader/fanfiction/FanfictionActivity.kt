@@ -2,22 +2,29 @@ package fr.ffnet.downloader.fanfiction
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
+import fr.ffnet.downloader.fanfiction.ChapterListAdapter.ChapterClickListener
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
+import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.synced.OptionsController
+import fr.ffnet.downloader.synced.PermissionListener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
-class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickListener {
+class FanfictionActivity : AppCompatActivity(), ChapterClickListener, PermissionListener, SyncingFinishedListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
+    @Inject lateinit var optionsController: OptionsController
 
     private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
 
@@ -46,14 +53,9 @@ class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
 
         viewModel.loadFanfictionInfo(fanfictionId)
         viewModel.loadChapters(fanfictionId)
+
         setListeners(fanfictionId)
-
         setObservers()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.fanfiction_menu, menu)
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -62,27 +64,31 @@ class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
                 onBackPressed()
                 true
             }
-            R.id.exportEpub -> {
-                true
-            }
-            R.id.exportPdf -> {
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        optionsController.onRequestPermissionsResult(requestCode, grantResults)
+    }
+
     override fun onChapterSelected(chapter: ChapterUIModel) = Unit
 
+    override fun onExportPdf() {
+        optionsController.onExportPdf(fanfictionId)
+    }
+
+    override fun onExportEpub() {
+        optionsController.onExportEpub(fanfictionId)
+    }
+
     private fun setObservers() {
-        viewModel.getFanfictionInfo().observe(this, Observer {
-            widgetVisibilityGroup.visibility = View.VISIBLE
-            titleValueTextView.text = it.title
-            wordsValueTextView.text = it.words
-            publishedDateValueTextView.text = it.publishedDate
-            updatedDateValueTextView.text = it.updatedDate
-            syncedDateValueTextView.text = it.syncedDate
-            chaptersValueTextView.text = it.progressionText
+        viewModel.getFanfictionInfo().observe(this, Observer { fanfiction ->
+            onFanfictionInfo(fanfiction)
         })
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
@@ -92,14 +98,59 @@ class FanfictionActivity : AppCompatActivity(), ChapterListAdapter.ChapterClickL
                 FFLogger.EVENT_KEY,
                 "Changing download button state for $fanfictionId to $shouldEnable"
             )
+            if (downloadButton.isEnabled.not() && shouldEnable) {
+                val syncingFinishedFragment = SyncingFinishedFragment.newIntent()
+                syncingFinishedFragment.show(supportFragmentManager, "syncingFinished")
+            }
             downloadButton.text = buttonText
             downloadButton.isEnabled = shouldEnable
         })
+    }
+
+    private fun onFanfictionInfo(fanfiction: FanfictionSyncedUIModel) {
+        widgetVisibilityGroup.visibility = View.VISIBLE
+        toolbar.title = fanfiction.title
+        wordsValueTextView.text = fanfiction.words
+        publishedDateValueTextView.text = fanfiction.publishedDate
+        updatedDateValueTextView.text = fanfiction.updatedDate
+        syncedDateValueTextView.text = fanfiction.fetchedDate
+        chaptersValueTextView.text = fanfiction.progressionText
+
+        exportPdfImageView.setBackgroundResource(fanfiction.exportPdfImage)
+        exportEpubImageView.setBackgroundResource(fanfiction.exportEpubImage)
+        unsyncImageView.setBackgroundResource(
+            if (fanfiction.isDownloadComplete) R.drawable.ic_trash_enabled else R.drawable.ic_trash_disabled
+        )
+
+        if (fanfiction.isDownloadComplete) {
+            exportPdfImageView.setOnClickListener {
+                optionsController.onExportPdf(fanfiction.id)
+            }
+            exportEpubImageView.setOnClickListener {
+                optionsController.onExportEpub(fanfiction.id)
+            }
+            unsyncImageView.setOnClickListener {
+                optionsController.onUnsync(fanfiction)
+                finish()
+            }
+        }
     }
 
     private fun setListeners(fanfictionId: String) {
         downloadButton.setOnClickListener {
             viewModel.syncChapters(fanfictionId)
         }
+    }
+
+    override fun onPermissionRequested(arrayOf: Array<String>, requestCode: Int): Boolean {
+        return if (ActivityCompat.checkSelfPermission(
+                this,
+                OptionsController.STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        ) {
+            requestPermissions(arrayOf(OptionsController.STORAGE), requestCode)
+            false
+        } else true
     }
 }

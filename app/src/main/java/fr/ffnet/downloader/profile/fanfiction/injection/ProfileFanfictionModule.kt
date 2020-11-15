@@ -1,34 +1,31 @@
 package fr.ffnet.downloader.profile.fanfiction.injection
 
-import android.content.res.Resources
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionFragment
 import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.synced.OptionsController
-import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.EpubBuilder
 import fr.ffnet.downloader.utils.FanfictionOpener
+import fr.ffnet.downloader.utils.FanfictionUIBuilder
 import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.utils.ViewModelFactory
 
 @Module
-class ProfileFanfictionModule(private val fragment: Fragment) {
+class ProfileFanfictionModule(private val fragment: ProfileFanfictionFragment) {
     @Provides
     fun provideProfileFanfictionViewModel(
-        resources: Resources,
         databaseRepository: DatabaseRepository,
-        dateFormatter: DateFormatter
+        fanfictionUIBuilder: FanfictionUIBuilder
     ): ProfileFanfictionViewModel {
         val factory = ViewModelFactory {
             ProfileFanfictionViewModel(
-                resources,
                 databaseRepository,
-                dateFormatter
+                fanfictionUIBuilder
             )
         }
         return ViewModelProvider(fragment, factory)[ProfileFanfictionViewModel::class.java]
@@ -61,9 +58,11 @@ class ProfileFanfictionModule(private val fragment: Fragment) {
         fanfictionOpener: FanfictionOpener
     ): OptionsController {
         return OptionsController(
-            fragment,
-            optionsViewModel,
-            fanfictionOpener
+            context = fragment.requireContext(),
+            lifecycleOwner = fragment.viewLifecycleOwner,
+            permissionListener = fragment,
+            optionsViewModel = optionsViewModel,
+            fanfictionOpener = fanfictionOpener
         )
     }
 }

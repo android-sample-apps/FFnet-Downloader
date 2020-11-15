@@ -1,5 +1,7 @@
 package fr.ffnet.downloader.synced
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,19 +10,21 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
+import fr.ffnet.downloader.synced.OptionsController.Companion.STORAGE
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult
 import fr.ffnet.downloader.synced.injection.SyncedModule
 import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_synced.*
 import javax.inject.Inject
 
-class SyncedFragment : Fragment() {
+class SyncedFragment : Fragment(), PermissionListener {
 
     @Inject lateinit var viewModel: SyncedViewModel
     @Inject lateinit var optionsController: OptionsController
@@ -72,10 +76,10 @@ class SyncedFragment : Fragment() {
     }
 
     private fun initializeAdapter() {
-        syncedFanfictionsRecyclerView.adapter = SyncedAdapter(optionsController)
+        syncedFanfictionsRecyclerView.adapter = FanfictionListAdapter(optionsController)
         val swiper = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).unsync(
+                (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).unsync(
                     viewHolder.adapterPosition
                 )
             }
@@ -92,12 +96,12 @@ class SyncedFragment : Fragment() {
                     fanfictionViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
                 }
                 is SyncedFanfictionsResult.SyncedFanfictions -> {
-                    (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).fanfictionList = result.fanfictionList
+                    (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).fanfictionList = result.fanfictionList
                     fanfictionViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
                 }
             }
         })
-        viewModel.fanfictionRefreshResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.fanfictionRefreshResult.observe(viewLifecycleOwner, Observer {
             swipeRefresh.isRefreshing = false
         })
     }
@@ -108,5 +112,17 @@ class SyncedFragment : Fragment() {
         grantResults: IntArray
     ) {
         optionsController.onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    override fun onPermissionRequested(arrayOf: Array<String>, requestCode: Int): Boolean {
+        return if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        ) {
+            requestPermissions(arrayOf(STORAGE), requestCode)
+            false
+        } else true
     }
 }

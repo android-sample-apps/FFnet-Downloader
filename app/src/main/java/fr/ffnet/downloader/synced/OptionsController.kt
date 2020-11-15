@@ -2,10 +2,10 @@ package fr.ffnet.downloader.synced
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Environment
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
@@ -14,20 +14,26 @@ import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
 import fr.ffnet.downloader.utils.FanfictionOpener
 import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 
+interface PermissionListener {
+    fun onPermissionRequested(arrayOf: Array<String>, requestCode: Int): Boolean
+}
+
 class OptionsController(
-    private val fragment: Fragment,
+    private val context: Context,
+    lifecycleOwner: LifecycleOwner,
+    private val permissionListener: PermissionListener,
     private val optionsViewModel: OptionsViewModel,
     private val fanfictionOpener: FanfictionOpener
 ) : OnFanfictionActionsListener {
 
     companion object {
-        private const val STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        const val STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
         private const val EXPORT_EPUB_REQUEST = 2000
         private const val EXPORT_PDF_REQUEST = 2001
     }
 
     private val absolutePath: String by lazy {
-        fragment.requireContext().getExternalFilesDir(
+        context.getExternalFilesDir(
             Environment.DIRECTORY_DOCUMENTS
         )?.absolutePath ?: throw IllegalArgumentException()
     }
@@ -36,16 +42,16 @@ class OptionsController(
     init {
 
         optionsViewModel.getFile.observe(
-            fragment.viewLifecycleOwner,
+            lifecycleOwner,
             Observer { (fileName, absolutePath) ->
                 fanfictionOpener.openFile(fileName, absolutePath)
             })
         optionsViewModel.navigateToFanfiction.observe(
-            fragment.viewLifecycleOwner,
+            lifecycleOwner,
             Observer { fanfictionId ->
-                fragment.startActivity(
+                context.startActivity(
                     FanfictionActivity.intent(
-                        fragment.requireContext(),
+                        context,
                         fanfictionId
                     )
                 )
@@ -60,7 +66,7 @@ class OptionsController(
             }
         } else {
             AlertDialog
-                .Builder(fragment.requireContext())
+                .Builder(context)
                 .setTitle(R.string.export_permission_title)
                 .setMessage(R.string.export_permission_content)
                 .setPositiveButton(R.string.export_permission_grant) { _, _ ->
@@ -79,13 +85,13 @@ class OptionsController(
         optionsViewModel.loadFanfictionInfo(fanfiction.id)
     }
 
-    override fun onExportPdf(fanfiction: FanfictionSyncedUIModel) {
-        exportFanfictionId = fanfiction.id
+    override fun onExportPdf(fanfictionId: String) {
+        exportFanfictionId = fanfictionId
         exportPdf()
     }
 
-    override fun onExportEpub(fanfiction: FanfictionSyncedUIModel) {
-        exportFanfictionId = fanfiction.id
+    override fun onExportEpub(fanfictionId: String) {
+        exportFanfictionId = fanfictionId
         exportEpub()
     }
 
@@ -95,14 +101,7 @@ class OptionsController(
     }
 
     private fun checkPermission(requestCode: Int): Boolean {
-        return if (ActivityCompat.checkSelfPermission(
-                fragment.requireContext(),
-                STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            fragment.requestPermissions(arrayOf(STORAGE), requestCode)
-            false
-        } else true
+        return permissionListener.onPermissionRequested(arrayOf(STORAGE), requestCode)
     }
 
     private fun exportEpub() {

@@ -9,7 +9,8 @@ import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.utils.DateFormatter
+import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.utils.FanfictionUIBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -17,16 +18,16 @@ class FanfictionViewModel(
     private val resources: Resources,
     private val apiRepository: DownloaderRepository,
     private val dbRepository: DatabaseRepository,
-    private val dateFormatter: DateFormatter
+    private val fanfictionUIBuilder: FanfictionUIBuilder
 ) : ViewModel() {
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
-    private lateinit var fanfictionInfo: LiveData<FanfictionDisplayModel>
+    private lateinit var fanfictionInfo: LiveData<FanfictionSyncedUIModel>
     private lateinit var downloadButtonState: LiveData<Pair<String, Boolean>>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
-    fun getFanfictionInfo(): LiveData<FanfictionDisplayModel> = fanfictionInfo
+    fun getFanfictionInfo(): LiveData<FanfictionSyncedUIModel> = fanfictionInfo
 
     fun getDownloadButtonState(): LiveData<Pair<String, Boolean>> = downloadButtonState
 
@@ -46,22 +47,7 @@ class FanfictionViewModel(
         }
 
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
-            FanfictionDisplayModel(
-                id = it.id,
-                title = it.title,
-                words = it.words.toString(),
-                summary = it.summary,
-                updatedDate = dateFormatter.format(it.updatedDate),
-                publishedDate = dateFormatter.format(it.publishedDate),
-                syncedDate = dateFormatter.format(it.fetchedDate),
-                progressionText = resources.getString(
-                    R.string.download_info_chapters_value,
-                    it.nbSyncedChapters,
-                    it.nbChapters
-                ),
-                progression = it.nbSyncedChapters,
-                nbChapters = it.nbChapters
-            )
+            fanfictionUIBuilder.buildFanfictionUI(it)
         }
     }
 

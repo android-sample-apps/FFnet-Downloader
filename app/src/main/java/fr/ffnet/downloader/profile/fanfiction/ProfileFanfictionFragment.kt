@@ -1,31 +1,31 @@
 package fr.ffnet.downloader.profile.fanfiction
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.profile.fanfiction.injection.ProfileFanfictionModule
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.synced.OptionsController
-import fr.ffnet.downloader.synced.SyncedAdapter
-import fr.ffnet.downloader.utils.SwipeToDeleteCallback
+import fr.ffnet.downloader.synced.FanfictionListAdapter
+import fr.ffnet.downloader.synced.PermissionListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
 
-class ProfileFanfictionFragment : Fragment() {
+class ProfileFanfictionFragment : Fragment(), PermissionListener {
 
     @Inject lateinit var profileViewModel: ProfileFanfictionViewModel
     @Inject lateinit var optionsController: OptionsController
 
     companion object {
-
         private const val DISPLAY_NO_FANFICTIONS = 0
         private const val DISPLAY_LIST = 1
         private const val EXTRA_IS_FAVORITE = "EXTRA_IS_FAVORITE"
@@ -54,7 +54,7 @@ class ProfileFanfictionFragment : Fragment() {
             .plus(ProfileFanfictionModule(this))
             .inject(this)
 
-        fanfictionRecyclerView.adapter = SyncedAdapter(optionsController)
+        fanfictionRecyclerView.adapter = FanfictionListAdapter(optionsController)
 
         profileViewModel.loadFavoriteFanfictions()
         profileViewModel.loadMyFanfictions()
@@ -68,6 +68,18 @@ class ProfileFanfictionFragment : Fragment() {
         grantResults: IntArray
     ) {
         optionsController.onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    override fun onPermissionRequested(arrayOf: Array<String>, requestCode: Int): Boolean {
+        return if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                OptionsController.STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        ) {
+            requestPermissions(arrayOf(OptionsController.STORAGE), requestCode)
+            false
+        } else true
     }
 
     private fun setListeners() {
@@ -94,7 +106,7 @@ class ProfileFanfictionFragment : Fragment() {
     }
 
     private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (fanfictionRecyclerView.adapter as SyncedAdapter).fanfictionList = fanfictionList
+        (fanfictionRecyclerView.adapter as FanfictionListAdapter).fanfictionList = fanfictionList
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 }

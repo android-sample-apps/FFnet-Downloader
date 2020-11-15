@@ -43,8 +43,6 @@ class OptionsViewModel(
 
     fun unsyncFanfiction(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            // TODO : Stop jobs
-            downloaderRepository.stopSyncing(fanfictionId)
             databaseRepository.unsyncFanfiction(fanfictionId)
         }
     }
