@@ -8,6 +8,7 @@ import dagger.Provides
 import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.SyncedViewModel
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.EpubBuilder
@@ -40,7 +41,6 @@ class SyncedModule(private val fragment: Fragment) {
     @Provides
     fun provideOptionsViewModel(
         databaseRepository: DatabaseRepository,
-        dateFormatter: DateFormatter,
         downloaderRepository: DownloaderRepository,
         pdfBuilder: PdfBuilder,
         epubBuilder: EpubBuilder
@@ -48,12 +48,23 @@ class SyncedModule(private val fragment: Fragment) {
         val factory = ViewModelFactory {
             OptionsViewModel(
                 databaseRepository = databaseRepository,
-                dateFormatter = dateFormatter,
                 downloaderRepository = downloaderRepository,
                 pdfBuilder = pdfBuilder,
                 epubBuilder = epubBuilder
             )
         }
         return ViewModelProvider(fragment, factory)[OptionsViewModel::class.java]
+    }
+
+    @Provides
+    fun provideOptionsController(
+        optionsViewModel: OptionsViewModel,
+        fanfictionOpener: FanfictionOpener
+    ): OptionsController {
+        return OptionsController(
+            fragment,
+            optionsViewModel,
+            fanfictionOpener
+        )
     }
 }

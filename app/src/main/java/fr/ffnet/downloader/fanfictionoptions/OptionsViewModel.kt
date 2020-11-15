@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 class OptionsViewModel(
     private val databaseRepository: DatabaseRepository,
-    private val dateFormatter: DateFormatter,
     private val downloaderRepository: DownloaderRepository,
     private val pdfBuilder: PdfBuilder,
     private val epubBuilder: EpubBuilder,
@@ -30,24 +29,6 @@ class OptionsViewModel(
     val navigateToFanfiction: SingleLiveEvent<String>
         get() = navigateToFanfictionActivity
 
-    private lateinit var displayModel: LiveData<OptionsDisplayModel>
-    fun getDisplayModel() = displayModel
-
-    fun load(fanfictionId: String) {
-        displayModel = Transformations.map(databaseRepository.getFanfictionInfo(fanfictionId)) { fanfiction ->
-            OptionsDisplayModel(
-                title = fanfiction.title,
-                publishedDate = dateFormatter.format(fanfiction.publishedDate),
-                updatedDate = dateFormatter.format(fanfiction.updatedDate),
-                fetchedDate = dateFormatter.format(fanfiction.fetchedDate),
-                isWatching = fanfiction.isWatching,
-                shouldShowFetchedDate = fanfiction.fetchedDate != null,
-                shouldShowPdfExport = fanfiction.nbSyncedChapters > 0,
-                shouldShowEpubExport = fanfiction.nbSyncedChapters > 0
-            )
-        }
-    }
-
     fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
@@ -59,12 +40,6 @@ class OptionsViewModel(
                     navigateToFanfictionActivity.postValue(fanfictionId)
                 }
             }
-        }
-    }
-
-    fun onWatchingChanged(fanfictionId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.changeWatchingStatus(fanfictionId)
         }
     }
 
@@ -92,14 +67,3 @@ class OptionsViewModel(
         }
     }
 }
-
-data class OptionsDisplayModel(
-    val title: String,
-    val publishedDate: String,
-    val updatedDate: String,
-    val fetchedDate: String,
-    val isWatching: Boolean,
-    val shouldShowFetchedDate: Boolean,
-    val shouldShowPdfExport: Boolean,
-    val shouldShowEpubExport: Boolean
-)
