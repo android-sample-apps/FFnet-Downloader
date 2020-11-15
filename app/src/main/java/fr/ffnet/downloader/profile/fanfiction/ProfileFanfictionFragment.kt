@@ -17,7 +17,6 @@ import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.SyncedAdapter
 import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
-import kotlinx.android.synthetic.main.fragment_synced.*
 import javax.inject.Inject
 
 class ProfileFanfictionFragment : Fragment() {
@@ -56,16 +55,6 @@ class ProfileFanfictionFragment : Fragment() {
             .inject(this)
 
         fanfictionRecyclerView.adapter = SyncedAdapter(optionsController)
-
-        val swiper = object : SwipeToDeleteCallback(requireContext()) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                (syncedFanfictionsRecyclerView.adapter as SyncedAdapter).unsync(
-                    viewHolder.adapterPosition
-                )
-            }
-        }
-        val itemTouchHelper = ItemTouchHelper(swiper)
-        itemTouchHelper.attachToRecyclerView(fanfictionRecyclerView)
 
         profileViewModel.loadFavoriteFanfictions()
         profileViewModel.loadMyFanfictions()
