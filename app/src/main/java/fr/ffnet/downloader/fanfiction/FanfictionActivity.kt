@@ -9,11 +9,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.ChapterListAdapter.ChapterClickListener
+import fr.ffnet.downloader.fanfiction.FanfictionViewModel.SyncButtonState
+import fr.ffnet.downloader.fanfiction.FanfictionViewModel.SyncButtonState.*
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.synced.OptionsController
@@ -52,7 +55,7 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
         chapterListRecyclerView.adapter = ChapterListAdapter(this)
 
         viewModel.loadFanfictionInfo(fanfictionId)
-        viewModel.loadChapters(fanfictionId)
+        viewModel.loadChapterInfo(fanfictionId)
 
         setListeners(fanfictionId)
         setObservers()
@@ -90,20 +93,27 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
         viewModel.getFanfictionInfo().observe(this, Observer { fanfiction ->
             onFanfictionInfo(fanfiction)
         })
-        viewModel.getChapterList().observe(this, Observer { chapterList ->
+
+        viewModel.getChapterSyncState().observe(this, Observer { (syncButtonState, chapterList) ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
-        })
-        viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shouldEnable) ->
-            FFLogger.d(
-                FFLogger.EVENT_KEY,
-                "Changing download button state for $fanfictionId to $shouldEnable"
-            )
-            if (downloadButton.isEnabled.not() && shouldEnable) {
-                val syncingFinishedFragment = SyncingFinishedFragment.newIntent()
-                syncingFinishedFragment.show(supportFragmentManager, "syncingFinished")
+            when (syncButtonState) {
+                Synced -> {
+                    if (downloadButton.isEnabled) {
+                        val syncingFinishedFragment = SyncingFinishedFragment.newIntent()
+                        syncingFinishedFragment.show(supportFragmentManager, "syncingFinished")
+                    }
+                    downloadButton.isVisible = false
+                    downloadButton.isEnabled = false
+                }
+                is Syncing -> {
+                    downloadButton.text = syncButtonState.buttonTitle
+                    downloadButton.isEnabled = false
+                }
+                is Unsynced -> {
+                    downloadButton.text = syncButtonState.buttonTitle
+                    downloadButton.isEnabled = true
+                }
             }
-            downloadButton.text = buttonText
-            downloadButton.isEnabled = shouldEnable
         })
     }
 
