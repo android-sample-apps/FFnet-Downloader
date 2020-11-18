@@ -48,7 +48,7 @@ class FanfictionListAdapter(
             view.exportPdfImageView.setBackgroundResource(fanfiction.exportPdfImage)
             view.exportEpubImageView.setBackgroundResource(fanfiction.exportEpubImage)
 
-            view.fetchInfoImageView.setOnClickListener {
+            view.setOnClickListener {
                 onActionListener.onFetchInformation(fanfiction)
             }
             if (fanfiction.isDownloadComplete) {

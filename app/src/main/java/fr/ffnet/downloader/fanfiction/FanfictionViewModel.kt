@@ -23,13 +23,13 @@ class FanfictionViewModel(
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
     private lateinit var fanfictionInfo: LiveData<FanfictionSyncedUIModel>
-    private lateinit var downloadButtonState: LiveData<Pair<String, Boolean>>
+    private lateinit var downloadButtonState: LiveData<SyncState>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
     fun getFanfictionInfo(): LiveData<FanfictionSyncedUIModel> = fanfictionInfo
 
-    fun getDownloadButtonState(): LiveData<Pair<String, Boolean>> = downloadButtonState
+    fun getDownloadButtonState(): LiveData<SyncState> = downloadButtonState
 
     fun loadFanfictionInfo(fanfictionId: String) {
         downloadButtonState = Transformations.map(apiRepository.getDownloadState(fanfictionId)) { workInfo ->
@@ -40,9 +40,9 @@ class FanfictionViewModel(
                 )
             }
             if (isDownloading) {
-                resources.getString(R.string.download_button_downloading) to false
+                SyncState.Syncing(resources.getString(R.string.download_button_downloading))
             } else {
-                resources.getString(R.string.download_button_title) to true
+                SyncState.Sync(resources.getString(R.string.download_button_title))
             }
         }
 
@@ -72,5 +72,11 @@ class FanfictionViewModel(
                 )
             }
         }
+    }
+
+    sealed class SyncState {
+        abstract val buttonTitle: String
+        data class Syncing(override val buttonTitle: String) : SyncState()
+        data class Sync(override val buttonTitle: String) : SyncState()
     }
 }

@@ -14,6 +14,7 @@ import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.ChapterListAdapter.ChapterClickListener
+import fr.ffnet.downloader.fanfiction.FanfictionViewModel.*
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
 import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
 import fr.ffnet.downloader.synced.OptionsController
@@ -26,7 +27,7 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
     @Inject lateinit var viewModel: FanfictionViewModel
     @Inject lateinit var optionsController: OptionsController
 
-    private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) }
+    private val fanfictionId by lazy { intent.getStringExtra(EXTRA_ID) ?: "" }
 
     companion object {
 
@@ -93,7 +94,8 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
         viewModel.getChapterList().observe(this, Observer { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-        viewModel.getDownloadButtonState().observe(this, Observer { (buttonText, shouldEnable) ->
+        viewModel.getDownloadButtonState().observe(this, Observer { buttonState ->
+            val shouldEnable = buttonState is SyncState.Sync
             FFLogger.d(
                 FFLogger.EVENT_KEY,
                 "Changing download button state for $fanfictionId to $shouldEnable"
@@ -102,7 +104,7 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
                 val syncingFinishedFragment = SyncingFinishedFragment.newIntent()
                 syncingFinishedFragment.show(supportFragmentManager, "syncingFinished")
             }
-            downloadButton.text = buttonText
+            downloadButton.text = buttonState.buttonTitle
             downloadButton.isEnabled = shouldEnable
         })
     }

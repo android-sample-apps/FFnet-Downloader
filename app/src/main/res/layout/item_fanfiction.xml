@@ -80,24 +80,16 @@
             app:constraint_referenced_ids="publishedDateLabelTextView,updatedDateLabelTextView" />
 
         <ImageView
-            android:id="@+id/fetchInfoImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/ic_download"
-            android:contentDescription="@string/description_fetch_information"
-            app:layout_constraintEnd_toStartOf="@id/exportPdfImageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView" />
-
-        <ImageView
             android:id="@+id/exportPdfImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="@string/description_export_pdf"
             app:layout_constraintEnd_toStartOf="@id/exportEpubImageView"
-            app:layout_constraintStart_toEndOf="@id/fetchInfoImageView"
-            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updatedDateLabelTextView"
             tools:background="@drawable/ic_export_pdf_enabled" />
 
         <ImageView
@@ -107,7 +99,7 @@
             android:contentDescription="@string/description_export_epub"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/exportPdfImageView"
-            app:layout_constraintTop_toTopOf="@+id/fetchInfoImageView"
+            app:layout_constraintTop_toTopOf="@+id/exportPdfImageView"
             tools:background="@drawable/ic_export_epub_enabled" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

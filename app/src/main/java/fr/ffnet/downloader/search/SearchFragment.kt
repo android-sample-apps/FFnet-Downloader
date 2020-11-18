@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +36,28 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
             .plus(SearchModule(this))
             .inject(this)
 
+
+        // TODO : Fill history in recyclerview
+
+        downloadUrlEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                containerView.transitionToEnd()
+            } else {
+                containerView.transitionToStart()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (downloadUrlEditText.hasFocus()) {
+                        downloadUrlEditText.clearFocus()
+                    }
+                }
+            }
+        )
+
         fetchInformationButton.setOnClickListener {
             it.isEnabled = false
             progressBar.visibility = View.VISIBLE
@@ -44,7 +67,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
 
             viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
         }
-        historyRecyclerView.adapter = HistoryAdapter(this)
+        searchResultRecyclerView.adapter = HistoryAdapter(this)
         initObservers()
     }
 
@@ -60,7 +83,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
             }
         })
         viewModel.loadHistory().observe(viewLifecycleOwner, Observer { historyList ->
-            (historyRecyclerView.adapter as HistoryAdapter).historyList = historyList
+            (searchResultRecyclerView.adapter as HistoryAdapter).historyList = historyList
         })
         viewModel.sendError.observe(viewLifecycleOwner, Observer { searchError ->
             when (searchError) {
