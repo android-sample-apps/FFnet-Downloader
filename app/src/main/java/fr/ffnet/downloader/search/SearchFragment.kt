@@ -21,6 +21,7 @@ import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.search.injection.SearchModule
 import fr.ffnet.downloader.synced.FanfictionListAdapter
+import fr.ffnet.downloader.synced.OnSyncAllFanfictionsListener
 import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.PermissionListener
 import fr.ffnet.downloader.synced.SyncedViewModel
@@ -28,7 +29,11 @@ import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
-class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, PermissionListener {
+class SearchFragment :
+    Fragment(),
+    HistoryAdapter.OnHistoryClickListener,
+    PermissionListener,
+    OnSyncAllFanfictionsListener {
 
     @Inject lateinit var searchViewModel: SearchViewModel
 
@@ -67,7 +72,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
     }
 
     private fun initializeSynced() {
-        syncedFanfictionsRecyclerView.adapter = FanfictionListAdapter(optionsController)
+        syncedFanfictionsRecyclerView.adapter = FanfictionListAdapter(optionsController, this)
         val swiper = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).unsync(
@@ -80,24 +85,6 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
         swipeRefresh.setOnRefreshListener {
             syncedViewModel.refreshSyncedInfo()
         }
-    }
-
-    private fun setSyncedObservers() {
-        syncedViewModel.loadFanfictions()
-        syncedViewModel.getFanfictionList().observe(viewLifecycleOwner, { result ->
-            when (result) {
-                is SyncedViewModel.SyncedFanfictionsResult.NoSyncedFanfictions -> {
-                    fanfictionViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
-                }
-                is SyncedViewModel.SyncedFanfictionsResult.SyncedFanfictions -> {
-                    (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).fanfictionItemList = result.fanfictionUIItemList
-                    fanfictionViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
-                }
-            }
-        })
-        syncedViewModel.fanfictionRefreshResult.observe(viewLifecycleOwner, {
-            swipeRefresh.isRefreshing = false
-        })
     }
 
     override fun onRequestPermissionsResult(
@@ -164,6 +151,24 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
         }
     }
 
+    private fun setSyncedObservers() {
+        syncedViewModel.loadFanfictions()
+        syncedViewModel.getFanfictionList().observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is SyncedViewModel.SyncedFanfictionsResult.NoSyncedFanfictions -> {
+                    syncedViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
+                }
+                is SyncedViewModel.SyncedFanfictionsResult.SyncedFanfictions -> {
+                    (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).fanfictionItemList = result.fanfictionUIItemList
+                    syncedViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
+                }
+            }
+        })
+        syncedViewModel.fanfictionRefreshResult.observe(viewLifecycleOwner, {
+            swipeRefresh.isRefreshing = false
+        })
+    }
+
     private fun setSearchObservers() {
         searchViewModel.navigateToFanfiction.observe(viewLifecycleOwner, { fanfictionId ->
             containerView.transitionToStart()
@@ -182,5 +187,9 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
                 }
             }
         })
+    }
+
+    override fun onSyncAll() {
+        syncedViewModel.syncAllUnsyncedChapters()
     }
 }

@@ -11,8 +11,13 @@ import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
 import kotlinx.android.synthetic.main.item_fanfiction_title.view.*
 
+interface OnSyncAllFanfictionsListener {
+    fun onSyncAll()
+}
+
 class FanfictionListAdapter(
-    private val onActionListener: OnFanfictionActionsListener
+    private val onActionListener: OnFanfictionActionsListener,
+    private val syncAllListener: OnSyncAllFanfictionsListener? = null,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -64,6 +69,9 @@ class FanfictionListAdapter(
 
         fun bind(title: String) {
             view.historyUITitleTextView.text = title
+            view.syncAllFanfictionsImageView.setOnClickListener {
+                syncAllListener?.onSyncAll()
+            }
         }
     }
 
