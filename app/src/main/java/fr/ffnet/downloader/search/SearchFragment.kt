@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -36,13 +38,18 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
             .plus(SearchModule(this))
             .inject(this)
 
-
-        // TODO : Fill history in recyclerview
-
         downloadUrlEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
+                downloadUrlEditText.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.square_corners
+                )
                 containerView.transitionToEnd()
             } else {
+                downloadUrlEditText.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.round_corners
+                )
                 containerView.transitionToStart()
             }
         }
@@ -53,19 +60,23 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
                 override fun handleOnBackPressed() {
                     if (downloadUrlEditText.hasFocus()) {
                         downloadUrlEditText.clearFocus()
+                    } else {
+                        requireActivity().onBackPressed()
                     }
                 }
             }
         )
 
-        fetchInformationButton.setOnClickListener {
-            it.isEnabled = false
-            progressBar.visibility = View.VISIBLE
+        downloadUrlEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // progressBar.visibility = View.VISIBLE
 
-            (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                .hideSoftInputFromWindow(view.windowToken, 0)
+                (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                    .hideSoftInputFromWindow(view.windowToken, 0)
 
-            viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
+                viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
+            }
+            true
         }
         searchResultRecyclerView.adapter = HistoryAdapter(this)
         initObservers()
@@ -78,8 +89,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
     private fun initObservers() {
         viewModel.navigateToFanfiction.observe(viewLifecycleOwner, Observer { fanfictionId ->
             startActivity(FanfictionActivity.intent(requireContext(), fanfictionId)).also {
-                fetchInformationButton.isEnabled = true
-                progressBar.visibility = View.GONE
+                // progressBar.visibility = View.GONE
             }
         })
         viewModel.loadHistory().observe(viewLifecycleOwner, Observer { historyList ->
@@ -92,8 +102,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
                     Snackbar.make(
                         containerView, searchError.message, Snackbar.LENGTH_LONG
                     ).show()
-                    fetchInformationButton.isEnabled = true
-                    progressBar.visibility = View.GONE
+                    // progressBar.visibility = View.GONE
                 }
             }
         })
