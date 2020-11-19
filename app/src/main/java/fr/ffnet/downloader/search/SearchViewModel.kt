@@ -12,6 +12,7 @@ import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultInternetFailure
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
+import fr.ffnet.downloader.search.HistoryItem.HistoryUI
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.SingleLiveEvent
 import fr.ffnet.downloader.utils.UrlTransformer
@@ -47,16 +48,18 @@ class SearchViewModel(
         }
     }
 
-    fun loadHistory(): LiveData<List<HistoryUIModel>> {
+    fun loadHistory(): LiveData<List<HistoryItem>> {
         return Transformations.map(databaseRepository.loadHistory()) { historyList ->
-            historyList.map {
-                HistoryUIModel(
+            val title = HistoryItem.HistoryUITitle(resources.getString(R.string.history_title))
+            val historyUIList = historyList.map {
+                HistoryUI(
                     fanfictionId = it.id,
                     url = "${BuildConfig.API_BASE_URL}s/${it.id}",
                     title = it.title,
                     date = dateFormatter.format(it.fetchedDate)
                 )
             }
+            listOf(title).plus(historyUIList)
         }
     }
 

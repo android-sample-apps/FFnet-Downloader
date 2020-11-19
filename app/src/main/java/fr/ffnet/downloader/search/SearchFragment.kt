@@ -147,7 +147,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
                     if (downloadUrlEditText.hasFocus()) {
                         downloadUrlEditText.clearFocus()
                     } else {
-                        requireActivity().onBackPressed()
+                        requireActivity().finish()
                     }
                 }
             }

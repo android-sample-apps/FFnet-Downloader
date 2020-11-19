@@ -28,7 +28,7 @@ class FanfictionListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_HEADER -> FanfictionTitleViewHolder(
+            TYPE_HEADER -> FanfictionUITitleViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_fanfiction_title, parent, false
                 )
@@ -51,7 +51,7 @@ class FanfictionListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = fanfictionItemList[position]) {
-            is FanfictionUITitle -> (holder as FanfictionTitleViewHolder).bind(item.title)
+            is FanfictionUITitle -> (holder as FanfictionUITitleViewHolder).bind(item.title)
             is FanfictionUI -> (holder as FanfictionUIViewHolder).bind(item)
         }
     }
@@ -60,10 +60,10 @@ class FanfictionListAdapter(
         onActionListener.onUnsync(fanfictionItemList[position] as FanfictionUI)
     }
 
-    inner class FanfictionTitleViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class FanfictionUITitleViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(title: String) {
-            view.fanfictionUITitleTextView.text = title
+            view.historyUITitleTextView.text = title
         }
     }
 
