@@ -28,15 +28,8 @@ class SearchViewModel(
     private val dateFormatter: DateFormatter
 ) : ViewModel() {
 
-    private val goToFanfiction: SingleLiveEvent<String> = SingleLiveEvent()
-    val navigateToFanfiction: SingleLiveEvent<String>
-        get() = goToFanfiction
-
-    private val errorPresent: SingleLiveEvent<SearchError> = SingleLiveEvent()
-    val sendError: SingleLiveEvent<SearchError>
-        get() = errorPresent
-
-    private lateinit var historyList: LiveData<List<HistoryUIModel>>
+    val navigateToFanfiction: SingleLiveEvent<String> = SingleLiveEvent()
+    val sendError: SingleLiveEvent<SearchError> = SingleLiveEvent()
 
     fun loadFanfictionInfos(url: String?) {
         when (val urlTransformationResult = urlTransformer.getFanfictionIdFromUrl(url)) {
@@ -45,7 +38,7 @@ class SearchViewModel(
             )
             is UrlTransformFailure -> {
                 FFLogger.d(FFLogger.EVENT_KEY, "Could not get fanfictionId from url $url")
-                errorPresent.postValue(
+                sendError.postValue(
                     SearchError.UrlNotValid(
                         resources.getString(R.string.search_fanfiction_url_error)
                     )
@@ -55,20 +48,16 @@ class SearchViewModel(
     }
 
     fun loadHistory(): LiveData<List<HistoryUIModel>> {
-        historyList = Transformations.map(databaseRepository.loadHistory()) { historyList ->
+        return Transformations.map(databaseRepository.loadHistory()) { historyList ->
             historyList.map {
                 HistoryUIModel(
                     fanfictionId = it.id,
                     url = "${BuildConfig.API_BASE_URL}s/${it.id}",
                     title = it.title,
-                    date = resources.getString(
-                        R.string.search_fetched_date,
-                        dateFormatter.format(it.fetchedDate)
-                    )
+                    date = dateFormatter.format(it.fetchedDate)
                 )
             }
         }
-        return historyList
     }
 
     private fun loadFanfictionInfo(fanfictionId: String) {
@@ -77,7 +66,7 @@ class SearchViewModel(
             val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
             if (isFanfictionInDatabase) {
                 FFLogger.d(FFLogger.EVENT_KEY, "Fanfiction $fanfictionId is already in database")
-                goToFanfiction.postValue(fanfictionId)
+                navigateToFanfiction.postValue(fanfictionId)
                 downloaderRepository.loadFanfictionInfo(fanfictionId)
             } else {
                 when (downloaderRepository.loadFanfictionInfo(fanfictionId)) {
@@ -86,7 +75,7 @@ class SearchViewModel(
                             FFLogger.EVENT_KEY,
                             "Fanfiction $fanfictionId loaded successfully"
                         )
-                        goToFanfiction.postValue(fanfictionId)
+                        navigateToFanfiction.postValue(fanfictionId)
                     }
                     FanfictionRepositoryResultInternetFailure -> displayErrorMessage(R.string.search_fanfiction_info_server_error)
                     else -> displayErrorMessage(R.string.search_fanfiction_info_fetching_error)
@@ -98,7 +87,7 @@ class SearchViewModel(
     private fun displayErrorMessage(messageResource: Int) {
         val errorMessage = resources.getString(messageResource)
         FFLogger.d(FFLogger.EVENT_KEY, errorMessage)
-        errorPresent.postValue(
+        sendError.postValue(
             SearchError.InfoFetchingFailed(errorMessage)
         )
     }

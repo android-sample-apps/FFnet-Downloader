@@ -1,6 +1,8 @@
 package fr.ffnet.downloader.search
 
 import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +10,38 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.search.injection.SearchModule
+import fr.ffnet.downloader.synced.FanfictionListAdapter
+import fr.ffnet.downloader.synced.OptionsController
+import fr.ffnet.downloader.synced.PermissionListener
+import fr.ffnet.downloader.synced.SyncedViewModel
+import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_search.fanfictionViewFlipper
+import kotlinx.android.synthetic.main.fragment_search.swipeRefresh
+import kotlinx.android.synthetic.main.fragment_search.syncedFanfictionsRecyclerView
 import javax.inject.Inject
 
-class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
+class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, PermissionListener {
 
-    @Inject lateinit var viewModel: SearchViewModel
+    @Inject lateinit var searchViewModel: SearchViewModel
+
+    @Inject lateinit var syncedViewModel: SyncedViewModel
+    @Inject lateinit var optionsController: OptionsController
+
+    companion object {
+        private const val DISPLAY_SYNCED_FANFICTIONS = 0
+        private const val DISPLAY_NO_SYNCED_FANFICTIONS = 1
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +57,75 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
         MainApplication.getComponent(requireContext())
             .plus(SearchModule(this))
             .inject(this)
+
+        initializeSearch()
+        setSearchObservers()
+
+        initializeSynced()
+        setSyncedObservers()
+    }
+
+    override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
+        downloadUrlEditText.setText(fanfictionUrl)
+    }
+
+    private fun initializeSynced() {
+        syncedFanfictionsRecyclerView.adapter = FanfictionListAdapter(optionsController)
+        val swiper = object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).unsync(
+                    viewHolder.adapterPosition
+                )
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swiper)
+        itemTouchHelper.attachToRecyclerView(syncedFanfictionsRecyclerView)
+        swipeRefresh.setOnRefreshListener {
+            syncedViewModel.refreshSyncedInfo()
+        }
+    }
+
+    private fun setSyncedObservers() {
+        syncedViewModel.loadFanfictions()
+        syncedViewModel.getFanfictionList().observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is SyncedViewModel.SyncedFanfictionsResult.NoSyncedFanfictions -> {
+                    fanfictionViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
+                }
+                is SyncedViewModel.SyncedFanfictionsResult.SyncedFanfictions -> {
+                    (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).fanfictionList = result.fanfictionList
+                    fanfictionViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
+                }
+            }
+        })
+        syncedViewModel.fanfictionRefreshResult.observe(viewLifecycleOwner, {
+            swipeRefresh.isRefreshing = false
+        })
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        optionsController.onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    override fun onPermissionRequested(arrayOf: Array<String>, requestCode: Int): Boolean {
+        return if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                OptionsController.STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+        ) {
+            requestPermissions(arrayOf(OptionsController.STORAGE), requestCode)
+            false
+        } else true
+    }
+
+    private fun initializeSearch() {
+
+        searchResultRecyclerView.adapter = HistoryAdapter(this)
 
         downloadUrlEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -67,42 +156,31 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener {
             }
         )
 
-        downloadUrlEditText.setOnEditorActionListener { v, actionId, event ->
+        downloadUrlEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                // progressBar.visibility = View.VISIBLE
-
                 (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                    .hideSoftInputFromWindow(view.windowToken, 0)
+                    .hideSoftInputFromWindow(view?.windowToken, 0)
 
-                viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
+                searchViewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
             }
             true
         }
-        searchResultRecyclerView.adapter = HistoryAdapter(this)
-        initObservers()
     }
 
-    override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
-        downloadUrlEditText.setText(fanfictionUrl)
-    }
-
-    private fun initObservers() {
-        viewModel.navigateToFanfiction.observe(viewLifecycleOwner, Observer { fanfictionId ->
-            startActivity(FanfictionActivity.intent(requireContext(), fanfictionId)).also {
-                // progressBar.visibility = View.GONE
-            }
+    private fun setSearchObservers() {
+        searchViewModel.navigateToFanfiction.observe(viewLifecycleOwner, { fanfictionId ->
+            startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
         })
-        viewModel.loadHistory().observe(viewLifecycleOwner, Observer { historyList ->
+        searchViewModel.loadHistory().observe(viewLifecycleOwner, { historyList ->
             (searchResultRecyclerView.adapter as HistoryAdapter).historyList = historyList
         })
-        viewModel.sendError.observe(viewLifecycleOwner, Observer { searchError ->
+        searchViewModel.sendError.observe(viewLifecycleOwner, { searchError ->
             when (searchError) {
                 is SearchViewModel.SearchError.UrlNotValid,
                 is SearchViewModel.SearchError.InfoFetchingFailed -> {
                     Snackbar.make(
                         containerView, searchError.message, Snackbar.LENGTH_LONG
                     ).show()
-                    // progressBar.visibility = View.GONE
                 }
             }
         })

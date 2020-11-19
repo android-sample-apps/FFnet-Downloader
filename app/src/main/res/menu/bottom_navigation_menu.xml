@@ -6,10 +6,6 @@
         android:icon="@drawable/ic_search"
         android:title="Search" />
     <item
-        android:id="@+id/bottomNavSyncedFragment"
-        android:icon="@drawable/ic_dehaze"
-        android:title="Synced" />
-    <item
         android:id="@+id/bottomNavProfileFragment"
         android:icon="@drawable/ic_person"
         android:title="Profile" />
