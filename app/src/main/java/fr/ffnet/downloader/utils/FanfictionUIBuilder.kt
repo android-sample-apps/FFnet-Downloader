@@ -3,7 +3,7 @@ package fr.ffnet.downloader.utils
 import android.content.res.Resources
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.search.Fanfiction
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import javax.inject.Inject
 
 class FanfictionUIBuilder @Inject constructor(
@@ -11,9 +11,9 @@ class FanfictionUIBuilder @Inject constructor(
     private val dateFormatter: DateFormatter
 ) {
 
-    fun buildFanfictionUI(fanfiction: Fanfiction): FanfictionSyncedUIModel {
+    fun buildFanfictionUI(fanfiction: Fanfiction): FanfictionUI {
         val isDownloadComplete = fanfiction.nbSyncedChapters == fanfiction.nbChapters
-        return FanfictionSyncedUIModel(
+        return FanfictionUI(
             id = fanfiction.id,
             title = fanfiction.title,
             words = fanfiction.words.toString(),

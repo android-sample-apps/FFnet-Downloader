@@ -26,9 +26,6 @@ import fr.ffnet.downloader.synced.PermissionListener
 import fr.ffnet.downloader.synced.SyncedViewModel
 import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.fragment_search.fanfictionViewFlipper
-import kotlinx.android.synthetic.main.fragment_search.swipeRefresh
-import kotlinx.android.synthetic.main.fragment_search.syncedFanfictionsRecyclerView
 import javax.inject.Inject
 
 class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, PermissionListener {
@@ -93,7 +90,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
                     fanfictionViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS
                 }
                 is SyncedViewModel.SyncedFanfictionsResult.SyncedFanfictions -> {
-                    (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).fanfictionList = result.fanfictionList
+                    (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).fanfictionItemList = result.fanfictionUIItemList
                     fanfictionViewFlipper.displayedChild = DISPLAY_SYNCED_FANFICTIONS
                 }
             }
@@ -169,6 +166,7 @@ class SearchFragment : Fragment(), HistoryAdapter.OnHistoryClickListener, Permis
 
     private fun setSearchObservers() {
         searchViewModel.navigateToFanfiction.observe(viewLifecycleOwner, { fanfictionId ->
+            containerView.transitionToStart()
             startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
         })
         searchViewModel.loadHistory().observe(viewLifecycleOwner, { historyList ->

@@ -1,9 +1,11 @@
 package fr.ffnet.downloader.synced
 
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.FFLogger.Companion.EVENT_KEY
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -17,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SyncedViewModel(
+    private val resources: Resources,
     private val downloaderRepository: DownloaderRepository,
     private val databaseRepository: DatabaseRepository,
     private val fanfictionUIBuilder: FanfictionUIBuilder
@@ -30,10 +33,12 @@ class SyncedViewModel(
     fun loadFanfictions() {
         fanfictionResult = Transformations.map(databaseRepository.getSyncedFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
+                val title = FanfictionUIItem.FanfictionUITitle(resources.getString(R.string.synced_title))
+                val fanfictionUIList = fanfictionList.map {
+                    fanfictionUIBuilder.buildFanfictionUI(it)
+                }
                 SyncedFanfictions(
-                    fanfictionList.map {
-                        fanfictionUIBuilder.buildFanfictionUI(it)
-                    }
+                    listOf(title).plus(fanfictionUIList)
                 )
             } else {
                 NoSyncedFanfictions
@@ -46,9 +51,11 @@ class SyncedViewModel(
             FFLogger.d(EVENT_KEY, "Refreshing synced fanfictions")
             val fanfictionResult = fanfictionResult.value
             if (fanfictionResult is SyncedFanfictions) {
-                val allFanfictionResult = fanfictionResult.fanfictionList.map { fanfiction ->
-                    downloaderRepository.loadFanfictionInfo(fanfiction.id)
-                }
+                val allFanfictionResult = fanfictionResult.fanfictionUIItemList
+                    .filterIsInstance<FanfictionUIItem.FanfictionUI>()
+                    .map { fanfiction ->
+                        downloaderRepository.loadFanfictionInfo(fanfiction.id)
+                    }
                 if (allFanfictionResult.all { it is FanfictionRepositoryResultSuccess }) {
                     fanfictionRefreshResult.postValue(FanfictionRefreshResult.Refreshed)
                 } else {
@@ -63,19 +70,19 @@ class SyncedViewModel(
             FFLogger.d(EVENT_KEY, "Syncing all unsynced chapters")
             val fanfictionResult = fanfictionResult.value
             if (fanfictionResult is SyncedFanfictions) {
-                val fanfictionsToSync = fanfictionResult.fanfictionList.filter {
-                    it.isDownloadComplete.not()
-                }
+                val fanfictionsToSync = fanfictionResult.fanfictionUIItemList
+                    .filterIsInstance<FanfictionUIItem.FanfictionUI>()
+                    .filter { it.isDownloadComplete.not() }
+                    .map {
+                        downloaderRepository.downloadChapters(it.id)
+                    }
                 FFLogger.d(EVENT_KEY, "Found ${fanfictionsToSync.size} fanfictions to sync")
-                fanfictionsToSync.map { fanfiction ->
-                    downloaderRepository.downloadChapters(fanfiction.id)
-                }
             }
         }
     }
 
     sealed class SyncedFanfictionsResult {
-        data class SyncedFanfictions(val fanfictionList: List<FanfictionSyncedUIModel>) : SyncedFanfictionsResult()
+        data class SyncedFanfictions(val fanfictionUIItemList: List<FanfictionUIItem>) : SyncedFanfictionsResult()
         object NoSyncedFanfictions : SyncedFanfictionsResult()
     }
 

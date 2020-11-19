@@ -11,8 +11,6 @@ import fr.ffnet.downloader.repository.DownloaderWorker
 import fr.ffnet.downloader.repository.RepositoryModule
 import fr.ffnet.downloader.search.injection.SearchComponent
 import fr.ffnet.downloader.search.injection.SearchModule
-import fr.ffnet.downloader.synced.injection.SyncedComponent
-import fr.ffnet.downloader.synced.injection.SyncedModule
 import javax.inject.Singleton
 
 @Singleton
@@ -32,5 +30,4 @@ interface MainComponent {
     fun plus(module: ProfileModule): ProfileComponent
     fun plus(module: ProfileFanfictionModule): ProfileFanfictionComponent
     fun plus(module: SearchModule): SearchComponent
-    fun plus(module: SyncedModule): SyncedComponent
 }

@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Environment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
+import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import fr.ffnet.downloader.utils.FanfictionOpener
 import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 
@@ -41,21 +41,17 @@ class OptionsController(
 
     init {
 
-        optionsViewModel.getFile.observe(
-            lifecycleOwner,
-            Observer { (fileName, absolutePath) ->
-                fanfictionOpener.openFile(fileName, absolutePath)
-            })
-        optionsViewModel.navigateToFanfiction.observe(
-            lifecycleOwner,
-            Observer { fanfictionId ->
-                context.startActivity(
-                    FanfictionActivity.intent(
-                        context,
-                        fanfictionId
-                    )
+        optionsViewModel.getFile.observe(lifecycleOwner, { (fileName, absolutePath) ->
+            fanfictionOpener.openFile(fileName, absolutePath)
+        })
+        optionsViewModel.navigateToFanfiction.observe(lifecycleOwner, { fanfictionId ->
+            context.startActivity(
+                FanfictionActivity.intent(
+                    context,
+                    fanfictionId
                 )
-            })
+            )
+        })
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
@@ -80,7 +76,7 @@ class OptionsController(
         }
     }
 
-    override fun onFetchInformation(fanfiction: FanfictionSyncedUIModel) {
+    override fun onFetchInformation(fanfiction: FanfictionUI) {
         FFLogger.d(FFLogger.EVENT_KEY, "Opening details for ${fanfiction.id}")
         optionsViewModel.loadFanfictionInfo(fanfiction.id)
     }
@@ -95,7 +91,7 @@ class OptionsController(
         exportEpub()
     }
 
-    override fun onUnsync(fanfiction: FanfictionSyncedUIModel) {
+    override fun onUnsync(fanfiction: FanfictionUI) {
         FFLogger.d(FFLogger.EVENT_KEY, "Unsync ${fanfiction.id}")
         optionsViewModel.unsyncFanfiction(fanfiction.id)
     }

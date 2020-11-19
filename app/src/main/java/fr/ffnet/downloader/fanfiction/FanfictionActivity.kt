@@ -9,14 +9,13 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.ChapterListAdapter.ChapterClickListener
-import fr.ffnet.downloader.fanfiction.FanfictionViewModel.*
+import fr.ffnet.downloader.fanfiction.FanfictionViewModel.SyncState
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.PermissionListener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
@@ -88,13 +87,13 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
     }
 
     private fun setObservers() {
-        viewModel.getFanfictionInfo().observe(this, Observer { fanfiction ->
+        viewModel.getFanfictionInfo().observe(this, { fanfiction ->
             onFanfictionInfo(fanfiction)
         })
-        viewModel.getChapterList().observe(this, Observer { chapterList ->
+        viewModel.getChapterList().observe(this, { chapterList ->
             (chapterListRecyclerView.adapter as ChapterListAdapter).chapterList = chapterList
         })
-        viewModel.getDownloadButtonState().observe(this, Observer { buttonState ->
+        viewModel.getDownloadButtonState().observe(this, { buttonState ->
             val shouldEnable = buttonState is SyncState.Sync
             FFLogger.d(
                 FFLogger.EVENT_KEY,
@@ -109,7 +108,7 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
         })
     }
 
-    private fun onFanfictionInfo(fanfiction: FanfictionSyncedUIModel) {
+    private fun onFanfictionInfo(fanfiction: FanfictionUI) {
         widgetVisibilityGroup.visibility = View.VISIBLE
         toolbar.title = fanfiction.title
         wordsValueTextView.text = fanfiction.words

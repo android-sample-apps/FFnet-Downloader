@@ -13,10 +13,10 @@ import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
 import fr.ffnet.downloader.profile.fanfiction.injection.ProfileFanfictionModule
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
-import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.FanfictionListAdapter
+import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.PermissionListener
+import fr.ffnet.downloader.synced.FanfictionUIItem
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
 
@@ -97,7 +97,7 @@ class ProfileFanfictionFragment : Fragment(), PermissionListener {
     private fun onProfileFanfictionsResult(result: ProfileFanfictionsResult) {
         when (result) {
             is ProfileFanfictionsResult.ProfileHasFanfictions -> {
-                showFanfictions(result.fanfictionList)
+                showFanfictions(result.fanfictionUIList)
             }
             is ProfileFanfictionsResult.ProfileHasNoFanfictions -> {
                 profileFanfictionsViewFlipper.displayedChild = DISPLAY_NO_FANFICTIONS
@@ -105,8 +105,8 @@ class ProfileFanfictionFragment : Fragment(), PermissionListener {
         }
     }
 
-    private fun showFanfictions(fanfictionList: List<FanfictionSyncedUIModel>) {
-        (fanfictionRecyclerView.adapter as FanfictionListAdapter).fanfictionList = fanfictionList
+    private fun showFanfictions(fanfictionUIList: List<FanfictionUIItem.FanfictionUI>) {
+        (fanfictionRecyclerView.adapter as FanfictionListAdapter).fanfictionItemList = fanfictionUIList
         profileFanfictionsViewFlipper.displayedChild = DISPLAY_LIST
     }
 }

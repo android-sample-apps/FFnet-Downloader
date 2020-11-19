@@ -9,7 +9,7 @@ import androidx.work.WorkInfo
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
-import fr.ffnet.downloader.synced.FanfictionSyncedUIModel
+import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import fr.ffnet.downloader.utils.FanfictionUIBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,12 +22,12 @@ class FanfictionViewModel(
 ) : ViewModel() {
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
-    private lateinit var fanfictionInfo: LiveData<FanfictionSyncedUIModel>
+    private lateinit var fanfictionInfo: LiveData<FanfictionUI>
     private lateinit var downloadButtonState: LiveData<SyncState>
 
     fun getChapterList(): LiveData<List<ChapterUIModel>> = chapterList
 
-    fun getFanfictionInfo(): LiveData<FanfictionSyncedUIModel> = fanfictionInfo
+    fun getFanfictionInfo(): LiveData<FanfictionUI> = fanfictionInfo
 
     fun getDownloadButtonState(): LiveData<SyncState> = downloadButtonState
 
@@ -76,6 +76,7 @@ class FanfictionViewModel(
 
     sealed class SyncState {
         abstract val buttonTitle: String
+
         data class Syncing(override val buttonTitle: String) : SyncState()
         data class Sync(override val buttonTitle: String) : SyncState()
     }

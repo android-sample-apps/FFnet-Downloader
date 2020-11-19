@@ -44,12 +44,14 @@ class SearchModule(private val fragment: SearchFragment) {
 
     @Provides
     fun provideSyncedViewModel(
+        resources: Resources,
         downloaderRepository: DownloaderRepository,
         databaseRepository: DatabaseRepository,
         fanfictionUIBuilder: FanfictionUIBuilder
     ): SyncedViewModel {
         val factory = ViewModelFactory {
             SyncedViewModel(
+                resources,
                 downloaderRepository,
                 databaseRepository,
                 fanfictionUIBuilder
