@@ -23,7 +23,6 @@
         android:inputType="textUri"
         android:maxLines="1"
         android:padding="12dp"
-        android:text="https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality"
         android:textColorHint="@color/bottomNavigationGrey"
         android:textSize="16sp"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
@@ -34,7 +33,7 @@
         android:id="@+id/searchResultRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +44,7 @@
         android:id="@+id/syncedViewFlipper"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:paddingTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/downloadUrlEditText">
 
@@ -59,7 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_fanfiction" />

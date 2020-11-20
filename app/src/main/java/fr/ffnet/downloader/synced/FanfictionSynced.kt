@@ -2,6 +2,7 @@ package fr.ffnet.downloader.synced
 
 sealed class FanfictionUIItem {
     data class FanfictionUITitle(
+        val shouldShowSyncAllButton: Boolean,
         val title: String
     ): FanfictionUIItem()
     data class FanfictionUI(

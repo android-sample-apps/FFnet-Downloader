@@ -3,6 +3,7 @@ package fr.ffnet.downloader.synced
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
@@ -56,7 +57,7 @@ class FanfictionListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = fanfictionItemList[position]) {
-            is FanfictionUITitle -> (holder as FanfictionUITitleViewHolder).bind(item.title)
+            is FanfictionUITitle -> (holder as FanfictionUITitleViewHolder).bind(item)
             is FanfictionUI -> (holder as FanfictionUIViewHolder).bind(item)
         }
     }
@@ -67,8 +68,9 @@ class FanfictionListAdapter(
 
     inner class FanfictionUITitleViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(title: String) {
-            view.historyUITitleTextView.text = title
+        fun bind(item: FanfictionUITitle) {
+            view.historyUITitleTextView.text = item.title
+            view.syncAllFanfictionsImageView.isVisible = item.shouldShowSyncAllButton
             view.syncAllFanfictionsImageView.setOnClickListener {
                 syncAllListener?.onSyncAll()
             }

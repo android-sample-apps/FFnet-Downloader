@@ -33,12 +33,15 @@ class SyncedViewModel(
     fun loadFanfictions() {
         fanfictionResult = Transformations.map(databaseRepository.getSyncedFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
-                val title = FanfictionUIItem.FanfictionUITitle(resources.getString(R.string.synced_title))
                 val fanfictionUIList = fanfictionList.map {
                     fanfictionUIBuilder.buildFanfictionUI(it)
                 }
+                val title = FanfictionUIItem.FanfictionUITitle(
+                    shouldShowSyncAllButton = fanfictionUIList.any { it.isDownloadComplete.not() },
+                    title = resources.getString(R.string.synced_title)
+                )
                 SyncedFanfictions(
-                    listOf(title).plus(fanfictionUIList)
+                    fanfictionUIItemList = listOf(title).plus(fanfictionUIList)
                 )
             } else {
                 NoSyncedFanfictions
@@ -82,7 +85,10 @@ class SyncedViewModel(
     }
 
     sealed class SyncedFanfictionsResult {
-        data class SyncedFanfictions(val fanfictionUIItemList: List<FanfictionUIItem>) : SyncedFanfictionsResult()
+        data class SyncedFanfictions(
+            val fanfictionUIItemList: List<FanfictionUIItem>
+        ) : SyncedFanfictionsResult()
+
         object NoSyncedFanfictions : SyncedFanfictionsResult()
     }
 
