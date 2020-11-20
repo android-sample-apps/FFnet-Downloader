@@ -18,4 +18,11 @@ sealed class FanfictionUIItem {
         val exportPdfImage: Int,
         val exportEpubImage: Int
     ): FanfictionUIItem()
+
+    data class HistoryUI(
+        val fanfictionId: String,
+        val url: String,
+        val title: String,
+        val date: String
+    ) : FanfictionUIItem()
 }

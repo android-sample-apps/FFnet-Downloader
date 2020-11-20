@@ -10,6 +10,7 @@ import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.utils.FanfictionBuilder
 import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.utils.ProfileBuilder
+import fr.ffnet.downloader.utils.SearchBuilder
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -76,5 +77,14 @@ class RepositoryModule {
         fanfictionDao,
         profileBuilder,
         fanfictionConverter
+    )
+
+    @Provides
+    fun provideSearchRepository(
+        service: CrawlService,
+        searchBuilder: SearchBuilder
+    ): SearchRepository = SearchRepository(
+        service,
+        searchBuilder
     )
 }

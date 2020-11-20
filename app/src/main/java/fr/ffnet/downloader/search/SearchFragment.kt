@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +22,7 @@ import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.search.injection.SearchModule
 import fr.ffnet.downloader.synced.FanfictionListAdapter
+import fr.ffnet.downloader.synced.OnHistoryClickListener
 import fr.ffnet.downloader.synced.OnSyncAllFanfictionsListener
 import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.synced.PermissionListener
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class SearchFragment :
     Fragment(),
-    HistoryAdapter.OnHistoryClickListener,
+    OnHistoryClickListener,
     PermissionListener,
     OnSyncAllFanfictionsListener {
 
@@ -70,11 +70,14 @@ class SearchFragment :
     }
 
     override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
-        downloadUrlEditText.setText(fanfictionUrl)
+        searchEditText.setText(fanfictionUrl)
     }
 
     private fun initializeSynced() {
-        syncedFanfictionsRecyclerView.adapter = FanfictionListAdapter(optionsController, this)
+        syncedFanfictionsRecyclerView.adapter = FanfictionListAdapter(
+            onActionListener = optionsController,
+            syncAllListener = this
+        )
         val swiper = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).unsync(
@@ -111,17 +114,26 @@ class SearchFragment :
 
     private fun initializeSearch() {
 
-        searchResultRecyclerView.adapter = HistoryAdapter(this)
+        searchViewModel.loadSearchAndHistory()
+        searchResultRecyclerView.adapter = FanfictionListAdapter(
+            onActionListener = optionsController,
+            syncAllListener = this,
+            historyListener = this
+        )
 
-        downloadUrlEditText.setOnFocusChangeListener { _, hasFocus ->
+        searchEditText.addTextChangedListener {
+            searchViewModel.emptySearchResult()
+        }
+
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                downloadUrlEditText.background = ContextCompat.getDrawable(
+                searchEditText.background = ContextCompat.getDrawable(
                     requireContext(),
                     R.drawable.square_corners
                 )
                 containerView.transitionToEnd()
             } else {
-                downloadUrlEditText.background = ContextCompat.getDrawable(
+                searchEditText.background = ContextCompat.getDrawable(
                     requireContext(),
                     R.drawable.round_corners
                 )
@@ -129,27 +141,12 @@ class SearchFragment :
             }
         }
 
-        downloadUrlEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-        })
-
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (downloadUrlEditText.hasFocus()) {
-                        downloadUrlEditText.clearFocus()
+                    if (searchEditText.hasFocus()) {
+                        searchEditText.clearFocus()
                     } else {
                         requireActivity().finish()
                     }
@@ -157,12 +154,12 @@ class SearchFragment :
             }
         )
 
-        downloadUrlEditText.setOnEditorActionListener { _, actionId, _ ->
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
                     .hideSoftInputFromWindow(view?.windowToken, 0)
 
-                searchViewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
+                searchViewModel.searchFanfiction(searchEditText.text.toString())
             }
             true
         }
@@ -191,8 +188,8 @@ class SearchFragment :
             containerView.transitionToStart()
             startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
         })
-        searchViewModel.loadHistory().observe(viewLifecycleOwner, { historyList ->
-            (searchResultRecyclerView.adapter as HistoryAdapter).historyList = historyList
+        searchViewModel.searchHistoryResult.observe(viewLifecycleOwner, { historyList ->
+            (searchResultRecyclerView.adapter as FanfictionListAdapter).fanfictionItemList = historyList
         })
         searchViewModel.sendError.observe(viewLifecycleOwner, { searchError ->
             when (searchError) {

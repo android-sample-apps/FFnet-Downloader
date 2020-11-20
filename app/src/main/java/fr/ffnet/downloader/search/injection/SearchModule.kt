@@ -7,6 +7,7 @@ import dagger.Provides
 import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
+import fr.ffnet.downloader.repository.SearchRepository
 import fr.ffnet.downloader.search.SearchFragment
 import fr.ffnet.downloader.search.SearchViewModel
 import fr.ffnet.downloader.synced.OptionsController
@@ -26,17 +27,21 @@ class SearchModule(private val fragment: SearchFragment) {
     fun provideSearchViewModel(
         urlTransformer: UrlTransformer,
         resources: Resources,
+        searchRepository: SearchRepository,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
-        dateFormatter: DateFormatter
+        dateFormatter: DateFormatter,
+        fanfictionUIBuilder: FanfictionUIBuilder
     ): SearchViewModel {
         val factory = ViewModelFactory {
             SearchViewModel(
                 urlTransformer,
                 resources,
+                searchRepository,
                 apiRepository,
                 dbRepository,
-                dateFormatter
+                dateFormatter,
+                fanfictionUIBuilder
             )
         }
         return ViewModelProvider(fragment, factory)[SearchViewModel::class.java]

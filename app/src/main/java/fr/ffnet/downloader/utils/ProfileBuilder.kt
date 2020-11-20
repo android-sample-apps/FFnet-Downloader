@@ -21,7 +21,10 @@ class ProfileBuilder @Inject constructor(
         return Profile(
             profileId = profileId,
             name = name,
-            favoriteFanfictionList = extractFanfictionsFromList(favoriteStoriesSelector, PROFILE_TYPE_FAVORITE),
+            favoriteFanfictionList = extractFanfictionsFromList(
+                favoriteStoriesSelector,
+                PROFILE_TYPE_FAVORITE
+            ),
             myFanfictionList = extractFanfictionsFromList(myStoriesSelector, PROFILE_TYPE_MY_STORY)
         )
     }

@@ -8,22 +8,31 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUITitle
+import fr.ffnet.downloader.synced.FanfictionUIItem.HistoryUI
 import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
+import kotlinx.android.synthetic.main.item_fanfiction.view.titleTextView
 import kotlinx.android.synthetic.main.item_fanfiction_title.view.*
+import kotlinx.android.synthetic.main.item_history.view.*
 
 interface OnSyncAllFanfictionsListener {
     fun onSyncAll()
 }
 
+interface OnHistoryClickListener {
+    fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String)
+}
+
 class FanfictionListAdapter(
     private val onActionListener: OnFanfictionActionsListener,
     private val syncAllListener: OnSyncAllFanfictionsListener? = null,
+    private val historyListener: OnHistoryClickListener? = null,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_HEADER = 0
-        private const val TYPE_CONTENT = 1
+        private const val TYPE_FANFICTION = 1
+        private const val TYPE_HISTORY = 2
     }
 
     var fanfictionItemList: List<FanfictionUIItem> = emptyList()
@@ -39,6 +48,11 @@ class FanfictionListAdapter(
                     R.layout.item_fanfiction_title, parent, false
                 )
             )
+            TYPE_HISTORY -> HistoryUIViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_history, parent, false
+                )
+            )
             else -> FanfictionUIViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_fanfiction, parent, false
@@ -50,7 +64,8 @@ class FanfictionListAdapter(
     override fun getItemViewType(position: Int): Int =
         when {
             fanfictionItemList[position] is FanfictionUITitle -> TYPE_HEADER
-            else -> TYPE_CONTENT
+            fanfictionItemList[position] is HistoryUI -> TYPE_HISTORY
+            else -> TYPE_FANFICTION
         }
 
     override fun getItemCount(): Int = fanfictionItemList.size
@@ -58,6 +73,7 @@ class FanfictionListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = fanfictionItemList[position]) {
             is FanfictionUITitle -> (holder as FanfictionUITitleViewHolder).bind(item)
+            is HistoryUI -> (holder as HistoryUIViewHolder).bind(item, historyListener)
             is FanfictionUI -> (holder as FanfictionUIViewHolder).bind(item)
         }
     }
@@ -73,6 +89,17 @@ class FanfictionListAdapter(
             view.syncAllFanfictionsImageView.isVisible = item.shouldShowSyncAllButton
             view.syncAllFanfictionsImageView.setOnClickListener {
                 syncAllListener?.onSyncAll()
+            }
+        }
+    }
+
+    inner class HistoryUIViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind(history: HistoryUI, listener: OnHistoryClickListener?) {
+            view.titleTextView.text = history.title
+            view.fetchedDateTextView.text = history.date
+            view.setOnClickListener {
+                listener?.onHistoryClicked(history.fanfictionId, history.url)
             }
         }
     }
