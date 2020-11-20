@@ -25,6 +25,7 @@
     <string name="search_fanfiction_info_server_error">The server can\'t be reached</string>
 
     <string name="download_info_title_label">Title</string>
+    <string name="download_info_author_label">Author</string>
     <string name="download_info_words_label">Words</string>
     <string name="download_info_published_date_label">Published date</string>
     <string name="download_info_updated_date_label">Updated date</string>

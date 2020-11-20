@@ -8,13 +8,19 @@ sealed class FanfictionUIItem {
     data class FanfictionUI(
         val id: String,
         val title: String,
-        val words: String,
+        val words: String?,
         val summary: String,
         val progressionText: String,
+        val chaptersNb: Int,
         val updatedDate: String,
         val publishedDate: String,
         val fetchedDate: String,
         val isDownloadComplete: Boolean,
+        val shouldShowAuthor: Boolean,
+        val shouldShowWords: Boolean,
+        val shouldShowChapterSync: Boolean,
+        val shouldShowExport: Boolean,
+        val author: String?,
         val exportPdfImage: Int,
         val exportEpubImage: Int
     ): FanfictionUIItem()

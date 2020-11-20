@@ -28,13 +28,14 @@ class SyncedViewModel(
     private lateinit var fanfictionResult: LiveData<SyncedFanfictionsResult>
     var fanfictionRefreshResult: SingleLiveEvent<FanfictionRefreshResult> = SingleLiveEvent()
 
-    fun getFanfictionList(): LiveData<SyncedFanfictionsResult> = fanfictionResult
-
-    fun loadFanfictions() {
+    fun loadSyncedFanfictions(): LiveData<SyncedFanfictionsResult> {
         fanfictionResult = Transformations.map(databaseRepository.getSyncedFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 val fanfictionUIList = fanfictionList.map {
-                    fanfictionUIBuilder.buildFanfictionUI(it)
+                    fanfictionUIBuilder.buildFanfictionUI(
+                        fanfiction = it,
+                        shouldShowAuthor = true
+                    )
                 }
                 val title = FanfictionUIItem.FanfictionUITitle(
                     shouldShowSyncAllButton = fanfictionUIList.any { it.isDownloadComplete.not() },
@@ -47,6 +48,7 @@ class SyncedViewModel(
                 NoSyncedFanfictions
             }
         }
+        return fanfictionResult
     }
 
     fun refreshSyncedInfo() {

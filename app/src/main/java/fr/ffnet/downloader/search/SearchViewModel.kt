@@ -68,7 +68,13 @@ class SearchViewModel(
                                 title = resources.getString(R.string.search_result_title)
                             )
                             val fanfictionResult = searchList.map {
-                                fanfictionUIBuilder.buildFanfictionUI(it)
+                                fanfictionUIBuilder.buildFanfictionUI(
+                                    fanfiction = it,
+                                    shouldShowAuthor = true,
+                                    shouldShowWords = true,
+                                    shouldShowChapterSync = false,
+                                    shouldShowExport = false
+                                )
                             }
                             searchResult.postValue(listOf(title).plus(fanfictionResult))
                         } else {

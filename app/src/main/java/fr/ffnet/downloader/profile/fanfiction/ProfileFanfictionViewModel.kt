@@ -26,7 +26,10 @@ class ProfileFanfictionViewModel(
             if (fanfictionList.isNotEmpty()) {
                 ProfileHasFanfictions(
                     fanfictionList.map {
-                        fanfictionUIBuilder.buildFanfictionUI(it)
+                        fanfictionUIBuilder.buildFanfictionUI(
+                            fanfiction = it,
+                            shouldShowAuthor = true
+                        )
                     }
                 )
             } else {

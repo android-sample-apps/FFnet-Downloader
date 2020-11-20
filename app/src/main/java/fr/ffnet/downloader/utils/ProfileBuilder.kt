@@ -25,22 +25,39 @@ class ProfileBuilder @Inject constructor(
                 favoriteStoriesSelector,
                 PROFILE_TYPE_FAVORITE
             ),
-            myFanfictionList = extractFanfictionsFromList(myStoriesSelector, PROFILE_TYPE_MY_STORY)
+            myFanfictionList = extractFanfictionsFromList(
+                myStoriesSelector,
+                PROFILE_TYPE_MY_STORY,
+                name
+            )
         )
     }
 
-    private fun extractFanfictionsFromList(selector: Elements, profileType: Int): List<Fanfiction> {
-        return selector.map {
+    private fun extractFanfictionsFromList(
+        selector: Elements,
+        profileType: Int,
+        defaultAuthor: String? = null
+    ): List<Fanfiction> {
+        return selector.map { fanfiction ->
+            val fanfictionId = fanfiction.attr("data-storyId")
+            println(fanfictionId)
             Fanfiction(
-                id = it.attr("data-storyId"),
-                title = it.attr("data-title"),
-                words = it.attr("data-wordcount").toInt(),
+                id = fanfictionId,
+                title = fanfiction.attr("data-title"),
+                words = fanfiction.attr("data-wordcount").toInt(),
+                author = defaultAuthor ?: fanfiction
+                    .select("a")
+                    .first { it.attr("href").contains("/u/") }
+                    .text(),
                 summary = "N/A",
-                publishedDate = DateTime(it.attr("data-datesubmit").toLong() * 1000).toDate(),
-                updatedDate = DateTime(it.attr("data-dateupdate").toLong() * 1000).toDate(),
+                publishedDate = DateTime(
+                    fanfiction.attr("data-datesubmit")
+                        .toLong() * 1000
+                ).toDate(),
+                updatedDate = DateTime(fanfiction.attr("data-dateupdate").toLong() * 1000).toDate(),
                 fetchedDate = null,
                 profileType = profileType,
-                nbChapters = it.attr("data-chapters").toInt(),
+                nbChapters = fanfiction.attr("data-chapters").toInt(),
                 nbSyncedChapters = 0,
                 chapterList = emptyList()
             )

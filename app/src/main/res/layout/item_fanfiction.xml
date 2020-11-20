@@ -25,6 +25,7 @@
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif-light"
+            android:paddingBottom="8dp"
             android:singleLine="true"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/syncedChaptersTextView"
@@ -41,13 +42,63 @@
             tools:text="45/122" />
 
         <TextView
+            android:id="@+id/authorLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_info_author_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+
+        <TextView
+            android:id="@+id/authorValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/authorLabelTextView"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            tools:text="Cheshire" />
+
+        <TextView
+            android:id="@+id/wordsLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_info_words_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/authorLabelTextView" />
+
+        <TextView
+            android:id="@+id/wordsValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/wordsLabelTextView"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            tools:text="73828" />
+
+        <TextView
+            android:id="@+id/chaptersLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_info_chapters_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wordsLabelTextView" />
+
+        <TextView
+            android:id="@+id/chaptersValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/chaptersLabelTextView"
+            app:layout_constraintStart_toEndOf="@+id/barrier"
+            tools:text="14" />
+
+        <TextView
             android:id="@+id/publishedDateLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/download_info_published_date_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/chaptersLabelTextView" />
 
         <TextView
             android:id="@+id/publishedDateValueTextView"

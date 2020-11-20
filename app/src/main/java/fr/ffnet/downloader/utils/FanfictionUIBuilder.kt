@@ -11,12 +11,19 @@ class FanfictionUIBuilder @Inject constructor(
     private val dateFormatter: DateFormatter
 ) {
 
-    fun buildFanfictionUI(fanfiction: Fanfiction): FanfictionUI {
+    fun buildFanfictionUI(
+        fanfiction: Fanfiction,
+        shouldShowAuthor: Boolean = false,
+        shouldShowWords: Boolean = false,
+        shouldShowChapterSync: Boolean = true,
+        shouldShowExport: Boolean = true
+    ): FanfictionUI {
         val isDownloadComplete = fanfiction.nbSyncedChapters == fanfiction.nbChapters
         return FanfictionUI(
             id = fanfiction.id,
             title = fanfiction.title,
             words = fanfiction.words.toString(),
+            author = fanfiction.author,
             summary = fanfiction.summary,
             updatedDate = dateFormatter.format(fanfiction.updatedDate),
             publishedDate = dateFormatter.format(fanfiction.publishedDate),
@@ -26,9 +33,14 @@ class FanfictionUIBuilder @Inject constructor(
                 fanfiction.nbSyncedChapters,
                 fanfiction.nbChapters
             ),
+            chaptersNb = fanfiction.nbChapters,
             isDownloadComplete = isDownloadComplete,
             exportPdfImage = if (isDownloadComplete) R.drawable.ic_export_pdf_enabled else R.drawable.ic_export_pdf_disabled,
-            exportEpubImage = if (isDownloadComplete) R.drawable.ic_export_epub_enabled else R.drawable.ic_export_epub_disabled
+            exportEpubImage = if (isDownloadComplete) R.drawable.ic_export_epub_enabled else R.drawable.ic_export_epub_disabled,
+            shouldShowAuthor = shouldShowAuthor,
+            shouldShowWords = shouldShowWords,
+            shouldShowChapterSync = shouldShowChapterSync,
+            shouldShowExport = shouldShowExport
         )
     }
 }

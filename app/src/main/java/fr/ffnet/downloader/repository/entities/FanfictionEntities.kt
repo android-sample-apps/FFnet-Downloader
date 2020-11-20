@@ -10,6 +10,7 @@ import java.util.*
 data class FanfictionEntity(
     @PrimaryKey val id: String,
     var title: String,
+    var author: String,
     var words: Int,
     var summary: String,
     var publishedDate: Date,

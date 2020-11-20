@@ -166,8 +166,7 @@ class SearchFragment :
     }
 
     private fun setSyncedObservers() {
-        syncedViewModel.loadFanfictions()
-        syncedViewModel.getFanfictionList().observe(viewLifecycleOwner, { result ->
+        syncedViewModel.loadSyncedFanfictions().observe(viewLifecycleOwner, { result ->
             when (result) {
                 is SyncedViewModel.SyncedFanfictionsResult.NoSyncedFanfictions -> {
                     syncedViewFlipper.displayedChild = DISPLAY_NO_SYNCED_FANFICTIONS

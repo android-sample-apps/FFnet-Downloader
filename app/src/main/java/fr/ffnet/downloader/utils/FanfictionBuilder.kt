@@ -20,6 +20,7 @@ class FanfictionBuilder @Inject constructor(
         val profileTop = document.select("div#profile_top")
         val dates = profileTop.select("span[data-xutime]")
 
+        val author = profileTop.select("a").first().text()
         val title = profileTop.select("b").first()?.text() ?: "N/A"
         val words = extractWordsNb(profileTop.text())
         val summary = profileTop.select("div").last()?.text() ?: "N/A"
@@ -34,6 +35,7 @@ class FanfictionBuilder @Inject constructor(
             id = id,
             title = title,
             words = words,
+            author = author,
             summary = summary,
             publishedDate = DateTime(published * 1000).toDate(),
             updatedDate = DateTime(updated * 1000).toDate(),

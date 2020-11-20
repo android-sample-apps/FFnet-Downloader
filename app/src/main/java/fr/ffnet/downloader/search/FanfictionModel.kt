@@ -7,6 +7,7 @@ data class Fanfiction(
     val id: String,
     var title: String,
     var words: Int,
+    val author: String,
     var summary: String,
     val publishedDate: Date,
     val updatedDate: Date,

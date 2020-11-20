@@ -11,17 +11,22 @@ class SearchBuilder @Inject constructor(
     fun buildSearchResult(html: String): List<Fanfiction> {
         val document = jsoupParser.parseHtml(html)
         val selector = document.select(".z-list")
-        return selector.map {
-            val fanfictionStuff = it.select(".z-padtop2").first().text()
+        return selector.map { fanfiction ->
+            val fanfictionStuff = fanfiction.select(".z-padtop2").first().text()
             val words = fanfictionStuff.split("Words: ")[1].split(" ")[0].replace(",", "")
             val chapters = fanfictionStuff.split("Chapters: ")[1].split(" ")[0]
-            val dates = it.select("span[data-xutime]")
+            val dates = fanfiction.select("span[data-xutime]")
             val updatedDate = DateTime(dates[0].attr("data-xutime").toLong() * 1000).toDate()
-            val publishedDate = DateTime(dates[dates.size - 1].attr("data-xutime").toLong() * 1000).toDate()
+            val publishedDate = DateTime(
+                dates[dates.size - 1].attr("data-xutime")
+                    .toLong() * 1000
+            ).toDate()
+            val fanfictionId = fanfiction.select("a.stitle").first().attr("href").split("/")[2]
             Fanfiction(
-                id = it.select("a.stitle").first().attr("href").split("/")[2],
-                title = it.select("a.stitle").text(),
+                id = fanfictionId,
+                title = fanfiction.select("a.stitle").text(),
                 words = words.toInt(),
+                author = fanfiction.select("a").first { it.attr("href").contains("/u/") }.text(),
                 summary = "N/A",
                 publishedDate = publishedDate,
                 updatedDate = updatedDate,

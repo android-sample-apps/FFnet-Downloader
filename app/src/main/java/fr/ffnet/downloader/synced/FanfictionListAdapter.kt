@@ -109,16 +109,34 @@ class FanfictionListAdapter(
         fun bind(fanfiction: FanfictionUI) {
 
             view.titleTextView.text = fanfiction.title
+
             view.syncedChaptersTextView.text = fanfiction.progressionText
+            view.syncedChaptersTextView.isVisible = fanfiction.shouldShowChapterSync
+
             view.publishedDateValueTextView.text = fanfiction.publishedDate
             view.updatedDateValueTextView.text = fanfiction.updatedDate
 
             view.exportPdfImageView.setBackgroundResource(fanfiction.exportPdfImage)
             view.exportEpubImageView.setBackgroundResource(fanfiction.exportEpubImage)
 
+            view.authorValueTextView.text = fanfiction.author
+            view.authorLabelTextView.isVisible = fanfiction.shouldShowAuthor
+            view.authorValueTextView.isVisible = fanfiction.shouldShowAuthor
+
+            view.wordsValueTextView.text = fanfiction.words
+            view.wordsLabelTextView.isVisible = fanfiction.shouldShowWords
+            view.wordsValueTextView.isVisible = fanfiction.shouldShowWords
+
+            view.chaptersValueTextView.text = fanfiction.chaptersNb.toString()
+            view.chaptersLabelTextView.isVisible = fanfiction.shouldShowChapterSync.not()
+            view.chaptersValueTextView.isVisible = fanfiction.shouldShowChapterSync.not()
+
             view.setOnClickListener {
                 onActionListener.onFetchInformation(fanfiction)
             }
+
+            view.exportPdfImageView.isVisible = fanfiction.shouldShowExport
+            view.exportEpubImageView.isVisible = fanfiction.shouldShowExport
             if (fanfiction.isDownloadComplete) {
                 view.exportPdfImageView.setOnClickListener {
                     onActionListener.onExportPdf(fanfiction.id)
