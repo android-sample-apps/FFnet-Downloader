@@ -106,6 +106,10 @@ class SearchViewModel(
 
     fun loadSearchAndHistory() {
         loadHistory()
+
+        searchHistoryResult.removeSource(historyResult)
+        searchHistoryResult.removeSource(searchResult)
+
         searchHistoryResult.apply {
             addSource(historyResult) {
                 searchHistoryResult.value = combineLatestData(
