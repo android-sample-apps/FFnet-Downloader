@@ -20,14 +20,13 @@
 
         <TextView
             android:id="@+id/titleTextView"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif-light"
             android:singleLine="true"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Harry Potter and Harry Potter and the Methods of Rationality" />
 

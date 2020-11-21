@@ -2,6 +2,7 @@ package fr.ffnet.downloader.search
 
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -47,12 +49,22 @@ class SearchFragment :
         private const val DISPLAY_NO_SYNCED_FANFICTIONS = 1
     }
 
+    enum class KeyboardStatus {
+        CLOSED, OPENED
+    }
+
+    private var keyboardStatus = KeyboardStatus.CLOSED
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_search, container, false).also {
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_search, container, false)
         requireActivity().title = resources.getString(R.string.search_title)
+
+        view?.let(::setKeyboardStatusListener)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +82,7 @@ class SearchFragment :
     }
 
     override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
-        searchEditText.setText(fanfictionUrl)
+        searchViewModel.loadFanfictionInfo(fanfictionId)
     }
 
     private fun initializeSynced() {
@@ -78,14 +90,13 @@ class SearchFragment :
             onActionListener = optionsController,
             syncAllListener = this
         )
-        val swiper = object : SwipeToDeleteCallback(requireContext()) {
+        val itemTouchHelper = ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 (syncedFanfictionsRecyclerView.adapter as FanfictionListAdapter).unsync(
-                    viewHolder.adapterPosition
+                    viewHolder.bindingAdapterPosition
                 )
             }
-        }
-        val itemTouchHelper = ItemTouchHelper(swiper)
+        })
         itemTouchHelper.attachToRecyclerView(syncedFanfictionsRecyclerView)
         swipeRefresh.setOnRefreshListener {
             syncedViewModel.refreshSyncedInfo()
@@ -112,6 +123,25 @@ class SearchFragment :
         } else true
     }
 
+    private fun setKeyboardStatusListener(view: View) {
+        view.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            view.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = view.rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+            if (keypadHeight > screenHeight * 0.15) {
+                if (keyboardStatus == KeyboardStatus.CLOSED) {
+                    keyboardStatus = KeyboardStatus.OPENED
+                }
+            } else {
+                if (keyboardStatus == KeyboardStatus.OPENED) {
+                    keyboardStatus = KeyboardStatus.CLOSED
+                    searchEditText.clearFocus()
+                }
+            }
+        }
+    }
+
     private fun initializeSearch() {
 
         searchViewModel.loadSearchAndHistory()
@@ -132,12 +162,6 @@ class SearchFragment :
                     R.drawable.square_corners
                 )
                 containerView.transitionToEnd()
-            } else {
-                searchEditText.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.round_corners
-                )
-                containerView.transitionToStart()
             }
         }
 
@@ -145,24 +169,37 @@ class SearchFragment :
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (searchEditText.hasFocus()) {
-                        searchEditText.clearFocus()
-                    } else {
-                        requireActivity().finish()
+                    val search = searchEditText.text.toString().isBlank()
+                    when {
+                        searchEditText.hasFocus() && search -> transitionToStart()
+                        searchEditText.hasFocus() -> searchEditText.clearFocus()
+                        searchResultRecyclerView.isVisible -> transitionToStart()
+                        else -> requireActivity().finish()
                     }
                 }
             }
         )
 
+
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
                     .hideSoftInputFromWindow(view?.windowToken, 0)
-
+                searchEditText.clearFocus()
                 searchViewModel.searchFanfiction(searchEditText.text.toString())
             }
             true
         }
+    }
+
+    private fun transitionToStart() {
+        searchEditText.clearFocus()
+        searchEditText.setText("")
+        searchEditText.background = ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.round_corners
+        )
+        containerView.transitionToStart()
     }
 
     private fun setSyncedObservers() {
@@ -184,7 +221,7 @@ class SearchFragment :
 
     private fun setSearchObservers() {
         searchViewModel.navigateToFanfiction.observe(viewLifecycleOwner, { fanfictionId ->
-            containerView.transitionToStart()
+            transitionToStart()
             startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
         })
         searchViewModel.searchHistoryResult.observe(viewLifecycleOwner, { historyList ->

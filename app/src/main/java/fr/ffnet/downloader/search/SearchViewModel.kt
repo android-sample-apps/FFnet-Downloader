@@ -88,19 +88,21 @@ class SearchViewModel(
 
     private fun loadHistory() {
         historyResult = Transformations.map(databaseRepository.loadHistory()) { historyList ->
-            val title = FanfictionUITitle(
-                shouldShowSyncAllButton = false,
-                title = resources.getString(R.string.history_title)
-            )
-            val historyUIList = historyList.map {
-                HistoryUI(
-                    fanfictionId = it.id,
-                    url = "${BuildConfig.API_BASE_URL}s/${it.id}",
-                    title = it.title,
-                    date = dateFormatter.format(it.fetchedDate)
+            if (historyList.isNotEmpty()) {
+                val title = FanfictionUITitle(
+                    shouldShowSyncAllButton = false,
+                    title = resources.getString(R.string.history_title)
                 )
-            }
-            listOf(title).plus(historyUIList)
+                val historyUIList = historyList.map {
+                    HistoryUI(
+                        fanfictionId = it.id,
+                        url = "${BuildConfig.API_BASE_URL}s/${it.id}",
+                        title = it.title,
+                        date = dateFormatter.format(it.fetchedDate)
+                    )
+                }
+                listOf(title).plus(historyUIList)
+            } else emptyList()
         }
     }
 
@@ -133,7 +135,7 @@ class SearchViewModel(
         return searchList.plus(historyList)
     }
 
-    private fun loadFanfictionInfo(fanfictionId: String) {
+    fun loadFanfictionInfo(fanfictionId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             FFLogger.d(FFLogger.EVENT_KEY, "Loading fanfiction info for $fanfictionId")
             val isFanfictionInDatabase = databaseRepository.isFanfictionInDatabase(fanfictionId)
