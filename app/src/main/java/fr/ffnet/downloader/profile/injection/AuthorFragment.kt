@@ -1,4 +1,4 @@
-package fr.ffnet.downloader.profile
+package fr.ffnet.downloader.profile.injection
 
 import android.app.Activity
 import android.graphics.Rect
@@ -16,6 +16,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
+import fr.ffnet.downloader.profile.AuthorListAdapter
+import fr.ffnet.downloader.profile.AuthorModule
+import fr.ffnet.downloader.profile.AuthorViewModel
+import fr.ffnet.downloader.profile.AuthorViewModel.AuthorRefreshResult
+import fr.ffnet.downloader.profile.OnAuthorListener
 import fr.ffnet.downloader.profile.fanfiction.AuthorDetailActivity
 import kotlinx.android.synthetic.main.fragment_author.*
 import javax.inject.Inject
@@ -55,7 +60,19 @@ class AuthorFragment : Fragment(), OnAuthorListener {
     }
 
     private fun initializeSearch() {
+
         syncedFanfictionsRecyclerView.adapter = AuthorListAdapter(this)
+
+        swipeRefresh.setOnRefreshListener {
+            viewModel.refreshAuthorsInfo()
+        }
+
+        viewModel.authorRefreshResult.observe(viewLifecycleOwner, {
+            swipeRefresh.isRefreshing = false
+            if (it is AuthorRefreshResult.NotRefreshed) {
+                Snackbar.make(containerView, it.message, Snackbar.LENGTH_LONG).show()
+            }
+        })
 
         viewModel.navigateToAuthor.observe(viewLifecycleOwner, { authorLoaded ->
             transitionToStart()

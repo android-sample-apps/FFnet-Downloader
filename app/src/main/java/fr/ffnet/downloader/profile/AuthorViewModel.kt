@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.profile.AuthorUIItem.SearchAuthorNotResultUIItem
+import fr.ffnet.downloader.profile.AuthorUIItem.SyncedAuthorUIItem
 import fr.ffnet.downloader.repository.ProfileRepository
 import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultFailure
 import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultSuccess
@@ -32,6 +33,8 @@ class AuthorViewModel(
 
     val navigateToAuthor: SingleLiveEvent<AuthorLoaded> = SingleLiveEvent()
     val error: SingleLiveEvent<String> = SingleLiveEvent()
+    var authorRefreshResult: SingleLiveEvent<AuthorRefreshResult> = SingleLiveEvent()
+
     val authorResult: MediatorLiveData<List<AuthorUIItem>> by lazy {
         MediatorLiveData<List<AuthorUIItem>>()
     }
@@ -69,6 +72,40 @@ class AuthorViewModel(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fun loadAuthorInfo(authorId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val profileResult = profileRepository.loadProfileInfo(authorId)) {
+                is ProfileRepositoryResultSuccess -> navigateToAuthor.postValue(
+                    AuthorLoaded(
+                        authorId = profileResult.authorId,
+                        authorName = profileResult.authorName,
+                        shouldShowStoriesFirst = profileResult.storiesNb > 0
+                    )
+                )
+                ProfileRepositoryResultFailure -> resources.getString(R.string.author_load_error)
+            }
+        }
+    }
+
+    fun refreshAuthorsInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            syncedResult.value?.filterIsInstance<SyncedAuthorUIItem>()?.let { syncedAuthorList ->
+                val allRefreshResult = syncedAuthorList.map {
+                    profileRepository.loadProfileInfo(it.id)
+                }
+                if (allRefreshResult.all { it is ProfileRepositoryResultSuccess }) {
+                    authorRefreshResult.postValue(AuthorRefreshResult.Refreshed)
+                } else {
+                    authorRefreshResult.postValue(
+                        AuthorRefreshResult.NotRefreshed(
+                            resources.getString(R.string.author_refresh_error)
+                        )
+                    )
                 }
             }
         }
@@ -115,24 +152,14 @@ class AuthorViewModel(
         }
     }
 
-    fun loadAuthorInfo(authorId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            when (val profileResult = profileRepository.loadProfileInfo(authorId)) {
-                is ProfileRepositoryResultSuccess -> navigateToAuthor.postValue(
-                    AuthorLoaded(
-                        authorId = profileResult.authorId,
-                        authorName = profileResult.authorName,
-                        shouldShowStoriesFirst = profileResult.storiesNb > 0
-                    )
-                )
-                ProfileRepositoryResultFailure -> resources.getString(R.string.author_load_error)
-            }
-        }
-    }
-
     data class AuthorLoaded(
         val authorId: String,
         val authorName: String,
         val shouldShowStoriesFirst: Boolean
     )
+
+    sealed class AuthorRefreshResult {
+        object Refreshed : AuthorRefreshResult()
+        data class NotRefreshed(val message: String) : AuthorRefreshResult()
+    }
 }

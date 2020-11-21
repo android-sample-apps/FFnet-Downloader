@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
+import fr.ffnet.downloader.profile.injection.AuthorFragment
 import fr.ffnet.downloader.repository.ProfileRepository
 import fr.ffnet.downloader.repository.SearchRepository
 import fr.ffnet.downloader.utils.UIBuilder

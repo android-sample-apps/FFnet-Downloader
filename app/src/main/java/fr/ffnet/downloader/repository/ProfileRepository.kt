@@ -8,7 +8,6 @@ import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.repository.entities.Author
 import fr.ffnet.downloader.repository.entities.AuthorEntity
-import fr.ffnet.downloader.repository.entities.ProfileEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.utils.FanfictionConverter
@@ -90,32 +89,6 @@ class ProfileRepository(
         return ProfileRepositoryResultFailure
     }
 
-    fun hasAssociatedProfile(): LiveData<String?> = Transformations.map(profileDao.getProfile()) {
-        it?.name
-    }
-
-    fun dissociateProfile() {
-        profileDao.dissociateProfile()
-    }
-
-    fun refreshProfile() {
-        profileDao.getAssociatedProfile()?.let { profileId ->
-            loadProfileInfo(profileId)
-        }
-    }
-
-    private fun insertListAndReturnIds(fanfictionList: List<Fanfiction>): List<String> {
-        return fanfictionList.map { fanfiction ->
-            val fanfictionInfo = fanfictionDao.getFanfiction(fanfiction.id)
-            if (fanfictionInfo == null) {
-                val fanfictionEntity = fanfictionConverter.toFanfictionEntity(fanfiction)
-                fanfictionDao.insertFanfiction(fanfictionEntity)
-            }
-            fanfiction.id
-        }
-    }
-
-    fun loadHistory(): LiveData<List<ProfileEntity>> = profileDao.getProfileHistory()
     fun loadSyncedAuthors(): LiveData<List<Author>> {
         return Transformations.map(profileDao.getSyncedAuthors()) { authorEntityList ->
             authorEntityList.map {
@@ -127,6 +100,17 @@ class ProfileRepository(
                     fetchedDate = it.fetchedDate
                 )
             }
+        }
+    }
+
+    private fun insertListAndReturnIds(fanfictionList: List<Fanfiction>): List<String> {
+        return fanfictionList.map { fanfiction ->
+            val fanfictionInfo = fanfictionDao.getFanfiction(fanfiction.id)
+            if (fanfictionInfo == null) {
+                val fanfictionEntity = fanfictionConverter.toFanfictionEntity(fanfiction)
+                fanfictionDao.insertFanfiction(fanfictionEntity)
+            }
+            fanfiction.id
         }
     }
 

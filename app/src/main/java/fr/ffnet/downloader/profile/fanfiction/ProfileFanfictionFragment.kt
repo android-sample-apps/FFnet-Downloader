@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
-import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel.ProfileFanfictionsResult
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel.ProfileFanfictionsResult.ProfileHasFanfictions
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
 import fr.ffnet.downloader.profile.fanfiction.injection.ProfileFanfictionModule
 import fr.ffnet.downloader.synced.FanfictionListAdapter
 import fr.ffnet.downloader.synced.FanfictionUIItem
@@ -99,10 +101,8 @@ class ProfileFanfictionFragment : Fragment(), PermissionListener {
 
     private fun onProfileFanfictionsResult(result: ProfileFanfictionsResult) {
         when (result) {
-            is ProfileFanfictionsResult.ProfileHasFanfictions -> {
-                showFanfictions(result.fanfictionUIList)
-            }
-            is ProfileFanfictionsResult.ProfileHasNoFanfictions -> {
+            is ProfileHasFanfictions -> showFanfictions(result.fanfictionUIList)
+            is ProfileHasNoFanfictions -> {
                 profileFanfictionsViewFlipper.displayedChild = DISPLAY_NO_FANFICTIONS
             }
         }

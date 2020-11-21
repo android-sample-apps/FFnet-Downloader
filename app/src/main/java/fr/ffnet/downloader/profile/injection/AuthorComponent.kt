@@ -1,6 +1,7 @@
-package fr.ffnet.downloader.profile
+package fr.ffnet.downloader.profile.injection
 
 import dagger.Subcomponent
+import fr.ffnet.downloader.profile.AuthorModule
 
 @Subcomponent(
     modules = [

@@ -8,7 +8,6 @@ import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.repository.entities.AuthorEntity
 import fr.ffnet.downloader.repository.entities.ChapterEntity
 import fr.ffnet.downloader.repository.entities.FanfictionEntity
-import fr.ffnet.downloader.repository.entities.ProfileEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 import fr.ffnet.downloader.utils.Converters
 
@@ -16,7 +15,6 @@ import fr.ffnet.downloader.utils.Converters
     entities = [
         FanfictionEntity::class,
         ChapterEntity::class,
-        ProfileEntity::class,
         AuthorEntity::class,
         ProfileFanfictionEntity::class
     ],

@@ -54,6 +54,7 @@
     <string name="author_search_hint">Search for authors</string>
     <string name="author_favorites_nb">Favorites</string>
     <string name="author_stories_nb">Stories</string>
+    <string name="author_refresh_error">Not all authors have been refreshed</string>
     <string name="profile_list_no_fanfictions">No stories in this category</string>
     <string name="profile_my_favorites">My favorites</string>
     <string name="profile_my_stories">My stories</string>

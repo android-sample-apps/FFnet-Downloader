@@ -3,10 +3,10 @@ package fr.ffnet.downloader.profile.fanfiction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import fr.ffnet.downloader.profile.ProfileViewModel
-import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions
-import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel.ProfileFanfictionsResult.ProfileHasFanfictions
+import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
 import fr.ffnet.downloader.repository.DatabaseRepository
+import fr.ffnet.downloader.synced.FanfictionUIItem
 import fr.ffnet.downloader.utils.UIBuilder
 
 class ProfileFanfictionViewModel(
@@ -14,12 +14,12 @@ class ProfileFanfictionViewModel(
     private val UIBuilder: UIBuilder
 ) : ViewModel() {
 
-    private lateinit var myFavoritesResult: LiveData<ProfileViewModel.ProfileFanfictionsResult>
-    fun getMyFavoritesList(): LiveData<ProfileViewModel.ProfileFanfictionsResult> =
+    private lateinit var myFavoritesResult: LiveData<ProfileFanfictionsResult>
+    fun getMyFavoritesList(): LiveData<ProfileFanfictionsResult> =
         myFavoritesResult
 
-    private lateinit var myStoriesResult: LiveData<ProfileViewModel.ProfileFanfictionsResult>
-    fun getMyStoriesList(): LiveData<ProfileViewModel.ProfileFanfictionsResult> = myStoriesResult
+    private lateinit var myStoriesResult: LiveData<ProfileFanfictionsResult>
+    fun getMyStoriesList(): LiveData<ProfileFanfictionsResult> = myStoriesResult
 
     fun loadFavoriteFanfictions(authorId: String) {
         myFavoritesResult = Transformations.map(databaseRepository.getFavoriteFanfictions(authorId)) { fanfictionList ->
@@ -46,9 +46,15 @@ class ProfileFanfictionViewModel(
                         UIBuilder.buildFanfictionUI(it)
                     }
                 )
-            } else {
-                ProfileHasNoFanfictions
-            }
+            } else ProfileHasNoFanfictions
         }
+    }
+
+    sealed class ProfileFanfictionsResult {
+        data class ProfileHasFanfictions(
+            val fanfictionUIList: List<FanfictionUIItem.FanfictionUI>
+        ) : ProfileFanfictionsResult()
+
+        object ProfileHasNoFanfictions : ProfileFanfictionsResult()
     }
 }
