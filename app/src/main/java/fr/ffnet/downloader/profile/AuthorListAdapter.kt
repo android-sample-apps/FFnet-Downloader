@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.item_no_result.view.*
 
 interface OnAuthorListener {
     fun onLoadAuthor(authorId: String)
+    fun onUnsync(authorId: SyncedAuthorUIItem)
 }
 
 class AuthorListAdapter(
@@ -79,7 +80,7 @@ class AuthorListAdapter(
     }
 
     fun unsync(position: Int) {
-
+        authorListener.onUnsync(authorItemList[position] as SyncedAuthorUIItem)
     }
 
     inner class NoResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

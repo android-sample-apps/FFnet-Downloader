@@ -46,6 +46,12 @@ class AuthorViewModel(
         searchResult.postValue(emptyList())
     }
 
+    fun unsyncAuthor(author: SyncedAuthorUIItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            profileRepository.unsyncAuthor(author.id)
+        }
+    }
+
     fun searchAuthor(searchText: String?) {
         when (val urlTransformationResult = urlTransformer.getProfileIdFromUrl(searchText)) {
             is UrlTransformSuccess -> loadAuthorInfo(urlTransformationResult.id)

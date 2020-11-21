@@ -27,6 +27,11 @@ class ProfileRepository(
         const val PROFILE_TYPE_MY_STORY = 2
     }
 
+    fun unsyncAuthor(authorId: String) {
+        profileDao.deleteProfileMapping(authorId)
+        profileDao.deleteAuthor(authorId)
+    }
+
     fun loadProfileInfo(authorId: String): ProfileRepositoryResult {
         val response = regularCrawlService.getProfile(authorId).execute()
         if (response.isSuccessful) {

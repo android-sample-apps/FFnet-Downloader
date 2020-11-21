@@ -1,34 +1,22 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="title_activity_ffnet">FFnet</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
 
     <string name="nav_title_search">Search</string>
     <string name="nav_title_author">Author</string>
 
     <string name="search_fanfiction_hint">Search for fanfictions</string>
-    <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Sync chapters</string>
-    <string name="download_all_button_title">Sync all chapters</string>
     <string name="download_button_downloading">Downloading</string>
     <string name="search_title">Search Fanfiction</string>
-    <string name="profile_title">My profile</string>
     <string name="synced_title">Synced Fanfictions</string>
     <string name="history_title">Search History</string>
     <string name="search_result_title">Search Result</string>
     <string name="synced_author_title">Synced Authors</string>
 
-    <string name="notification_download_progression_title">Download progression %s</string>
-    <string name="notification_download_progression_channel_name">downloadNotificationProgression</string>
-    <string name="notification_download_progression_channel_description">downloadNotificationDescription</string>
-
-    <string name="search_fetched_date">Fetched on %s</string>
-    <string name="search_fanfiction_url_error">The given url could not be fetched</string>
     <string name="search_fanfiction_info_fetching_error">There was an error while fetching fanfiction from fanfiction.net</string>
     <string name="search_fanfiction_info_server_error">The server can\'t be reached</string>
 
-    <string name="download_info_title_label">Title</string>
     <string name="download_info_author_label">Author</string>
     <string name="download_info_words_label">Words</string>
     <string name="download_info_published_date_label">Published date</string>
@@ -38,17 +26,11 @@
     <string name="download_info_chapters_value">%d/%d</string>
     <string name="download_info_chapter_status_not_synced">Not synced</string>
     <string name="download_info_chapter_status_synced">Synced</string>
-    <string name="download_chapter_error">An error occurred while downloading</string>
-    <string name="download_chapter_already_done">All chapters already synced</string>
 
     <string name="synced_fanfictions_no_fanfictions">No fanfictions synced</string>
     <string name="synced_fanfictions_synced_date_label">Synced</string>
 
-    <string name="fanfiction_options_menu_goto">See details</string>
-    <string name="fanfiction_options_menu_export_pdf">Export PDF</string>
-    <string name="fanfiction_options_menu_export_epub">Export EPUB</string>
-    <string name="fanfiction_options_menu_delete">Delete</string>
-
+    <string name="author_no_result">No authors synced</string>
     <string name="search_no_result">No result</string>
     <string name="author_load_error">Error loading author</string>
     <string name="author_search_hint">Search for authors</string>
@@ -58,17 +40,10 @@
     <string name="profile_list_no_fanfictions">No stories in this category</string>
     <string name="profile_my_favorites">My favorites</string>
     <string name="profile_my_stories">My stories</string>
-    <string name="profile_associate_profile_button">Associate profile</string>
-    <string name="profile_dissociate_profile">Dissociate profile</string>
-    <string name="profile_refresh_profile">Refresh profile</string>
-    <string name="profile_dissociate_confirmation">Do you really want to dissociate your profile?</string>
-    <string name="profile_associate_no_fanfiction_found">No fanfiction found for the associated profile, do you wish to associate another profile ?</string>
 
     <string name="export_permission_title">Write permission needed</string>
     <string name="export_permission_content">The document cannot be generated without write permission</string>
     <string name="export_permission_grant">Grant</string>
     <string name="export_permission_deny">Deny</string>
 
-    <string name="notification_channel_name">ffnet_periodic</string>
-    <string name="notification_channel_description">periodic_sync_check</string>
 </resources>

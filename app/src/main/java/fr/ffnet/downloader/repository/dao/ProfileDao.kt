@@ -18,6 +18,9 @@ interface ProfileDao {
     @Query("DELETE FROM ProfileFanfictionEntity WHERE profileId = :profileId")
     fun deleteProfileMapping(profileId: String)
 
+    @Query("DELETE FROM AuthorEntity WHERE authorId = :authorId")
+    fun deleteAuthor(authorId: String)
+
     @Update
     fun updateAuthor(authorEntity: AuthorEntity)
 

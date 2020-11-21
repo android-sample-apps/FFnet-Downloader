@@ -12,22 +12,35 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.profile.AuthorListAdapter
 import fr.ffnet.downloader.profile.AuthorModule
+import fr.ffnet.downloader.profile.AuthorUIItem.SyncedAuthorUIItem
 import fr.ffnet.downloader.profile.AuthorViewModel
 import fr.ffnet.downloader.profile.AuthorViewModel.AuthorRefreshResult
 import fr.ffnet.downloader.profile.OnAuthorListener
 import fr.ffnet.downloader.profile.fanfiction.AuthorDetailActivity
+import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_author.*
+import kotlinx.android.synthetic.main.fragment_author.containerView
+import kotlinx.android.synthetic.main.fragment_author.searchEditText
+import kotlinx.android.synthetic.main.fragment_author.swipeRefresh
+import kotlinx.android.synthetic.main.fragment_author.syncedFanfictionsRecyclerView
 import javax.inject.Inject
 
 class AuthorFragment : Fragment(), OnAuthorListener {
 
     @Inject lateinit var viewModel: AuthorViewModel
+
+    companion object {
+        private const val DISPLAY_AUTHOR_CONTENT = 0
+        private const val DISPLAY_NO_AUTHOR_CONTENT = 1
+    }
 
     enum class KeyboardStatus {
         CLOSED, OPENED
@@ -57,6 +70,10 @@ class AuthorFragment : Fragment(), OnAuthorListener {
 
     override fun onLoadAuthor(authorId: String) {
         viewModel.loadAuthorInfo(authorId)
+    }
+
+    override fun onUnsync(author: SyncedAuthorUIItem) {
+        viewModel.unsyncAuthor(author)
     }
 
     private fun initializeSearch() {
@@ -90,7 +107,12 @@ class AuthorFragment : Fragment(), OnAuthorListener {
         })
         viewModel.loadSearchAndSynced()
         viewModel.authorResult.observe(viewLifecycleOwner, { authorItemList ->
-            (syncedFanfictionsRecyclerView.adapter as AuthorListAdapter).authorItemList = authorItemList
+            if (authorItemList.isNotEmpty()) {
+                (syncedFanfictionsRecyclerView.adapter as AuthorListAdapter).authorItemList = authorItemList
+                syncedViewFlipper.displayedChild = DISPLAY_AUTHOR_CONTENT
+            } else {
+                syncedViewFlipper.displayedChild = DISPLAY_NO_AUTHOR_CONTENT
+            }
         })
 
         searchEditText.addTextChangedListener {
@@ -106,6 +128,15 @@ class AuthorFragment : Fragment(), OnAuthorListener {
                 containerView.transitionToEnd()
             }
         }
+
+        val itemTouchHelper = ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                (syncedFanfictionsRecyclerView.adapter as AuthorListAdapter).unsync(
+                    viewHolder.bindingAdapterPosition
+                )
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(syncedFanfictionsRecyclerView)
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
