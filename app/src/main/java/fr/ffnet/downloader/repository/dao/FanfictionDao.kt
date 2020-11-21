@@ -79,10 +79,10 @@ interface FanfictionDao {
             "(SELECT COUNT(*) FROM ChapterEntity WHERE FanfictionEntity.id = fanfictionId AND content != '') AS nbSyncedChapters " +
             "FROM FanfictionEntity " +
             "LEFT JOIN ProfileFanfictionEntity ON (ProfileFanfictionEntity.fanfictionId = FanfictionEntity.id) " +
-            "LEFT JOIN ProfileEntity ON (ProfileFanfictionEntity.profileId = ProfileEntity.profileId) " +
-            "WHERE ProfileEntity.isAssociated = 1 " +
-            "AND ProfileFanfictionEntity.profileType = :profileType " +
+            "LEFT JOIN AuthorEntity ON (ProfileFanfictionEntity.profileId = AuthorEntity.authorId) " +
+            "WHERE ProfileFanfictionEntity.profileType = :profileType " +
+            "AND ProfileFanfictionEntity.profileId = :authorId " +
             "ORDER BY FanfictionEntity.fetchedDate DESC, FanfictionEntity.updatedDate DESC"
     )
-    fun getFanfictionsFromAssociatedProfileLiveData(profileType: Int): LiveData<List<FanfictionEntity>>
+    fun getFanfictionsFromAssociatedProfileLiveData(authorId: String, profileType: Int): LiveData<List<FanfictionEntity>>
 }

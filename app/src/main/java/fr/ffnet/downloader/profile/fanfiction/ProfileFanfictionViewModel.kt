@@ -21,8 +21,8 @@ class ProfileFanfictionViewModel(
     private lateinit var myStoriesResult: LiveData<ProfileViewModel.ProfileFanfictionsResult>
     fun getMyStoriesList(): LiveData<ProfileViewModel.ProfileFanfictionsResult> = myStoriesResult
 
-    fun loadFavoriteFanfictions() {
-        myFavoritesResult = Transformations.map(databaseRepository.getMyFavoriteFanfictions()) { fanfictionList ->
+    fun loadFavoriteFanfictions(authorId: String) {
+        myFavoritesResult = Transformations.map(databaseRepository.getFavoriteFanfictions(authorId)) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 ProfileHasFanfictions(
                     fanfictionList.map {
@@ -38,8 +38,8 @@ class ProfileFanfictionViewModel(
         }
     }
 
-    fun loadMyFanfictions() {
-        myStoriesResult = Transformations.map(databaseRepository.getMyFanfictions()) { fanfictionList ->
+    fun loadMyFanfictions(authorId: String) {
+        myStoriesResult = Transformations.map(databaseRepository.getStories(authorId)) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 ProfileHasFanfictions(
                     fanfictionList.map {

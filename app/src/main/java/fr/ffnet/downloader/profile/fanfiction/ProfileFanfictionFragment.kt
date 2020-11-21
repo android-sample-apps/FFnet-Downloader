@@ -29,17 +29,20 @@ class ProfileFanfictionFragment : Fragment(), PermissionListener {
         private const val DISPLAY_NO_FANFICTIONS = 0
         private const val DISPLAY_LIST = 1
         private const val EXTRA_IS_FAVORITE = "EXTRA_IS_FAVORITE"
+        private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
 
-        fun newInstance(isFavorites: Boolean): ProfileFanfictionFragment {
+        fun newInstance(isFavorites: Boolean, authorId: String): ProfileFanfictionFragment {
             return ProfileFanfictionFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_FAVORITE, isFavorites)
+                    putString(EXTRA_AUTHOR_ID, authorId)
                 }
             }
         }
     }
 
     private val isFavorites by lazy { arguments?.getBoolean(EXTRA_IS_FAVORITE, false) ?: false }
+    private val authorId by lazy { arguments?.getString(EXTRA_AUTHOR_ID) ?: "" }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,8 +59,8 @@ class ProfileFanfictionFragment : Fragment(), PermissionListener {
 
         fanfictionRecyclerView.adapter = FanfictionListAdapter(optionsController)
 
-        profileViewModel.loadFavoriteFanfictions()
-        profileViewModel.loadMyFanfictions()
+        profileViewModel.loadFavoriteFanfictions(authorId)
+        profileViewModel.loadMyFanfictions(authorId)
 
         setListeners()
     }

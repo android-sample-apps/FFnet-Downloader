@@ -43,6 +43,19 @@ class SearchBuilder @Inject constructor(
     fun builAuthorSearchResult(html: String): List<AuthorSearchResult> {
         val document = jsoupParser.parseHtml(html)
         val selector = document.select("form>div>div.bs")
+
+        if (selector.isEmpty()) {
+            return document.select("form a")
+                .filter { it.attr("href").contains("/u/") }
+                .map { link ->
+                    AuthorSearchResult(
+                        id = link.attr("href").split("/")[2],
+                        name = link.text(),
+                        nbStories = "0"
+                    )
+                }
+        }
+
         return selector.map {
             val link = it.select("a")
             val span = it.select("span")

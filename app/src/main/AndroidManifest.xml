@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="fr.ffnet.downloader">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,7 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".fanfiction.FanfictionActivity" />
+        <activity android:name=".profile.fanfiction.AuthorDetailActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="fr.ffnet.downloader.fileprovider"

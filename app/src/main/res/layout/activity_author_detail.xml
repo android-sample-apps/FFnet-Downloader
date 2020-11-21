@@ -26,13 +26,11 @@
             android:id="@+id/profileFanfictionsTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:tabBackground="@color/primaryColor"
             app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="@color/secondaryDarkColor"
-            tools:visibility="visible" />
+            app:tabTextColor="@color/secondaryDarkColor" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

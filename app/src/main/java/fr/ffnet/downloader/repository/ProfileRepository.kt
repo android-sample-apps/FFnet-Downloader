@@ -79,7 +79,12 @@ class ProfileRepository(
                     )
                 }
 
-                return ProfileRepositoryResultSuccess(authorId)
+                return ProfileRepositoryResultSuccess(
+                    authorId = authorId,
+                    authorName = profileInfo.name,
+                    favoritesNb = favoriteIds.size,
+                    storiesNb = storyIds.size,
+                )
             }
         }
         return ProfileRepositoryResultFailure
@@ -126,7 +131,13 @@ class ProfileRepository(
     }
 
     sealed class ProfileRepositoryResult {
-        data class ProfileRepositoryResultSuccess(val authorId: String) : ProfileRepositoryResult()
+        data class ProfileRepositoryResultSuccess(
+            val authorId: String,
+            val authorName: String,
+            val favoritesNb: Int,
+            val storiesNb: Int
+        ) : ProfileRepositoryResult()
+
         object ProfileRepositoryResultFailure : ProfileRepositoryResult()
     }
 }

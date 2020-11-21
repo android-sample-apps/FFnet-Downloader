@@ -13,8 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
+import fr.ffnet.downloader.profile.fanfiction.AuthorDetailActivity
 import kotlinx.android.synthetic.main.fragment_author.*
 import javax.inject.Inject
 
@@ -55,6 +57,20 @@ class AuthorFragment : Fragment(), OnAuthorListener {
     private fun initializeSearch() {
         syncedFanfictionsRecyclerView.adapter = AuthorListAdapter(this)
 
+        viewModel.navigateToAuthor.observe(viewLifecycleOwner, { authorLoaded ->
+            transitionToStart()
+            startActivity(
+                AuthorDetailActivity.newIntent(
+                    context = requireContext(),
+                    authorId = authorLoaded.authorId,
+                    authorName = authorLoaded.authorName,
+                    shouldShowStoriesFirst = authorLoaded.shouldShowStoriesFirst
+                )
+            )
+        })
+        viewModel.error.observe(viewLifecycleOwner, { errorMessage ->
+            Snackbar.make(containerView, errorMessage, Snackbar.LENGTH_LONG).show()
+        })
         viewModel.loadSearchAndSynced()
         viewModel.authorResult.observe(viewLifecycleOwner, { authorItemList ->
             (syncedFanfictionsRecyclerView.adapter as AuthorListAdapter).authorItemList = authorItemList
@@ -78,10 +94,11 @@ class AuthorFragment : Fragment(), OnAuthorListener {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val search = searchEditText.text.toString().isBlank()
+                    val search = searchEditText.text.toString()
                     when {
-                        searchEditText.hasFocus() && search -> transitionToStart()
+                        searchEditText.hasFocus() && search.isBlank() -> transitionToStart()
                         searchEditText.hasFocus() -> searchEditText.clearFocus()
+                        search.isNotBlank() -> transitionToStart()
                         else -> {
                             val navigationView: BottomNavigationView = requireActivity().findViewById(
                                 R.id.navigationView

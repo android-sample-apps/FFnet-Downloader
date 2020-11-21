@@ -7,10 +7,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.profile.AuthorUIItem.AuthorTitleUIItem
+import fr.ffnet.downloader.profile.AuthorUIItem.SearchAuthorNotResultUIItem
 import fr.ffnet.downloader.profile.AuthorUIItem.SearchAuthorUIItem
 import fr.ffnet.downloader.profile.AuthorUIItem.SyncedAuthorUIItem
 import kotlinx.android.synthetic.main.item_author.view.*
 import kotlinx.android.synthetic.main.item_author_title.view.*
+import kotlinx.android.synthetic.main.item_no_result.view.*
 
 interface OnAuthorListener {
     fun onLoadAuthor(authorId: String)
@@ -24,6 +26,7 @@ class AuthorListAdapter(
         private const val TYPE_HEADER = 0
         private const val TYPE_AUTHOR = 1
         private const val TYPE_SEARCH = 2
+        private const val TYPE_SEARCH_EMPTY = 3
     }
 
     var authorItemList: List<AuthorUIItem> = emptyList()
@@ -44,6 +47,11 @@ class AuthorListAdapter(
                     R.layout.item_author, parent, false
                 )
             )
+            TYPE_SEARCH_EMPTY -> NoResultViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_no_result, parent, false
+                )
+            )
             else -> SearchAuthorViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_author, parent, false
@@ -55,6 +63,7 @@ class AuthorListAdapter(
     override fun getItemViewType(position: Int): Int = when {
         authorItemList[position] is AuthorTitleUIItem -> TYPE_HEADER
         authorItemList[position] is SyncedAuthorUIItem -> TYPE_AUTHOR
+        authorItemList[position] is SearchAuthorNotResultUIItem -> TYPE_SEARCH_EMPTY
         else -> TYPE_SEARCH
     }
 
@@ -65,11 +74,18 @@ class AuthorListAdapter(
             is AuthorTitleUIItem -> (holder as TitleAuthorViewHolder).bind(item)
             is SyncedAuthorUIItem -> (holder as SyncedAuthorViewHolder).bind(item)
             is SearchAuthorUIItem -> (holder as SearchAuthorViewHolder).bind(item)
+            is SearchAuthorNotResultUIItem -> (holder as NoResultViewHolder).bind(item)
         }
     }
 
     fun unsync(position: Int) {
 
+    }
+
+    inner class NoResultViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(item: SearchAuthorNotResultUIItem) {
+            view.noResultTextView.text = item.message
+        }
     }
 
     inner class TitleAuthorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

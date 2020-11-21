@@ -34,15 +34,15 @@ class DatabaseRepository(
         fanfictionId
     )
 
-    fun getMyFavoriteFanfictions(): LiveData<List<Fanfiction>> {
+    fun getFavoriteFanfictions(authorId: String): LiveData<List<Fanfiction>> {
         return transformEntityToModel(
-            dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_FAVORITE)
+            dao.getFanfictionsFromAssociatedProfileLiveData(authorId, PROFILE_TYPE_FAVORITE)
         )
     }
 
-    fun getMyFanfictions(): LiveData<List<Fanfiction>> {
+    fun getStories(authorId: String): LiveData<List<Fanfiction>> {
         return transformEntityToModel(
-            dao.getFanfictionsFromAssociatedProfileLiveData(PROFILE_TYPE_MY_STORY)
+            dao.getFanfictionsFromAssociatedProfileLiveData(authorId, PROFILE_TYPE_MY_STORY)
         )
     }
 

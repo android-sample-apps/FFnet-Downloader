@@ -8,10 +8,12 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.profile.AuthorUIItem.SearchAuthorNotResultUIItem
 import fr.ffnet.downloader.repository.ProfileRepository
-import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult
-import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.*
+import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultFailure
+import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultSuccess
 import fr.ffnet.downloader.repository.SearchRepository
+import fr.ffnet.downloader.utils.SingleLiveEvent
 import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
@@ -27,6 +29,9 @@ class AuthorViewModel(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
+
+    val navigateToAuthor: SingleLiveEvent<AuthorLoaded> = SingleLiveEvent()
+    val error: SingleLiveEvent<String> = SingleLiveEvent()
     val authorResult: MediatorLiveData<List<AuthorUIItem>> by lazy {
         MediatorLiveData<List<AuthorUIItem>>()
     }
@@ -47,16 +52,21 @@ class AuthorViewModel(
                         val searchList = searchRepository.searchAuthor(
                             searchText.split(" ")
                         )
+                        val title = AuthorUIItem.AuthorTitleUIItem(
+                            title = resources.getString(R.string.search_result_title)
+                        )
                         if (searchList.isNotEmpty()) {
-                            val title = AuthorUIItem.AuthorTitleUIItem(
-                                title = resources.getString(R.string.search_result_title)
-                            )
                             val authorResult = searchList.map {
                                 uiBuilder.buildSearchAuthorUI(it)
                             }
                             searchResult.postValue(listOf(title).plus(authorResult))
                         } else {
-                            searchResult.postValue(emptyList())
+                            searchResult.postValue(
+                                listOf(
+                                    title,
+                                    SearchAuthorNotResultUIItem(resources.getString(R.string.search_no_result))
+                                )
+                            )
                         }
                     }
                 }
@@ -107,11 +117,22 @@ class AuthorViewModel(
 
     fun loadAuthorInfo(authorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val profileResult = profileRepository.loadProfileInfo(authorId)
-            when (profileResult) {
-                is ProfileRepositoryResultSuccess -> TODO()
-                ProfileRepositoryResultFailure -> TODO()
+            when (val profileResult = profileRepository.loadProfileInfo(authorId)) {
+                is ProfileRepositoryResultSuccess -> navigateToAuthor.postValue(
+                    AuthorLoaded(
+                        authorId = profileResult.authorId,
+                        authorName = profileResult.authorName,
+                        shouldShowStoriesFirst = profileResult.storiesNb > 0
+                    )
+                )
+                ProfileRepositoryResultFailure -> resources.getString(R.string.author_load_error)
             }
         }
     }
+
+    data class AuthorLoaded(
+        val authorId: String,
+        val authorName: String,
+        val shouldShowStoriesFirst: Boolean
+    )
 }

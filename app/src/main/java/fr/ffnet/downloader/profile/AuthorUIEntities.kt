@@ -2,6 +2,10 @@ package fr.ffnet.downloader.profile
 
 sealed class AuthorUIItem {
 
+    data class SearchAuthorNotResultUIItem(
+        val message: String
+    ) : AuthorUIItem()
+
     data class AuthorTitleUIItem(
         val title: String
     ) : AuthorUIItem()
