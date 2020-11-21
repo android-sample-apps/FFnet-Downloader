@@ -4,6 +4,9 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    <string name="nav_title_search">Search</string>
+    <string name="nav_title_author">Author</string>
+
     <string name="download_url_hint">Search for fanfictions</string>
     <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Sync chapters</string>
