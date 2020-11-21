@@ -49,7 +49,7 @@ class AuthorFragment : Fragment(), OnAuthorListener {
     }
 
     override fun onLoadAuthor(authorId: String) {
-        viewModel.loadAuthor(authorId)
+        viewModel.loadAuthorInfo(authorId)
     }
 
     private fun initializeSearch() {

@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.ProfileRepository
+import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult
+import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.*
 import fr.ffnet.downloader.repository.SearchRepository
 import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.UrlTransformer
@@ -34,10 +36,6 @@ class AuthorViewModel(
 
     fun emptySearchResults() {
         searchResult.postValue(emptyList())
-    }
-
-    fun loadAuthor(authorId: String) {
-        profileRepository.loadProfileInfo(authorId)
     }
 
     fun searchAuthor(searchText: String?) {
@@ -107,9 +105,13 @@ class AuthorViewModel(
         }
     }
 
-    private fun loadAuthorInfo(profileId: String) {
+    fun loadAuthorInfo(authorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            profileRepository.loadProfileInfo(profileId)
+            val profileResult = profileRepository.loadProfileInfo(authorId)
+            when (profileResult) {
+                is ProfileRepositoryResultSuccess -> TODO()
+                ProfileRepositoryResultFailure -> TODO()
+            }
         }
     }
 }

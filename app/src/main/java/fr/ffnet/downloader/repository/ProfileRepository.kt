@@ -2,9 +2,12 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultFailure
+import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultSuccess
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.repository.entities.Author
+import fr.ffnet.downloader.repository.entities.AuthorEntity
 import fr.ffnet.downloader.repository.entities.ProfileEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 import fr.ffnet.downloader.search.Fanfiction
@@ -13,7 +16,7 @@ import fr.ffnet.downloader.utils.ProfileBuilder
 import org.joda.time.LocalDateTime
 
 class ProfileRepository(
-    private val regularServiceRegular: RegularCrawlService,
+    private val regularCrawlService: RegularCrawlService,
     private val profileDao: ProfileDao,
     private val fanfictionDao: FanfictionDao,
     private val profileBuilder: ProfileBuilder,
@@ -26,8 +29,8 @@ class ProfileRepository(
     }
 
     fun loadProfileInfo(authorId: String): ProfileRepositoryResult {
-        val response = regularServiceRegular.getProfile(authorId).execute()
-        return if (response.isSuccessful) {
+        val response = regularCrawlService.getProfile(authorId).execute()
+        if (response.isSuccessful) {
             response.body()?.let { responseBody ->
 
                 val profileInfo = profileBuilder.buildProfile(authorId, responseBody.string())
@@ -55,27 +58,31 @@ class ProfileRepository(
                     )
                 }
 
-                val profile = profileDao.getProfile(authorId)
-                if (profile == null) {
-                    profileDao.insertProfile(
-                        ProfileEntity(
-                            profileId = profileInfo.profileId,
+                val author = profileDao.getAuthor(authorId)
+                if (author == null) {
+                    profileDao.insertAuthor(
+                        AuthorEntity(
+                            authorId = profileInfo.profileId,
                             name = profileInfo.name,
                             fetchedDate = LocalDateTime.now(),
-                            isAssociated = true
+                            nbstories = storyIds.size.toString(),
+                            nbFavorites = favoriteIds.size.toString()
                         )
                     )
                 } else {
-                    profileDao.associateProfile(authorId)
+                    profileDao.updateAuthor(
+                        author.copy(
+                            fetchedDate = LocalDateTime.now(),
+                            nbstories = storyIds.size.toString(),
+                            nbFavorites = favoriteIds.size.toString()
+                        )
+                    )
                 }
 
-                ProfileRepositoryResult.ProfileRepositoryResultSuccess(
-                    profileId = authorId
-                )
-            } ?: ProfileRepositoryResult.ProfileRepositoryResultFailure
-        } else {
-            ProfileRepositoryResult.ProfileRepositoryResultFailure
+                return ProfileRepositoryResultSuccess(authorId)
+            }
         }
+        return ProfileRepositoryResultFailure
     }
 
     fun hasAssociatedProfile(): LiveData<String?> = Transformations.map(profileDao.getProfile()) {
@@ -119,7 +126,7 @@ class ProfileRepository(
     }
 
     sealed class ProfileRepositoryResult {
-        data class ProfileRepositoryResultSuccess(val profileId: String) : ProfileRepositoryResult()
+        data class ProfileRepositoryResultSuccess(val authorId: String) : ProfileRepositoryResult()
         object ProfileRepositoryResultFailure : ProfileRepositoryResult()
     }
 }
