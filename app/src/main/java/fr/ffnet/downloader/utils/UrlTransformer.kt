@@ -21,7 +21,10 @@ class UrlTransformer @Inject constructor() {
         } ?: UrlTransformFailure
     }
 
-    fun getProfileIdFromUrl(url: String): UrlTransformationResult {
+    fun getProfileIdFromUrl(url: String?): UrlTransformationResult {
+        if (url.isNullOrEmpty()) {
+            return UrlTransformFailure
+        }
         val result = PROFILE_ID_MATCHER.toRegex().find(url)
         return result?.value?.let {
             UrlTransformSuccess(it.replace("/u/", ""))

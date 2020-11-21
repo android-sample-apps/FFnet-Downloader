@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAFAFA"
-    app:layoutDescription="@xml/search_main_scene">
+    app:layoutDescription="@xml/author_main_scene">
 
     <EditText
         android:id="@+id/searchEditText"
@@ -18,7 +18,7 @@
         android:background="@drawable/round_corners"
         android:elevation="4dp"
         android:ellipsize="end"
-        android:hint="@string/search_fanfiction_hint"
+        android:hint="@string/author_search_hint"
         android:imeOptions="actionSearch"
         android:inputType="textUri"
         android:maxLines="1"
@@ -28,16 +28,6 @@
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchResultRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchEditText"
-        tools:visibility="visible" />
 
     <ViewFlipper
         android:id="@+id/syncedViewFlipper"
@@ -58,7 +48,7 @@
                 android:clipToPadding="false"
                 android:paddingBottom="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_fanfiction" />
+                tools:listitem="@layout/item_author" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

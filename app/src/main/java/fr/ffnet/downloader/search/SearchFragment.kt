@@ -61,8 +61,6 @@ class SearchFragment :
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
-        requireActivity().title = resources.getString(R.string.search_title)
-
         view?.let(::setKeyboardStatusListener)
         return view
     }

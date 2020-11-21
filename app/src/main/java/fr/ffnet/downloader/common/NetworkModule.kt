@@ -11,10 +11,16 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 class NetworkModule {
+
+    companion object {
+        const val REGULAR_WEBSITE = "regular_website"
+        const val MOBILE_WEBSITE = "mobile_website"
+    }
 
     @Singleton
     @Provides
@@ -34,12 +40,26 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideRetrofitMoschi(
+    @Named(MOBILE_WEBSITE)
+    fun provideMobileRetrofitMoschi(
         moshiConverterFactory: MoshiConverterFactory,
         client: OkHttpClient.Builder
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.API_BASE_URL)
+            .baseUrl(BuildConfig.API_MOBILE_BASE_URL)
+            .client(client.build())
+            .addConverterFactory(moshiConverterFactory)
+            .build()
+    }
+
+    @Provides
+    @Named(REGULAR_WEBSITE)
+    fun provideRegularRetrofitMoschi(
+        moshiConverterFactory: MoshiConverterFactory,
+        client: OkHttpClient.Builder
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.API_REGULAR_BASE_URL)
             .client(client.build())
             .addConverterFactory(moshiConverterFactory)
             .build()

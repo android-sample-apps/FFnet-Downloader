@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface CrawlService {
+interface RegularCrawlService {
     @GET("s/{storyId}/{chapterId}")
     fun getFanfiction(
         @Path("storyId") storyId: String,
@@ -15,7 +15,4 @@ interface CrawlService {
 
     @GET("u/{profileId}")
     fun getProfile(@Path("profileId") profileId: String): Call<ResponseBody>
-
-    @GET("search/?ready=1&type=story")
-    fun getSearch(@Query("keywords") keywords: String): Call<ResponseBody>
 }

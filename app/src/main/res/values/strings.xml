@@ -7,7 +7,7 @@
     <string name="nav_title_search">Search</string>
     <string name="nav_title_author">Author</string>
 
-    <string name="download_url_hint">Search for fanfictions</string>
+    <string name="search_fanfiction_hint">Search for fanfictions</string>
     <string name="fetch_information_button_title">Fetch information</string>
     <string name="download_button_title">Sync chapters</string>
     <string name="download_all_button_title">Sync all chapters</string>
@@ -17,6 +17,7 @@
     <string name="synced_title">Synced Fanfictions</string>
     <string name="history_title">Search History</string>
     <string name="search_result_title">Search Result</string>
+    <string name="synced_author_title">Synced Authors</string>
 
     <string name="notification_download_progression_title">Download progression %s</string>
     <string name="notification_download_progression_channel_name">downloadNotificationProgression</string>
@@ -48,6 +49,9 @@
     <string name="fanfiction_options_menu_export_epub">Export EPUB</string>
     <string name="fanfiction_options_menu_delete">Delete</string>
 
+    <string name="author_search_hint">Search for authors</string>
+    <string name="author_favorites_nb">Favorites</string>
+    <string name="author_stories_nb">Stories</string>
     <string name="profile_list_no_fanfictions">No stories in this category</string>
     <string name="profile_my_favorites">My favorites</string>
     <string name="profile_my_stories">My stories</string>

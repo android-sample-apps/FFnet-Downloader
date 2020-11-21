@@ -20,7 +20,7 @@ class DownloaderWorker(
         const val MAX_RETRY_AUTHORIZED = 2
     }
 
-    @Inject lateinit var service: CrawlService
+    @Inject lateinit var serviceRegular: RegularCrawlService
     @Inject lateinit var fanfictionBuilder: FanfictionBuilder
     @Inject lateinit var fanfictionDao: FanfictionDao
 
@@ -31,7 +31,7 @@ class DownloaderWorker(
         val fanfictionId = inputData.getString(FANFICTION_ID_KEY) ?: ""
         val chapterId = inputData.getString(CHAPTER_ID_KEY) ?: ""
 
-        val request = service.getFanfiction(fanfictionId, chapterId)
+        val request = serviceRegular.getFanfiction(fanfictionId, chapterId)
         val response = request.execute()
         if (response.isSuccessful) {
             response.body()?.let {

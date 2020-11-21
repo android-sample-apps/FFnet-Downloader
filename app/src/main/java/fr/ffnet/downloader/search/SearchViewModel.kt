@@ -19,7 +19,7 @@ import fr.ffnet.downloader.synced.FanfictionUIItem
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUITitle
 import fr.ffnet.downloader.synced.FanfictionUIItem.HistoryUI
 import fr.ffnet.downloader.utils.DateFormatter
-import fr.ffnet.downloader.utils.FanfictionUIBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.SingleLiveEvent
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.UrlTransformer.UrlTransformationResult.UrlTransformFailure
@@ -34,12 +34,11 @@ class SearchViewModel(
     private val downloaderRepository: DownloaderRepository,
     private val databaseRepository: DatabaseRepository,
     private val dateFormatter: DateFormatter,
-    private val fanfictionUIBuilder: FanfictionUIBuilder
+    private val uiBuilder: UIBuilder
 ) : ViewModel() {
 
     val navigateToFanfiction: SingleLiveEvent<String> = SingleLiveEvent()
     val sendError: SingleLiveEvent<SearchError> = SingleLiveEvent()
-
 
     val searchHistoryResult: MediatorLiveData<List<FanfictionUIItem>> by lazy {
         MediatorLiveData<List<FanfictionUIItem>>()
@@ -68,7 +67,7 @@ class SearchViewModel(
                                 title = resources.getString(R.string.search_result_title)
                             )
                             val fanfictionResult = searchList.map {
-                                fanfictionUIBuilder.buildFanfictionUI(
+                                uiBuilder.buildFanfictionUI(
                                     fanfiction = it,
                                     shouldShowAuthor = true,
                                     shouldShowWords = true,
@@ -96,7 +95,7 @@ class SearchViewModel(
                 val historyUIList = historyList.map {
                     HistoryUI(
                         fanfictionId = it.id,
-                        url = "${BuildConfig.API_BASE_URL}s/${it.id}",
+                        url = "${BuildConfig.API_REGULAR_BASE_URL}s/${it.id}",
                         title = it.title,
                         date = dateFormatter.format(it.fetchedDate)
                     )

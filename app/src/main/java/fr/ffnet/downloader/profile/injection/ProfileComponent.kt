@@ -1,7 +1,8 @@
 package fr.ffnet.downloader.profile.injection
 
+import androidx.fragment.app.Fragment
 import dagger.Subcomponent
-import fr.ffnet.downloader.profile.ProfileFragment
+import fr.ffnet.downloader.profile.AuthorFragment
 
 @Subcomponent(
     modules = [
@@ -9,5 +10,5 @@ import fr.ffnet.downloader.profile.ProfileFragment
     ]
 )
 interface ProfileComponent {
-    fun inject(fragment: ProfileFragment)
+    fun inject(fragment: Fragment)
 }

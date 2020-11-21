@@ -7,11 +7,11 @@ import fr.ffnet.downloader.profile.ProfileViewModel
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult.ProfileHasFanfictions
 import fr.ffnet.downloader.profile.ProfileViewModel.ProfileFanfictionsResult.ProfileHasNoFanfictions
 import fr.ffnet.downloader.repository.DatabaseRepository
-import fr.ffnet.downloader.utils.FanfictionUIBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 
 class ProfileFanfictionViewModel(
     private val databaseRepository: DatabaseRepository,
-    private val fanfictionUIBuilder: FanfictionUIBuilder
+    private val UIBuilder: UIBuilder
 ) : ViewModel() {
 
     private lateinit var myFavoritesResult: LiveData<ProfileViewModel.ProfileFanfictionsResult>
@@ -26,7 +26,7 @@ class ProfileFanfictionViewModel(
             if (fanfictionList.isNotEmpty()) {
                 ProfileHasFanfictions(
                     fanfictionList.map {
-                        fanfictionUIBuilder.buildFanfictionUI(
+                        UIBuilder.buildFanfictionUI(
                             fanfiction = it,
                             shouldShowAuthor = true
                         )
@@ -43,7 +43,7 @@ class ProfileFanfictionViewModel(
             if (fanfictionList.isNotEmpty()) {
                 ProfileHasFanfictions(
                     fanfictionList.map {
-                        fanfictionUIBuilder.buildFanfictionUI(it)
+                        UIBuilder.buildFanfictionUI(it)
                     }
                 )
             } else {

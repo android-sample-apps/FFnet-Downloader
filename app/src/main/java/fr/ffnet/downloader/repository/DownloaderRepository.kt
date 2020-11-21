@@ -15,7 +15,7 @@ import fr.ffnet.downloader.utils.FanfictionConverter
 import java.io.IOException
 
 class DownloaderRepository(
-    private val service: CrawlService,
+    private val serviceRegular: RegularCrawlService,
     private val fanfictionBuilder: FanfictionBuilder,
     private val fanfictionDao: FanfictionDao,
     private val converter: FanfictionConverter,
@@ -37,7 +37,7 @@ class DownloaderRepository(
     fun loadFanfictionInfo(fanfictionId: String): FanfictionRepositoryResult {
         return try {
             FFLogger.d(EVENT_KEY, "Refreshing info for $fanfictionId")
-            val response = service.getFanfiction(fanfictionId).execute()
+            val response = serviceRegular.getFanfiction(fanfictionId).execute()
             if (response.isSuccessful) {
                 response.body()?.let { responseBody ->
 

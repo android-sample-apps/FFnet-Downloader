@@ -15,7 +15,7 @@ import fr.ffnet.downloader.synced.SyncedViewModel
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.EpubBuilder
 import fr.ffnet.downloader.utils.FanfictionOpener
-import fr.ffnet.downloader.utils.FanfictionUIBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.ViewModelFactory
@@ -31,7 +31,7 @@ class SearchModule(private val fragment: SearchFragment) {
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
         dateFormatter: DateFormatter,
-        fanfictionUIBuilder: FanfictionUIBuilder
+        UIBuilder: UIBuilder
     ): SearchViewModel {
         val factory = ViewModelFactory {
             SearchViewModel(
@@ -41,7 +41,7 @@ class SearchModule(private val fragment: SearchFragment) {
                 apiRepository,
                 dbRepository,
                 dateFormatter,
-                fanfictionUIBuilder
+                UIBuilder
             )
         }
         return ViewModelProvider(fragment, factory)[SearchViewModel::class.java]
@@ -52,14 +52,14 @@ class SearchModule(private val fragment: SearchFragment) {
         resources: Resources,
         downloaderRepository: DownloaderRepository,
         databaseRepository: DatabaseRepository,
-        fanfictionUIBuilder: FanfictionUIBuilder
+        UIBuilder: UIBuilder
     ): SyncedViewModel {
         val factory = ViewModelFactory {
             SyncedViewModel(
                 resources,
                 downloaderRepository,
                 databaseRepository,
-                fanfictionUIBuilder
+                UIBuilder
             )
         }
         return ViewModelProvider(fragment, factory)[SyncedViewModel::class.java]

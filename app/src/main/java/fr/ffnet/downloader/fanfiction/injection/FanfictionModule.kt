@@ -12,7 +12,7 @@ import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.synced.OptionsController
 import fr.ffnet.downloader.utils.EpubBuilder
 import fr.ffnet.downloader.utils.FanfictionOpener
-import fr.ffnet.downloader.utils.FanfictionUIBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.PdfBuilder
 import fr.ffnet.downloader.utils.ViewModelFactory
 
@@ -24,14 +24,14 @@ class FanfictionModule(private val activity: FanfictionActivity) {
         resources: Resources,
         apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
-        fanfictionUIBuilder: FanfictionUIBuilder
+        UIBuilder: UIBuilder
     ): FanfictionViewModel {
         val factory = ViewModelFactory {
             FanfictionViewModel(
                 resources,
                 apiRepository,
                 dbRepository,
-                fanfictionUIBuilder
+                UIBuilder
             )
         }
         return ViewModelProvider(activity, factory)[FanfictionViewModel::class.java]

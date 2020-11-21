@@ -13,7 +13,7 @@ import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.repository.DownloaderRepository.FanfictionRepositoryResult.FanfictionRepositoryResultSuccess
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult.NoSyncedFanfictions
 import fr.ffnet.downloader.synced.SyncedViewModel.SyncedFanfictionsResult.SyncedFanfictions
-import fr.ffnet.downloader.utils.FanfictionUIBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ class SyncedViewModel(
     private val resources: Resources,
     private val downloaderRepository: DownloaderRepository,
     private val databaseRepository: DatabaseRepository,
-    private val fanfictionUIBuilder: FanfictionUIBuilder
+    private val UIBuilder: UIBuilder
 ) : ViewModel() {
 
     private lateinit var fanfictionResult: LiveData<SyncedFanfictionsResult>
@@ -32,7 +32,7 @@ class SyncedViewModel(
         fanfictionResult = Transformations.map(databaseRepository.getSyncedFanfictions()) { fanfictionList ->
             if (fanfictionList.isNotEmpty()) {
                 val fanfictionUIList = fanfictionList.map {
-                    fanfictionUIBuilder.buildFanfictionUI(
+                    UIBuilder.buildFanfictionUI(
                         fanfiction = it,
                         shouldShowAuthor = true
                     )

@@ -10,7 +10,7 @@ import fr.ffnet.downloader.R
 import fr.ffnet.downloader.repository.DatabaseRepository
 import fr.ffnet.downloader.repository.DownloaderRepository
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
-import fr.ffnet.downloader.utils.FanfictionUIBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,7 +18,7 @@ class FanfictionViewModel(
     private val resources: Resources,
     private val apiRepository: DownloaderRepository,
     private val dbRepository: DatabaseRepository,
-    private val fanfictionUIBuilder: FanfictionUIBuilder
+    private val UIBuilder: UIBuilder
 ) : ViewModel() {
 
     private lateinit var chapterList: LiveData<List<ChapterUIModel>>
@@ -47,7 +47,7 @@ class FanfictionViewModel(
         }
 
         fanfictionInfo = Transformations.map(dbRepository.getFanfictionInfo(fanfictionId)) {
-            fanfictionUIBuilder.buildFanfictionUI(it)
+            UIBuilder.buildFanfictionUI(it)
         }
     }
 

@@ -1,5 +1,6 @@
 package fr.ffnet.downloader.utils
 
+import fr.ffnet.downloader.repository.entities.AuthorSearchResult
 import fr.ffnet.downloader.search.Fanfiction
 import org.joda.time.DateTime
 import javax.inject.Inject
@@ -8,7 +9,7 @@ class SearchBuilder @Inject constructor(
     private val jsoupParser: JsoupParser
 ) {
 
-    fun buildSearchResult(html: String): List<Fanfiction> {
+    fun buildFanfictionSearchResult(html: String): List<Fanfiction> {
         val document = jsoupParser.parseHtml(html)
         val selector = document.select(".z-list")
         return selector.map { fanfiction ->
@@ -35,6 +36,20 @@ class SearchBuilder @Inject constructor(
                 nbChapters = chapters.toInt(),
                 nbSyncedChapters = 0,
                 chapterList = emptyList()
+            )
+        }
+    }
+
+    fun builAuthorSearchResult(html: String): List<AuthorSearchResult> {
+        val document = jsoupParser.parseHtml(html)
+        val selector = document.select("form>div>div.bs")
+        return selector.map {
+            val link = it.select("a")
+            val span = it.select("span")
+            AuthorSearchResult(
+                id = link.attr("href").split("/")[2],
+                name = link.text(),
+                nbStories = span.select("span").text()
             )
         }
     }

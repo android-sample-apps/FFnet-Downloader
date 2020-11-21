@@ -2,17 +2,18 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import fr.ffnet.downloader.utils.FanfictionConverter
-import fr.ffnet.downloader.utils.ProfileBuilder
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
+import fr.ffnet.downloader.repository.entities.Author
 import fr.ffnet.downloader.repository.entities.ProfileEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 import fr.ffnet.downloader.search.Fanfiction
+import fr.ffnet.downloader.utils.FanfictionConverter
+import fr.ffnet.downloader.utils.ProfileBuilder
 import org.joda.time.LocalDateTime
 
 class ProfileRepository(
-    private val service: CrawlService,
+    private val regularServiceRegular: RegularCrawlService,
     private val profileDao: ProfileDao,
     private val fanfictionDao: FanfictionDao,
     private val profileBuilder: ProfileBuilder,
@@ -24,21 +25,21 @@ class ProfileRepository(
         const val PROFILE_TYPE_MY_STORY = 2
     }
 
-    fun loadProfileInfo(profileId: String): ProfileRepositoryResult {
-        val response = service.getProfile(profileId).execute()
+    fun loadProfileInfo(authorId: String): ProfileRepositoryResult {
+        val response = regularServiceRegular.getProfile(authorId).execute()
         return if (response.isSuccessful) {
             response.body()?.let { responseBody ->
 
-                val profileInfo = profileBuilder.buildProfile(profileId, responseBody.string())
+                val profileInfo = profileBuilder.buildProfile(authorId, responseBody.string())
 
                 val favoriteIds = insertListAndReturnIds(profileInfo.favoriteFanfictionList)
                 val storyIds = insertListAndReturnIds(profileInfo.myFanfictionList)
 
-                profileDao.deleteProfileMapping(profileId)
+                profileDao.deleteProfileMapping(authorId)
                 favoriteIds.map {
                     profileDao.insertProfileFanfiction(
                         ProfileFanfictionEntity(
-                            profileId = profileId,
+                            profileId = authorId,
                             fanfictionId = it,
                             profileType = PROFILE_TYPE_FAVORITE
                         )
@@ -47,14 +48,14 @@ class ProfileRepository(
                 storyIds.map {
                     profileDao.insertProfileFanfiction(
                         ProfileFanfictionEntity(
-                            profileId = profileId,
+                            profileId = authorId,
                             fanfictionId = it,
                             profileType = PROFILE_TYPE_MY_STORY
                         )
                     )
                 }
 
-                val profile = profileDao.getProfile(profileId)
+                val profile = profileDao.getProfile(authorId)
                 if (profile == null) {
                     profileDao.insertProfile(
                         ProfileEntity(
@@ -65,11 +66,11 @@ class ProfileRepository(
                         )
                     )
                 } else {
-                    profileDao.associateProfile(profileId)
+                    profileDao.associateProfile(authorId)
                 }
 
                 ProfileRepositoryResult.ProfileRepositoryResultSuccess(
-                    profileId = profileId
+                    profileId = authorId
                 )
             } ?: ProfileRepositoryResult.ProfileRepositoryResultFailure
         } else {
@@ -103,6 +104,19 @@ class ProfileRepository(
     }
 
     fun loadHistory(): LiveData<List<ProfileEntity>> = profileDao.getProfileHistory()
+    fun loadSyncedAuthors(): LiveData<List<Author>> {
+        return Transformations.map(profileDao.getSyncedAuthors()) { authorEntityList ->
+            authorEntityList.map {
+                Author(
+                    id = it.authorId,
+                    name = it.name,
+                    nbStories = it.nbstories,
+                    nbFavorites = it.nbFavorites,
+                    fetchedDate = it.fetchedDate
+                )
+            }
+        }
+    }
 
     sealed class ProfileRepositoryResult {
         data class ProfileRepositoryResultSuccess(val profileId: String) : ProfileRepositoryResult()

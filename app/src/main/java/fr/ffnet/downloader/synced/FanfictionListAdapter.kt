@@ -11,7 +11,7 @@ import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUITitle
 import fr.ffnet.downloader.synced.FanfictionUIItem.HistoryUI
 import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 import kotlinx.android.synthetic.main.item_fanfiction.view.*
-import kotlinx.android.synthetic.main.item_fanfiction.view.titleTextView
+import kotlinx.android.synthetic.main.item_fanfiction.view.nameTextView
 import kotlinx.android.synthetic.main.item_fanfiction_title.view.*
 import kotlinx.android.synthetic.main.item_history.view.*
 
@@ -96,7 +96,7 @@ class FanfictionListAdapter(
     inner class HistoryUIViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(history: HistoryUI, listener: OnHistoryClickListener?) {
-            view.titleTextView.text = history.title
+            view.nameTextView.text = history.title
             view.fetchedDateTextView.text = history.date
             view.setOnClickListener {
                 listener?.onHistoryClicked(history.fanfictionId, history.url)
@@ -108,7 +108,7 @@ class FanfictionListAdapter(
 
         fun bind(fanfiction: FanfictionUI) {
 
-            view.titleTextView.text = fanfiction.title
+            view.nameTextView.text = fanfiction.title
 
             view.syncedChaptersTextView.text = fanfiction.progressionText
             view.syncedChaptersTextView.isVisible = fanfiction.shouldShowChapterSync
@@ -119,13 +119,13 @@ class FanfictionListAdapter(
             view.exportPdfImageView.setBackgroundResource(fanfiction.exportPdfImage)
             view.exportEpubImageView.setBackgroundResource(fanfiction.exportEpubImage)
 
-            view.authorValueTextView.text = fanfiction.author
-            view.authorLabelTextView.isVisible = fanfiction.shouldShowAuthor
-            view.authorValueTextView.isVisible = fanfiction.shouldShowAuthor
+            view.favoritesNbValueTextView.text = fanfiction.author
+            view.favoritesNbLabelTextView.isVisible = fanfiction.shouldShowAuthor
+            view.favoritesNbValueTextView.isVisible = fanfiction.shouldShowAuthor
 
-            view.wordsValueTextView.text = fanfiction.words
-            view.wordsLabelTextView.isVisible = fanfiction.shouldShowWords
-            view.wordsValueTextView.isVisible = fanfiction.shouldShowWords
+            view.storiesNbValueTextView.text = fanfiction.words
+            view.storiesNbLabelTextView.isVisible = fanfiction.shouldShowWords
+            view.storiesNbValueTextView.isVisible = fanfiction.shouldShowWords
 
             view.chaptersValueTextView.text = fanfiction.chaptersNb.toString()
             view.chaptersLabelTextView.isVisible = fanfiction.shouldShowChapterSync.not()

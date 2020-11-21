@@ -34,7 +34,7 @@ class ProfileHistoryAdapter(
 
     inner class HistoryViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val titleTextView: TextView = view.titleTextView
+        private val titleTextView: TextView = view.nameTextView
         private val fetchedDateTextView: TextView = view.fetchedDateTextView
 
         fun bind(history: ProfileUIModel, listener: OnHistoryClickListener) {

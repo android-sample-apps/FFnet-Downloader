@@ -58,7 +58,7 @@ class ProfileViewModel(
                     profileId = it.profileId,
                     name = it.name,
                     fetchedDate = dateFormatter.format(it.fetchedDate),
-                    url = "${BuildConfig.API_BASE_URL}u/${it.profileId}"
+                    url = "${BuildConfig.API_REGULAR_BASE_URL}u/${it.profileId}"
                 )
             }
         }

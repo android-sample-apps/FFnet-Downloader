@@ -2,14 +2,39 @@ package fr.ffnet.downloader.utils
 
 import android.content.res.Resources
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.profile.AuthorUIItem
+import fr.ffnet.downloader.repository.entities.Author
+import fr.ffnet.downloader.repository.entities.AuthorSearchResult
 import fr.ffnet.downloader.search.Fanfiction
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import javax.inject.Inject
 
-class FanfictionUIBuilder @Inject constructor(
+class UIBuilder @Inject constructor(
     private val resources: Resources,
     private val dateFormatter: DateFormatter
 ) {
+
+    fun buildSearchAuthorUI(
+        author: AuthorSearchResult
+    ): AuthorUIItem.SearchAuthorUIItem {
+        return AuthorUIItem.SearchAuthorUIItem(
+            id = author.id,
+            name = author.name,
+            nbStories = author.nbStories
+        )
+    }
+
+    fun buildSyncedAuthor(
+        author: Author
+    ): AuthorUIItem.SyncedAuthorUIItem {
+        return AuthorUIItem.SyncedAuthorUIItem(
+            id = author.id,
+            name = author.name,
+            fetchedDate = dateFormatter.format(author.fetchedDate),
+            nbStories = author.nbStories,
+            nbFavorites = author.nbFavorites
+        )
+    }
 
     fun buildFanfictionUI(
         fanfiction: Fanfiction,

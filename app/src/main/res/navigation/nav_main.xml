@@ -13,6 +13,6 @@
 
     <fragment
         android:id="@+id/bottomNavProfileFragment"
-        android:name="fr.ffnet.downloader.profile.ProfileFragment"
+        android:name="fr.ffnet.downloader.profile.AuthorFragment"
         tools:layout="@layout/fragment_search" />
 </navigation>

@@ -19,7 +19,7 @@
         android:paddingBottom="16dp">
 
         <TextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/nameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -42,36 +42,36 @@
             tools:text="45/122" />
 
         <TextView
-            android:id="@+id/authorLabelTextView"
+            android:id="@+id/favoritesNbLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/download_info_author_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
 
         <TextView
-            android:id="@+id/authorValueTextView"
+            android:id="@+id/favoritesNbValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/authorLabelTextView"
+            app:layout_constraintBaseline_toBaselineOf="@+id/favoritesNbLabelTextView"
             app:layout_constraintStart_toEndOf="@+id/barrier"
             tools:text="Cheshire" />
 
         <TextView
-            android:id="@+id/wordsLabelTextView"
+            android:id="@+id/storiesNbLabelTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/download_info_words_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/authorLabelTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/favoritesNbLabelTextView" />
 
         <TextView
-            android:id="@+id/wordsValueTextView"
+            android:id="@+id/storiesNbValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/wordsLabelTextView"
+            app:layout_constraintBaseline_toBaselineOf="@+id/storiesNbLabelTextView"
             app:layout_constraintStart_toEndOf="@+id/barrier"
             tools:text="73828" />
 
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:text="@string/download_info_chapters_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wordsLabelTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/storiesNbLabelTextView" />
 
         <TextView
             android:id="@+id/chaptersValueTextView"

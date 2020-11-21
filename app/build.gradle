@@ -6,7 +6,8 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 30
     defaultConfig {
-        buildConfigField 'String', 'API_BASE_URL', '"https://www.fanfiction.net/"'
+        buildConfigField 'String', 'API_REGULAR_BASE_URL', '"https://www.fanfiction.net/"'
+        buildConfigField 'String', 'API_MOBILE_BASE_URL', '"https://m.fanfiction.net/"'
 
         applicationId "fr.ffnet.downloader"
         minSdkVersion 19

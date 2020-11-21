@@ -111,7 +111,7 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
     private fun onFanfictionInfo(fanfiction: FanfictionUI) {
         widgetVisibilityGroup.visibility = View.VISIBLE
         toolbar.title = fanfiction.title
-        wordsValueTextView.text = fanfiction.words
+        storiesNbValueTextView.text = fanfiction.words
         publishedDateValueTextView.text = fanfiction.publishedDate
         updatedDateValueTextView.text = fanfiction.updatedDate
         syncedDateValueTextView.text = fanfiction.fetchedDate

@@ -5,6 +5,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import fr.ffnet.downloader.repository.entities.Author
+import fr.ffnet.downloader.repository.entities.AuthorEntity
 import fr.ffnet.downloader.repository.entities.ProfileEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 
@@ -37,5 +39,8 @@ interface ProfileDao {
 
     @Query("SELECT * FROM ProfileEntity")
     fun getProfileHistory(): LiveData<List<ProfileEntity>>
+
+    @Query("SELECT * FROM AuthorEntity")
+    fun getSyncedAuthors(): LiveData<List<AuthorEntity>>
 
 }

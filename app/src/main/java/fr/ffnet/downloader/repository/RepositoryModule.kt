@@ -5,6 +5,8 @@ import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.FanfictionDownloaderDatabase
+import fr.ffnet.downloader.common.NetworkModule.Companion.MOBILE_WEBSITE
+import fr.ffnet.downloader.common.NetworkModule.Companion.REGULAR_WEBSITE
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.utils.FanfictionBuilder
@@ -12,6 +14,7 @@ import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.utils.ProfileBuilder
 import fr.ffnet.downloader.utils.SearchBuilder
 import retrofit2.Retrofit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -26,9 +29,14 @@ class RepositoryModule {
         database.profileDao()
 
     @Provides
-    fun provideCrawlService(retrofit: Retrofit): CrawlService = retrofit.create(
-        CrawlService::class.java
-    )
+    fun provideMobileCrawlService(
+        @Named(MOBILE_WEBSITE) retrofit: Retrofit
+    ): MobileCrawlService = retrofit.create(MobileCrawlService::class.java)
+
+    @Provides
+    fun provideRegularCrawlService(
+        @Named(REGULAR_WEBSITE) retrofit: Retrofit
+    ): RegularCrawlService = retrofit.create(RegularCrawlService::class.java)
 
     @Provides
     fun provideDatabaseRepository(
@@ -39,14 +47,14 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideDownloaderRepository(
-        service: CrawlService,
+        regularCrawlService: RegularCrawlService,
         fanfictionDao: FanfictionDao,
         fanfictionBuilder: FanfictionBuilder,
         fanfictionConverter: FanfictionConverter,
         scheduler: WorkScheduler
     ): DownloaderRepository {
         return DownloaderRepository(
-            service,
+            regularCrawlService,
             fanfictionBuilder,
             fanfictionDao,
             fanfictionConverter,
@@ -66,13 +74,13 @@ class RepositoryModule {
 
     @Provides
     fun provideProfileRepository(
-        service: CrawlService,
+        regularCrawlService: RegularCrawlService,
         profileDao: ProfileDao,
         profileBuilder: ProfileBuilder,
         fanfictionConverter: FanfictionConverter,
         fanfictionDao: FanfictionDao
     ): ProfileRepository = ProfileRepository(
-        service,
+        regularCrawlService,
         profileDao,
         fanfictionDao,
         profileBuilder,
@@ -81,10 +89,10 @@ class RepositoryModule {
 
     @Provides
     fun provideSearchRepository(
-        service: CrawlService,
+        mobileServiceRegular: MobileCrawlService,
         searchBuilder: SearchBuilder
     ): SearchRepository = SearchRepository(
-        service,
+        mobileServiceRegular,
         searchBuilder
     )
 }
