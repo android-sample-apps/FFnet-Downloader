@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_no_result.view.*
 
 interface OnAuthorListener {
     fun onLoadAuthor(authorId: String)
-    fun onUnsync(authorId: SyncedAuthorUIItem)
+    fun onUnsync(author: SyncedAuthorUIItem)
 }
 
 class AuthorListAdapter(

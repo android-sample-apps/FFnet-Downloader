@@ -8,11 +8,12 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fr.ffnet.downloader.R
+import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.profile.AuthorUIItem.SearchAuthorNotResultUIItem
 import fr.ffnet.downloader.profile.AuthorUIItem.SyncedAuthorUIItem
-import fr.ffnet.downloader.repository.ProfileRepository
-import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultFailure
-import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultSuccess
+import fr.ffnet.downloader.repository.AuthorRepository
+import fr.ffnet.downloader.repository.AuthorRepository.AuthorRepositoryResult.AuthorRepositoryResultFailure
+import fr.ffnet.downloader.repository.AuthorRepository.AuthorRepositoryResult.AuthorRepositoryResultSuccess
 import fr.ffnet.downloader.repository.SearchRepository
 import fr.ffnet.downloader.utils.SingleLiveEvent
 import fr.ffnet.downloader.utils.UIBuilder
@@ -27,7 +28,7 @@ class AuthorViewModel(
     private val uiBuilder: UIBuilder,
     private val urlTransformer: UrlTransformer,
     private val searchRepository: SearchRepository,
-    private val profileRepository: ProfileRepository
+    private val authorRepository: AuthorRepository
 ) : ViewModel() {
 
 
@@ -48,7 +49,7 @@ class AuthorViewModel(
 
     fun unsyncAuthor(author: SyncedAuthorUIItem) {
         viewModelScope.launch(Dispatchers.IO) {
-            profileRepository.unsyncAuthor(author.id)
+            authorRepository.unsyncAuthor(author.id)
         }
     }
 
@@ -85,15 +86,17 @@ class AuthorViewModel(
 
     fun loadAuthorInfo(authorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val profileResult = profileRepository.loadProfileInfo(authorId)) {
-                is ProfileRepositoryResultSuccess -> navigateToAuthor.postValue(
-                    AuthorLoaded(
-                        authorId = profileResult.authorId,
-                        authorName = profileResult.authorName,
-                        shouldShowStoriesFirst = profileResult.storiesNb > 0
-                    )
-                )
-                ProfileRepositoryResultFailure -> resources.getString(R.string.author_load_error)
+            when (val author = authorRepository.getAuthor(authorId)) {
+                is AuthorRepositoryResultSuccess -> {
+                    navigateToAuthor(author)
+                    authorRepository.loadProfileInfo(authorId)
+                }
+                AuthorRepositoryResultFailure -> {
+                    when (val profileResult = authorRepository.loadProfileInfo(authorId)) {
+                        is AuthorRepositoryResultSuccess -> navigateToAuthor(profileResult)
+                        AuthorRepositoryResultFailure -> displayErrorMessage(R.string.author_load_error)
+                    }
+                }
             }
         }
     }
@@ -102,9 +105,9 @@ class AuthorViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             syncedResult.value?.filterIsInstance<SyncedAuthorUIItem>()?.let { syncedAuthorList ->
                 val allRefreshResult = syncedAuthorList.map {
-                    profileRepository.loadProfileInfo(it.id)
+                    authorRepository.loadProfileInfo(it.id)
                 }
-                if (allRefreshResult.all { it is ProfileRepositoryResultSuccess }) {
+                if (allRefreshResult.all { it is AuthorRepositoryResultSuccess }) {
                     authorRefreshResult.postValue(AuthorRefreshResult.Refreshed)
                 } else {
                     authorRefreshResult.postValue(
@@ -137,6 +140,16 @@ class AuthorViewModel(
         }
     }
 
+    private fun navigateToAuthor(author: AuthorRepositoryResultSuccess) {
+        navigateToAuthor.postValue(
+            AuthorLoaded(
+                authorId = author.authorId,
+                authorName = author.authorName,
+                shouldShowStoriesFirst = author.storiesNb > 0
+            )
+        )
+    }
+
     private fun combineLatestData(
         searchResult: List<AuthorUIItem>,
         syncedResult: List<AuthorUIItem>
@@ -145,7 +158,7 @@ class AuthorViewModel(
     }
 
     private fun loadSyncedAuthors() {
-        syncedResult = Transformations.map(profileRepository.loadSyncedAuthors()) { authorList ->
+        syncedResult = Transformations.map(authorRepository.loadSyncedAuthors()) { authorList ->
             if (authorList.isNotEmpty()) {
                 val title = AuthorUIItem.AuthorTitleUIItem(
                     title = resources.getString(R.string.synced_author_title)
@@ -156,6 +169,12 @@ class AuthorViewModel(
                 listOf(title).plus(syncedAuthorList)
             } else emptyList()
         }
+    }
+
+    private fun displayErrorMessage(messageResource: Int) {
+        val errorMessage = resources.getString(messageResource)
+        FFLogger.d(FFLogger.EVENT_KEY, errorMessage)
+        error.postValue(errorMessage)
     }
 
     data class AuthorLoaded(

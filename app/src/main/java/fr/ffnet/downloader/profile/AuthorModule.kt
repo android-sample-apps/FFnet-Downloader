@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import fr.ffnet.downloader.profile.injection.AuthorFragment
-import fr.ffnet.downloader.repository.ProfileRepository
+import fr.ffnet.downloader.repository.AuthorRepository
 import fr.ffnet.downloader.repository.SearchRepository
 import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.UrlTransformer
@@ -20,7 +20,7 @@ class AuthorModule(private val fragment: AuthorFragment) {
         uiBuilder: UIBuilder,
         urlTransformer: UrlTransformer,
         searchRepository: SearchRepository,
-        profileRepository: ProfileRepository
+        authorRepository: AuthorRepository
     ): AuthorViewModel {
         val factory = ViewModelFactory {
             AuthorViewModel(
@@ -28,7 +28,7 @@ class AuthorModule(private val fragment: AuthorFragment) {
                 uiBuilder,
                 urlTransformer,
                 searchRepository,
-                profileRepository
+                authorRepository
             )
         }
         return ViewModelProvider(fragment, factory)[AuthorViewModel::class.java]

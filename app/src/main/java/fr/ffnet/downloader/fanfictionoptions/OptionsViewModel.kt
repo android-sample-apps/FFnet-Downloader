@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.FFLogger.Companion.EVENT_KEY
 import fr.ffnet.downloader.repository.DatabaseRepository
@@ -43,9 +44,9 @@ class OptionsViewModel(
                         FFLogger.d(EVENT_KEY, "Fanfiction $fanfictionId loaded successfully")
                         navigateToFanfiction.postValue(fanfictionId)
                     }
-                    FanfictionRepositoryResultFailure -> TODO()
-                    FanfictionRepositoryResultServerFailure -> TODO()
-                    FanfictionRepositoryResultInternetFailure -> TODO()
+                    FanfictionRepositoryResultFailure,
+                    FanfictionRepositoryResultServerFailure,
+                    FanfictionRepositoryResultInternetFailure -> displayErrorMessage(R.string.search_fanfiction_info_fetching_error)
                 }
             }
         }

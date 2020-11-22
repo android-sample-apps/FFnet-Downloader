@@ -1,8 +1,8 @@
 package fr.ffnet.downloader.utils
 
 import fr.ffnet.downloader.profile.Profile
-import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
-import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
+import fr.ffnet.downloader.repository.AuthorRepository.Companion.PROFILE_TYPE_FAVORITE
+import fr.ffnet.downloader.repository.AuthorRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.search.Fanfiction
 import org.joda.time.DateTime
 import org.jsoup.select.Elements

@@ -2,10 +2,10 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultFailure
-import fr.ffnet.downloader.repository.ProfileRepository.ProfileRepositoryResult.ProfileRepositoryResultSuccess
+import fr.ffnet.downloader.repository.AuthorRepository.AuthorRepositoryResult.AuthorRepositoryResultFailure
+import fr.ffnet.downloader.repository.AuthorRepository.AuthorRepositoryResult.AuthorRepositoryResultSuccess
+import fr.ffnet.downloader.repository.dao.AuthorDao
 import fr.ffnet.downloader.repository.dao.FanfictionDao
-import fr.ffnet.downloader.repository.dao.ProfileDao
 import fr.ffnet.downloader.repository.entities.Author
 import fr.ffnet.downloader.repository.entities.AuthorEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
@@ -14,9 +14,9 @@ import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.utils.ProfileBuilder
 import org.joda.time.LocalDateTime
 
-class ProfileRepository(
+class AuthorRepository(
     private val regularCrawlService: RegularCrawlService,
-    private val profileDao: ProfileDao,
+    private val dao: AuthorDao,
     private val fanfictionDao: FanfictionDao,
     private val profileBuilder: ProfileBuilder,
     private val fanfictionConverter: FanfictionConverter
@@ -28,11 +28,11 @@ class ProfileRepository(
     }
 
     fun unsyncAuthor(authorId: String) {
-        profileDao.deleteProfileMapping(authorId)
-        profileDao.deleteAuthor(authorId)
+        dao.deleteProfileMapping(authorId)
+        dao.deleteAuthor(authorId)
     }
 
-    fun loadProfileInfo(authorId: String): ProfileRepositoryResult {
+    fun loadProfileInfo(authorId: String): AuthorRepositoryResult {
         val response = regularCrawlService.getProfile(authorId).execute()
         if (response.isSuccessful) {
             response.body()?.let { responseBody ->
@@ -42,9 +42,9 @@ class ProfileRepository(
                 val favoriteIds = insertListAndReturnIds(profileInfo.favoriteFanfictionList)
                 val storyIds = insertListAndReturnIds(profileInfo.myFanfictionList)
 
-                profileDao.deleteProfileMapping(authorId)
+                dao.deleteProfileMapping(authorId)
                 favoriteIds.map {
-                    profileDao.insertProfileFanfiction(
+                    dao.insertProfileFanfiction(
                         ProfileFanfictionEntity(
                             profileId = authorId,
                             fanfictionId = it,
@@ -53,7 +53,7 @@ class ProfileRepository(
                     )
                 }
                 storyIds.map {
-                    profileDao.insertProfileFanfiction(
+                    dao.insertProfileFanfiction(
                         ProfileFanfictionEntity(
                             profileId = authorId,
                             fanfictionId = it,
@@ -62,9 +62,9 @@ class ProfileRepository(
                     )
                 }
 
-                val author = profileDao.getAuthor(authorId)
+                val author = dao.getAuthor(authorId)
                 if (author == null) {
-                    profileDao.insertAuthor(
+                    dao.insertAuthor(
                         AuthorEntity(
                             authorId = profileInfo.profileId,
                             name = profileInfo.name,
@@ -74,7 +74,7 @@ class ProfileRepository(
                         )
                     )
                 } else {
-                    profileDao.updateAuthor(
+                    dao.updateAuthor(
                         author.copy(
                             fetchedDate = LocalDateTime.now(),
                             nbstories = storyIds.size.toString(),
@@ -83,7 +83,7 @@ class ProfileRepository(
                     )
                 }
 
-                return ProfileRepositoryResultSuccess(
+                return AuthorRepositoryResultSuccess(
                     authorId = authorId,
                     authorName = profileInfo.name,
                     favoritesNb = favoriteIds.size,
@@ -91,11 +91,11 @@ class ProfileRepository(
                 )
             }
         }
-        return ProfileRepositoryResultFailure
+        return AuthorRepositoryResultFailure
     }
 
     fun loadSyncedAuthors(): LiveData<List<Author>> {
-        return Transformations.map(profileDao.getSyncedAuthors()) { authorEntityList ->
+        return Transformations.map(dao.getSyncedAuthors()) { authorEntityList ->
             authorEntityList.map {
                 Author(
                     id = it.authorId,
@@ -119,14 +119,25 @@ class ProfileRepository(
         }
     }
 
-    sealed class ProfileRepositoryResult {
-        data class ProfileRepositoryResultSuccess(
+    fun getAuthor(authorId: String): AuthorRepositoryResult {
+        return dao.getAuthor(authorId)?.let {
+            AuthorRepositoryResultSuccess(
+                authorId = it.authorId,
+                authorName = it.name,
+                storiesNb = it.nbstories.toInt(),
+                favoritesNb = it.nbFavorites.toInt()
+            )
+        } ?: AuthorRepositoryResultFailure
+    }
+
+    sealed class AuthorRepositoryResult {
+        data class AuthorRepositoryResultSuccess(
             val authorId: String,
             val authorName: String,
             val favoritesNb: Int,
             val storiesNb: Int
-        ) : ProfileRepositoryResult()
+        ) : AuthorRepositoryResult()
 
-        object ProfileRepositoryResultFailure : ProfileRepositoryResult()
+        object AuthorRepositoryResultFailure : AuthorRepositoryResult()
     }
 }

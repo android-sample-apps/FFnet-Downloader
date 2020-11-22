@@ -2,9 +2,8 @@ package fr.ffnet.downloader.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import fr.ffnet.downloader.common.FFLogger
-import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_FAVORITE
-import fr.ffnet.downloader.repository.ProfileRepository.Companion.PROFILE_TYPE_MY_STORY
+import fr.ffnet.downloader.repository.AuthorRepository.Companion.PROFILE_TYPE_FAVORITE
+import fr.ffnet.downloader.repository.AuthorRepository.Companion.PROFILE_TYPE_MY_STORY
 import fr.ffnet.downloader.repository.dao.FanfictionDao
 import fr.ffnet.downloader.repository.entities.ChapterEntity
 import fr.ffnet.downloader.repository.entities.FanfictionEntity
@@ -59,7 +58,7 @@ class DatabaseRepository(
     }
 
     fun isFanfictionInDatabase(fanfictionId: String): Boolean {
-        return getCompleteFanfiction(fanfictionId) != null
+        return dao.getFanfiction(fanfictionId) != null
     }
 
     private fun transformEntityToModel(

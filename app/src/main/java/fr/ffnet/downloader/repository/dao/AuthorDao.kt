@@ -10,7 +10,7 @@ import fr.ffnet.downloader.repository.entities.AuthorEntity
 import fr.ffnet.downloader.repository.entities.ProfileFanfictionEntity
 
 @Dao
-interface ProfileDao {
+interface AuthorDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProfileFanfiction(favoriteEntity: ProfileFanfictionEntity)

@@ -8,7 +8,7 @@ import fr.ffnet.downloader.FanfictionDownloaderDatabase
 import fr.ffnet.downloader.common.NetworkModule.Companion.MOBILE_WEBSITE
 import fr.ffnet.downloader.common.NetworkModule.Companion.REGULAR_WEBSITE
 import fr.ffnet.downloader.repository.dao.FanfictionDao
-import fr.ffnet.downloader.repository.dao.ProfileDao
+import fr.ffnet.downloader.repository.dao.AuthorDao
 import fr.ffnet.downloader.utils.FanfictionBuilder
 import fr.ffnet.downloader.utils.FanfictionConverter
 import fr.ffnet.downloader.utils.ProfileBuilder
@@ -25,8 +25,8 @@ class RepositoryModule {
         database.fanfictionDao()
 
     @Provides
-    fun provideProfileDao(database: FanfictionDownloaderDatabase): ProfileDao =
-        database.profileDao()
+    fun provideProfileDao(database: FanfictionDownloaderDatabase): AuthorDao =
+        database.authorDao()
 
     @Provides
     fun provideMobileCrawlService(
@@ -75,11 +75,11 @@ class RepositoryModule {
     @Provides
     fun provideProfileRepository(
         regularCrawlService: RegularCrawlService,
-        profileDao: ProfileDao,
+        profileDao: AuthorDao,
         profileBuilder: ProfileBuilder,
         fanfictionConverter: FanfictionConverter,
         fanfictionDao: FanfictionDao
-    ): ProfileRepository = ProfileRepository(
+    ): AuthorRepository = AuthorRepository(
         regularCrawlService,
         profileDao,
         fanfictionDao,
