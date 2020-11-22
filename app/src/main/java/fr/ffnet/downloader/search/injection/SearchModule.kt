@@ -15,8 +15,8 @@ import fr.ffnet.downloader.synced.SyncedViewModel
 import fr.ffnet.downloader.utils.DateFormatter
 import fr.ffnet.downloader.utils.EpubBuilder
 import fr.ffnet.downloader.utils.FanfictionOpener
-import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.PdfBuilder
+import fr.ffnet.downloader.utils.UIBuilder
 import fr.ffnet.downloader.utils.UrlTransformer
 import fr.ffnet.downloader.utils.ViewModelFactory
 
@@ -28,7 +28,6 @@ class SearchModule(private val fragment: SearchFragment) {
         urlTransformer: UrlTransformer,
         resources: Resources,
         searchRepository: SearchRepository,
-        apiRepository: DownloaderRepository,
         dbRepository: DatabaseRepository,
         dateFormatter: DateFormatter,
         UIBuilder: UIBuilder
@@ -38,7 +37,6 @@ class SearchModule(private val fragment: SearchFragment) {
                 urlTransformer,
                 resources,
                 searchRepository,
-                apiRepository,
                 dbRepository,
                 dateFormatter,
                 UIBuilder
@@ -70,6 +68,7 @@ class SearchModule(private val fragment: SearchFragment) {
 
     @Provides
     fun provideOptionsViewModel(
+        resources: Resources,
         databaseRepository: DatabaseRepository,
         downloaderRepository: DownloaderRepository,
         pdfBuilder: PdfBuilder,
@@ -77,6 +76,7 @@ class SearchModule(private val fragment: SearchFragment) {
     ): OptionsViewModel {
         val factory = ViewModelFactory {
             OptionsViewModel(
+                resources = resources,
                 databaseRepository = databaseRepository,
                 downloaderRepository = downloaderRepository,
                 pdfBuilder = pdfBuilder,
@@ -94,7 +94,7 @@ class SearchModule(private val fragment: SearchFragment) {
         return OptionsController(
             context = fragment.requireContext(),
             lifecycleOwner = fragment.viewLifecycleOwner,
-            permissionListener = fragment,
+            parentListener = fragment,
             optionsViewModel = optionsViewModel,
             fanfictionOpener = fanfictionOpener
         )

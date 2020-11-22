@@ -10,18 +10,20 @@ import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel
+import fr.ffnet.downloader.fanfictionoptions.OptionsViewModel.SearchError
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import fr.ffnet.downloader.utils.FanfictionOpener
 import fr.ffnet.downloader.utils.OnFanfictionActionsListener
 
-interface PermissionListener {
+interface ParentListener {
     fun onPermissionRequested(arrayOf: Array<String>, requestCode: Int): Boolean
+    fun showErrorMessage(message: String)
 }
 
 class OptionsController(
     private val context: Context,
     lifecycleOwner: LifecycleOwner,
-    private val permissionListener: PermissionListener,
+    private val parentListener: ParentListener,
     private val optionsViewModel: OptionsViewModel,
     private val fanfictionOpener: FanfictionOpener
 ) : OnFanfictionActionsListener {
@@ -52,6 +54,14 @@ class OptionsController(
                 )
             )
         })
+        optionsViewModel.error.observe(lifecycleOwner, { searchError ->
+            when (searchError) {
+                is SearchError.UrlNotValid,
+                is SearchError.InfoFetchingFailed -> {
+                    parentListener.showErrorMessage(searchError.message)
+                }
+            }
+        })
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
@@ -76,9 +86,9 @@ class OptionsController(
         }
     }
 
-    override fun onFetchInformation(fanfiction: FanfictionUI) {
-        FFLogger.d(FFLogger.EVENT_KEY, "Opening details for ${fanfiction.id}")
-        optionsViewModel.loadFanfictionInfo(fanfiction.id)
+    override fun onFetchInformation(fanfictionId: String) {
+        FFLogger.d(FFLogger.EVENT_KEY, "Opening details for $fanfictionId")
+        optionsViewModel.loadFanfictionInfo(fanfictionId)
     }
 
     override fun onExportPdf(fanfictionId: String) {
@@ -97,7 +107,7 @@ class OptionsController(
     }
 
     private fun checkPermission(requestCode: Int): Boolean {
-        return permissionListener.onPermissionRequested(arrayOf(STORAGE), requestCode)
+        return parentListener.onPermissionRequested(arrayOf(STORAGE), requestCode)
     }
 
     private fun exportEpub() {

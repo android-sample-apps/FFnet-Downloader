@@ -42,6 +42,7 @@ class FanfictionModule(private val activity: FanfictionActivity) {
 
     @Provides
     fun provideOptionsViewModel(
+        resources: Resources,
         databaseRepository: DatabaseRepository,
         downloaderRepository: DownloaderRepository,
         pdfBuilder: PdfBuilder,
@@ -49,6 +50,7 @@ class FanfictionModule(private val activity: FanfictionActivity) {
     ): OptionsViewModel {
         val factory = ViewModelFactory {
             OptionsViewModel(
+                resources = resources,
                 databaseRepository = databaseRepository,
                 downloaderRepository = downloaderRepository,
                 pdfBuilder = pdfBuilder,
@@ -66,7 +68,7 @@ class FanfictionModule(private val activity: FanfictionActivity) {
         return OptionsController(
             context = activity,
             lifecycleOwner = activity,
-            permissionListener = activity,
+            parentListener = activity,
             optionsViewModel = optionsViewModel,
             fanfictionOpener = fanfictionOpener
         )

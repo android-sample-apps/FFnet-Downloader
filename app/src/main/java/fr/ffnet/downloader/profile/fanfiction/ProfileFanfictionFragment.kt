@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
 import fr.ffnet.downloader.profile.fanfiction.ProfileFanfictionViewModel.ProfileFanfictionsResult
@@ -18,11 +19,11 @@ import fr.ffnet.downloader.profile.fanfiction.injection.ProfileFanfictionModule
 import fr.ffnet.downloader.synced.FanfictionListAdapter
 import fr.ffnet.downloader.synced.FanfictionUIItem
 import fr.ffnet.downloader.synced.OptionsController
-import fr.ffnet.downloader.synced.PermissionListener
+import fr.ffnet.downloader.synced.ParentListener
 import kotlinx.android.synthetic.main.fragment_profile_fanfictions.*
 import javax.inject.Inject
 
-class ProfileFanfictionFragment : Fragment(), PermissionListener {
+class ProfileFanfictionFragment : Fragment(), ParentListener {
 
     @Inject lateinit var profileViewModel: ProfileFanfictionViewModel
     @Inject lateinit var optionsController: OptionsController
@@ -85,6 +86,10 @@ class ProfileFanfictionFragment : Fragment(), PermissionListener {
             requestPermissions(arrayOf(OptionsController.STORAGE), requestCode)
             false
         } else true
+    }
+
+    override fun showErrorMessage(message: String) {
+        Snackbar.make(containerView, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setListeners() {

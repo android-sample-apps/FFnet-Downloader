@@ -21,13 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.MainApplication
-import fr.ffnet.downloader.fanfiction.FanfictionActivity
 import fr.ffnet.downloader.search.injection.SearchModule
 import fr.ffnet.downloader.synced.FanfictionListAdapter
 import fr.ffnet.downloader.synced.OnHistoryClickListener
 import fr.ffnet.downloader.synced.OnSyncAllFanfictionsListener
 import fr.ffnet.downloader.synced.OptionsController
-import fr.ffnet.downloader.synced.PermissionListener
+import fr.ffnet.downloader.synced.ParentListener
 import fr.ffnet.downloader.synced.SyncedViewModel
 import fr.ffnet.downloader.utils.SwipeToDeleteCallback
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -36,7 +35,7 @@ import javax.inject.Inject
 class SearchFragment :
     Fragment(),
     OnHistoryClickListener,
-    PermissionListener,
+    ParentListener,
     OnSyncAllFanfictionsListener {
 
     @Inject lateinit var searchViewModel: SearchViewModel
@@ -80,7 +79,8 @@ class SearchFragment :
     }
 
     override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
-        searchViewModel.loadFanfictionInfo(fanfictionId)
+        transitionToStart()
+        optionsController.onFetchInformation(fanfictionId)
     }
 
     private fun initializeSynced() {
@@ -119,6 +119,14 @@ class SearchFragment :
             requestPermissions(arrayOf(OptionsController.STORAGE), requestCode)
             false
         } else true
+    }
+
+    override fun onSyncAll() {
+        syncedViewModel.syncAllUnsyncedChapters()
+    }
+
+    override fun showErrorMessage(message: String) {
+        Snackbar.make(containerView, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setKeyboardStatusListener(view: View) {
@@ -219,25 +227,11 @@ class SearchFragment :
 
     private fun setSearchObservers() {
         searchViewModel.navigateToFanfiction.observe(viewLifecycleOwner, { fanfictionId ->
+            optionsController.onFetchInformation(fanfictionId)
             transitionToStart()
-            startActivity(FanfictionActivity.intent(requireContext(), fanfictionId))
         })
         searchViewModel.searchHistoryResult.observe(viewLifecycleOwner, { historyList ->
             (searchResultRecyclerView.adapter as FanfictionListAdapter).fanfictionItemList = historyList
         })
-        searchViewModel.sendError.observe(viewLifecycleOwner, { searchError ->
-            when (searchError) {
-                is SearchViewModel.SearchError.UrlNotValid,
-                is SearchViewModel.SearchError.InfoFetchingFailed -> {
-                    Snackbar.make(
-                        containerView, searchError.message, Snackbar.LENGTH_LONG
-                    ).show()
-                }
-            }
-        })
-    }
-
-    override fun onSyncAll() {
-        syncedViewModel.syncAllUnsyncedChapters()
     }
 }

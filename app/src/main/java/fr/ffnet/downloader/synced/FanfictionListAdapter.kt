@@ -132,7 +132,7 @@ class FanfictionListAdapter(
             view.chaptersValueTextView.isVisible = fanfiction.shouldShowChapterSync.not()
 
             view.setOnClickListener {
-                onActionListener.onFetchInformation(fanfiction)
+                onActionListener.onFetchInformation(fanfiction.id)
             }
 
             view.exportPdfImageView.isVisible = fanfiction.shouldShowExport

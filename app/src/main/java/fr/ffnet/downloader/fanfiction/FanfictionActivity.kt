@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.google.android.material.snackbar.Snackbar
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FFLogger
 import fr.ffnet.downloader.common.MainApplication
@@ -17,11 +18,11 @@ import fr.ffnet.downloader.fanfiction.FanfictionViewModel.SyncState
 import fr.ffnet.downloader.fanfiction.injection.FanfictionModule
 import fr.ffnet.downloader.synced.FanfictionUIItem.FanfictionUI
 import fr.ffnet.downloader.synced.OptionsController
-import fr.ffnet.downloader.synced.PermissionListener
+import fr.ffnet.downloader.synced.ParentListener
 import kotlinx.android.synthetic.main.activity_fanfiction.*
 import javax.inject.Inject
 
-class FanfictionActivity : AppCompatActivity(), ChapterClickListener, PermissionListener, SyncingFinishedListener {
+class FanfictionActivity : AppCompatActivity(), ChapterClickListener, ParentListener, SyncingFinishedListener {
 
     @Inject lateinit var viewModel: FanfictionViewModel
     @Inject lateinit var optionsController: OptionsController
@@ -84,6 +85,10 @@ class FanfictionActivity : AppCompatActivity(), ChapterClickListener, Permission
 
     override fun onExportEpub() {
         optionsController.onExportEpub(fanfictionId)
+    }
+
+    override fun showErrorMessage(message: String) {
+        Snackbar.make(containerView, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setObservers() {
