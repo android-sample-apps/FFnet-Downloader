@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import fr.ffnet.downloader.R
 import fr.ffnet.downloader.common.FragmentScope
@@ -33,68 +30,73 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        requireActivity().addOnBackPressedCallback {
+            if (searchEditText.hasFocus()) {
+                searchEditText.clearFocus()
+                containerView.transitionToStart()
+                true
+            } else false
+        }
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                println("Has focus")
-                menuSearchBarImageView.layoutParams.height = 400
+                containerView.transitionToEnd()
+            } else {
+                containerView.transitionToStart()
             }
         }
 
-//        menuSearchBarImageView.setOnClickListener {
-//            // Rotation
-//
-//            // Expand CardView
-//
-//            val animator = ValueAnimator.ofInt(
-//                searchTestCardView.layoutParams.height,
-//                containerView.layoutParams.height
-//            ).setDuration(2000)
-//
-//            animator.addUpdateListener { valueAnimator ->
-//                menuSearchBarImageView.layoutParams = menuSearchBarImageView.layoutParams.apply {
-//                    height = valueAnimator.animatedValue as Int
-//                }
-//            }
-//            animator.start()
-//        }
-
-
-//        fetchInformationButton.setOnClickListener {
-//            it.isEnabled = false
-//            progressBar.visibility = View.VISIBLE
-//            viewModel.loadFanfictionInfos(downloadUrlEditText.text.toString())
-//        }
-        initRecyclerView()
-
-//        viewModel.navigateToFanfiction.observe(this, Observer { liveEvent ->
-//            liveEvent.getContentIfNotHandled()?.let {
-//                if (context != null) {
-//                    startActivity(FanfictionActivity.intent(context!!, it)).also {
-//                        fetchInformationButton.isEnabled = true
-//                        progressBar.visibility = View.GONE
-//                    }
-//                }
-//            }
-//        })
-
-        viewModel.displayError.observe(this, Observer {
-            it.getContentIfNotHandled()?.let { resourceId ->
-                Snackbar.make(containerView, resourceId, Snackbar.LENGTH_LONG).show()
-            }
-        })
-
-        viewModel.loadHistory().observe(this, Observer { historyList ->
-            (historyRecyclerView.adapter as HistoryAdapter).historyList = historyList
-        })
+        initRecyclerViews()
     }
 
     override fun onHistoryClicked(fanfictionId: String, fanfictionUrl: String) {
-//        downloadUrlEditText.setText(fanfictionUrl)
+
     }
 
-    private fun initRecyclerView() {
-        historyRecyclerView.layoutManager = LinearLayoutManager(context)
-        historyRecyclerView.adapter = HistoryAdapter(this)
+    private fun initRecyclerViews() {
+
+        mainListRecyclerView.adapter = HistoryAdapter(this)
+        (mainListRecyclerView.adapter as HistoryAdapter).historyList = listOf(
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "District 9",
+                date = "14/04/2021"
+            ),
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "Paterson",
+                date = "04/04/2021"
+            ),
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "Cherry",
+                date = "20/04/2021"
+            )
+        )
+
+        searchListRecyclerView.adapter = HistoryAdapter(this)
+        (searchListRecyclerView.adapter as HistoryAdapter).historyList = listOf(
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "District 9",
+                date = "14/04/2021"
+            ),
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "Paterson",
+                date = "04/04/2021"
+            ),
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "Cherry",
+                date = "20/04/2021"
+            )
+        )
     }
 }
