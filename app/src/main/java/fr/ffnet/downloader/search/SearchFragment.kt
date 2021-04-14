@@ -82,20 +82,20 @@ class SearchFragment : DaggerFragment(), HistoryAdapter.OnHistoryClickListener {
             HistoryUIModel(
                 fanfictionId = "92834232",
                 url = "",
-                title = "District 9",
-                date = "14/04/2021"
-            ),
-            HistoryUIModel(
-                fanfictionId = "92834232",
-                url = "",
-                title = "Paterson",
-                date = "04/04/2021"
-            ),
-            HistoryUIModel(
-                fanfictionId = "92834232",
-                url = "",
-                title = "Cherry",
+                title = "Good morning, Vietnam",
                 date = "20/04/2021"
+            ),
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "Leon",
+                date = "21/04/2021"
+            ),
+            HistoryUIModel(
+                fanfictionId = "92834232",
+                url = "",
+                title = "Chappie",
+                date = "22/04/2021"
             )
         )
     }

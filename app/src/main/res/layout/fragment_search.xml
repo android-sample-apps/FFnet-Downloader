@@ -7,48 +7,41 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/scene">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/searchTestCardView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/searchContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:cardBackgroundColor="@color/backgroundColor"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
+        android:elevation="8dp"
+        android:background="@drawable/dummy_shadow"
+        android:orientation="vertical"
         app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <EditText
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@null"
+            android:drawableStart="@drawable/ic_dehaze"
+            android:drawablePadding="8dp"
+            android:elevation="2dp"
+            android:hint="Search fanfiction.net"
+            android:padding="16dp"
+            android:textColorHint="@color/bottomNavigationGrey"
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/searchEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:drawableStart="@drawable/ic_dehaze"
-                android:drawablePadding="8dp"
-                android:elevation="2dp"
-                android:hint="Search fanfiction.net"
-                android:padding="16dp"
-                android:textColorHint="@color/bottomNavigationGrey"
-                android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchEditText" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/searchListRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@android:color/holo_red_dark"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchEditText" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainListRecyclerView"
@@ -57,7 +50,7 @@
         android:layout_marginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchTestCardView" />
+        app:layout_constraintTop_toBottomOf="@id/searchContainer" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"

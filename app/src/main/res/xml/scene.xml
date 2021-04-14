@@ -6,36 +6,31 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@id/start"
-        app:duration="500" />
+        app:duration="200" />
 
     <ConstraintSet android:id="@+id/start">
-
         <Constraint
-            android:id="@+id/searchTestCardView"
+            android:id="@+id/searchContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/backgroundColor"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp"
+            android:background="@drawable/dummy_shadow"
+            android:elevation="8dp"
+            android:orientation="vertical"
             app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
             app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
-
         <Constraint
-            android:id="@+id/searchTestCardView"
+            android:id="@+id/searchContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="0dp"
-            app:cardBackgroundColor="@color/backgroundColor"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp"
+            android:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>
-
 </MotionScene>
